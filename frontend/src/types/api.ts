@@ -1,4 +1,4 @@
-﻿/**
+/**
  * SaveSmart Shared API Response Types
  * Currency Standard: Indian Rupee (INR / ₹)
  * Mirrors backend Pydantic API schemas
@@ -31,6 +31,34 @@ export interface Goal {
   created_at?: string;
 }
 
+export interface GoalCreateInput {
+  user_id?: string;
+  name: string;
+  category: string;
+  target_amount: number;
+  current_balance: number;
+  target_months: number;
+  priority: string;
+}
+
+export interface HealthRiskFactor {
+  factor: string;
+  severity: "LOW" | "MEDIUM" | "HIGH";
+  description: string;
+}
+
+export interface GoalHealthReport {
+  goal_id: string;
+  currency: "INR";
+  health_status: "HEALTHY" | "MODERATE_RISK" | "AT_RISK";
+  baseline_resilience_score: number;
+  monthly_savings_rate: number;
+  free_cash_flow_margin: number;
+  emergency_buffer_months: number;
+  debt_to_income_ratio: number;
+  risk_factors: HealthRiskFactor[];
+}
+
 export interface BaselineProfile {
   user_id: string;
   monthly_net_income: number; // In INR (₹)
@@ -53,6 +81,7 @@ export interface BaselineProfile {
     monthly_payment: number; // In INR (₹)
     remaining_balance: number; // In INR (₹)
     interest_rate_annual: number;
+    is_variable_rate?: boolean;
   }>;
   emergency_fund_balance: number; // In INR (₹)
   summary?: {
@@ -81,12 +110,15 @@ export interface SimulationResult {
   currency: "INR";
   resilience_score: number;
   resilience_grade: ResilienceGrade;
+  cascade_triggered_insolvency?: boolean;
+  insolvency_first_month?: number | null;
+  peak_deficit?: number;
   baseline: {
-    completion_month: number;
+    completion_month: number | null;
     final_balance: number; // In INR (₹)
   };
   stressed: {
-    completion_month: number;
+    completion_month: number | null;
     slippage_months: number;
     final_balance_at_original_deadline: number; // In INR (₹)
     capital_deficit: number; // In INR (₹)
@@ -99,6 +131,8 @@ export interface SimulationResult {
     stressed_balance: number; // In INR (₹)
     stressed_cash_flow: number; // In INR (₹)
     is_shock_active: boolean;
+    is_insolvent?: boolean;
+    emergency_buffer_balance?: number;
   }>;
 }
 
@@ -115,9 +149,23 @@ export interface RecoveryPlan {
   description: string;
 }
 
-export interface GeminiNarrative {
-  simulation_id: string;
-  executive_summary: string;
-  key_findings: string[];
-  actionable_coaching: string;
+export interface SurvivalMapData {
+  goal_id: string;
+  currency: "INR";
+  total_months: number;
+  insolvency_threshold: number;
+  safe_buffer_threshold: number;
+  curves: {
+    baseline: number[];
+    stressed: number[];
+    recovered_balanced: number[];
+  };
+}
+
+export interface SystemHealth {
+  status: string;
+  version: string;
+  currency: string;
+  mongodb_connected: boolean;
+  gemini_api_configured: boolean;
 }

@@ -1,8 +1,8 @@
-﻿# SaveSmart — Project State & Status
+# SaveSmart — Project State & Status
 
 > **Hackathon Track:** Fintech / Financial Resilience & Goal Stress-Testing  
 > **Currency Standard:** Indian Rupee (INR / ₹)  
-> **Status:** Phase 0 Completed — System Architecture, Contracts, Financial Rules, and Multi-Agent Workstreams Initialized  
+> **Status:** Phase 1 (Engine + Backend + MongoDB) & Phase 2 (Next.js 15 Frontend UI) Completed. Ready for Phase 3 (Gemini AI Explainer Layer).  
 > **Last Updated:** 2026-09-18  
 
 ---
