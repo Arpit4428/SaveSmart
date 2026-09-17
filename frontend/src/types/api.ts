@@ -1,5 +1,6 @@
-/**
+﻿/**
  * SaveSmart Shared API Response Types
+ * Currency Standard: Indian Rupee (INR / ₹)
  * Mirrors backend Pydantic API schemas
  */
 
@@ -22,17 +23,17 @@ export interface Goal {
   user_id: string;
   name: string;
   category: "housing" | "emergency" | "vehicle" | "education" | "investment" | "lifestyle";
-  target_amount: number;
-  current_balance: number;
+  target_amount: number; // In INR (₹)
+  current_balance: number; // In INR (₹)
   target_months: number;
   priority: "low" | "medium" | "high";
-  monthly_contribution?: number;
+  monthly_contribution?: number; // In INR (₹)
   created_at?: string;
 }
 
 export interface BaselineProfile {
   user_id: string;
-  monthly_net_income: number;
+  monthly_net_income: number; // In INR (₹)
   fixed_expenses: {
     rent_or_mortgage: number;
     utilities: number;
@@ -49,11 +50,11 @@ export interface BaselineProfile {
   };
   debt_commitments: Array<{
     name: string;
-    monthly_payment: number;
-    remaining_balance: number;
+    monthly_payment: number; // In INR (₹)
+    remaining_balance: number; // In INR (₹)
     interest_rate_annual: number;
   }>;
-  emergency_fund_balance: number;
+  emergency_fund_balance: number; // In INR (₹)
   summary?: {
     total_fixed_expenses: number;
     total_discretionary_expenses: number;
@@ -70,32 +71,33 @@ export interface ShockEvent {
   start_month: number;
   duration_months?: number;
   magnitude_percent?: number;
-  amount?: number;
+  amount?: number; // In INR (₹)
   description?: string;
 }
 
 export interface SimulationResult {
   simulation_id: string;
   goal_id: string;
+  currency: "INR";
   resilience_score: number;
   resilience_grade: ResilienceGrade;
   baseline: {
     completion_month: number;
-    final_balance: number;
+    final_balance: number; // In INR (₹)
   };
   stressed: {
     completion_month: number;
     slippage_months: number;
-    final_balance_at_original_deadline: number;
-    capital_deficit: number;
-    minimum_cash_buffer: number;
+    final_balance_at_original_deadline: number; // In INR (₹)
+    capital_deficit: number; // In INR (₹)
+    minimum_cash_buffer: number; // In INR (₹)
     buffer_exhausted: boolean;
   };
   monthly_timeline: Array<{
     month: number;
-    baseline_balance: number;
-    stressed_balance: number;
-    stressed_cash_flow: number;
+    baseline_balance: number; // In INR (₹)
+    stressed_balance: number; // In INR (₹)
+    stressed_cash_flow: number; // In INR (₹)
     is_shock_active: boolean;
   }>;
 }
@@ -106,8 +108,8 @@ export interface RecoveryPlan {
   target_completion_month: number;
   slippage_months: number;
   discretionary_cut_percent: number;
-  discretionary_savings_monthly: number;
-  monthly_contribution_adjusted: number;
+  discretionary_savings_monthly: number; // In INR (₹)
+  monthly_contribution_adjusted: number; // In INR (₹)
   emergency_buffer_replenished_month: number;
   feasibility_score: number;
   description: string;

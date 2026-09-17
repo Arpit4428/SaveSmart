@@ -1,4 +1,4 @@
-# SaveSmart ?????
+﻿# SaveSmart 🛡️💰
 > **Fintech Financial Resilience & Goal Stress-Testing Platform**  
 > *Built for Hackathon 2026*
 
@@ -10,14 +10,14 @@ Most savings apps show a straight line to your goal. Life is not a straight line
 
 **SaveSmart** tests your financial goals against the unpredictable:
 - What happens if you face a **30% income drop** for 4 months?
-- What happens if an unexpected **$3,000 medical bill** hits while inflation spikes?
-- What happens during a **cascading crisis** (job disruption + car repair + rate hike)?
+- What happens if an unexpected **₹2,50,000 medical bill** hits while inflation spikes?
+- What happens during a **cascading crisis** (job disruption + emergency expenses + interest hike)?
 
-SaveSmart calculates your **Resilience Score (0�100)**, projects your **Goal Survival Map**, and deterministically formulates **3 actionable recovery plans** to get you back on track.
+SaveSmart calculates your **Resilience Score (0–100)**, projects your **Goal Survival Map**, and deterministically formulates **3 actionable recovery plans** to get you back on track.
 
 ---
 
-## ??? Architectural Cardinal Rule
+## 🏛️ Architectural Cardinal Rule
 
 ```
 +------------------------------------+
@@ -25,7 +25,7 @@ SaveSmart calculates your **Resilience Score (0�100)**, projects your **Goal Sur
 |  (Pure Math, 0% Hallucination)     |      and recovery optimization
 +-----------------+------------------+
                   |
-                  | (Verified JSON Payload)
+                  | (Verified JSON Payload in INR / ₹)
                   v
 +------------------------------------+
 |  Gemini AI Explainer Layer         |  <-- Explains trade-offs & impacts
@@ -35,8 +35,9 @@ SaveSmart calculates your **Resilience Score (0�100)**, projects your **Goal Sur
 
 ---
 
-## ?? Tech Stack
+## 📦 Tech Stack
 
+- **Currency Standard:** Indian Rupee (INR / ₹) across all baselines, goals, and projections
 - **Frontend:** Next.js 15, TypeScript, Tailwind CSS, Recharts
 - **Backend:** Python 3.13, FastAPI, Pydantic v2
 - **Database:** MongoDB Atlas (Motor / PyMongo)
@@ -45,7 +46,7 @@ SaveSmart calculates your **Resilience Score (0�100)**, projects your **Goal Sur
 
 ---
 
-## ?? Quick Start (Local Development)
+## 🚀 Quick Start (Local Development)
 
 ### 1. Backend Setup
 ```bash
@@ -73,7 +74,7 @@ Application interface available at: `http://localhost:3000`
 
 ---
 
-## ?? Documentation Index
+## 📚 Documentation Index
 
 - [PROJECT_STATE.md](PROJECT_STATE.md): Vision, status, feature matrix, and milestones.
 - [ARCHITECTURE.md](ARCHITECTURE.md): System architecture, component boundaries, and data flows.

@@ -1,6 +1,7 @@
-# SaveSmart � Financial Engine Mathematics & Deterministic Rules
+﻿# SaveSmart — Financial Engine Mathematics & Deterministic Rules
 
 > **Status:** Definitive Mathematical Specification  
+> **Currency Standard:** Indian Rupee (INR / ₹)  
 > **Rule:** All calculations MUST be implemented in pure Python (`backend/app/engine/`).  
 > **Rule:** No floating-point random drift. Gemini is strictly prohibited from altering or generating any of these numbers.  
 
@@ -11,7 +12,7 @@
 All calculations are evaluated over a discrete monthly timeline $t \in \{0, 1, 2, \dots, T_{max}\}$, where:
 - $t = 0$ represents the present day (initial state).
 - $t = 1$ represents the end of the first month.
-- Currency values are represented in two-decimal precision floating-point / decimal arithmetic.
+- Currency values are represented in two-decimal precision floating-point / decimal arithmetic denominated in Indian Rupees (₹ / INR).
 - All interest and inflation percentages are represented as decimals ($5\% = 0.05$).
 
 ---
@@ -22,7 +23,7 @@ All calculations are evaluated over a discrete monthly timeline $t \in \{0, 1, 2
 
 $$FCF = I_{net} - (E_{fixed} + E_{discretionary} + D_{commitments})$$
 
-Where:
+Where (all in INR / ₹):
 - $I_{net}$: Total monthly net take-home income.
 - $E_{fixed}$: Sum of non-negotiable living expenses (rent/mortgage, utilities, essential groceries, insurance).
 - $E_{discretionary}$: Sum of flexible spending (dining, recreation, shopping, luxuries).
@@ -30,7 +31,7 @@ Where:
 
 ### 2.2. Baseline Goal Contribution ($C_{target}$)
 
-Given a goal target amount $G_{target}$, initial balance $S_0$, and target horizon in months $T_{goal}$:
+Given a goal target amount $G_{target}$ (₹), initial balance $S_0$ (₹), and target horizon in months $T_{goal}$:
 
 $$C_{target} = \frac{G_{target} - S_0}{T_{goal}}$$
 
@@ -38,7 +39,7 @@ $$C_{target} = \frac{G_{target} - S_0}{T_{goal}}$$
 
 ### 2.3. Baseline Savings Accumulation ($S_t$)
 
-In the absence of shocks, goal savings grow deterministically:
+In the absence of shocks, goal savings grow deterministically in ₹:
 
 $$S_t = S_{t-1} + C_{target} = S_0 + (C_{target} \times t)$$
 
@@ -64,7 +65,7 @@ I_{net} & \text{otherwise}
 ### 3.2. Lump-Sum Expense Shock ($Shock_{lump}$)
 Parameters:
 - $t_{event}$: Month event occurs
-- $L$: One-time cost ($)
+- $L$: One-time cost in INR (₹)
 
 $$E_{extra, t} = \begin{cases} 
 L & \text{if } t = t_{event} \\ 
@@ -83,7 +84,7 @@ $$E_{discretionary, t} = E_{discretionary} \times (1 + \frac{\iota}{12})^{(t - t
 ### 3.4. Interest Rate Hike Shock ($Shock_{interest}$)
 Parameters:
 - $\Delta r$: Increase in variable annual interest rate (e.g., $+0.025$ for $+250\text{ bps}$)
-- Applied to variable debt obligations:
+- Applied to variable debt obligations in ₹:
 
 $$D_{commitments, t} = D_{commitments} + \sum_{k \in Debts_{var}} (Balance_k \times \frac{\Delta r}{12})$$
 
@@ -95,10 +96,10 @@ When multiple shocks $\{Shock_1, Shock_2, \dots, Shock_n\}$ overlap or sequence 
 
 For each month $t \in [1, T_{max}]$:
 
-1. **Calculate Stressed Cash Flow:**
+1. **Calculate Stressed Cash Flow (₹):**
    $$FCF_t^{stressed} = I_t^{stressed} - (E_{fixed, t}^{stressed} + E_{discretionary, t}^{stressed} + D_{commitments, t}^{stressed} + E_{extra, t})$$
 
-2. **Evaluate Liquidity & Emergency Buffer Absorption:**
+2. **Evaluate Liquidity & Emergency Buffer Absorption (₹):**
    Let $B_t$ be the Emergency Buffer balance at month $t$, with initial buffer $B_0$:
 
    - If $FCF_t^{stressed} \ge C_{target}$:
@@ -118,7 +119,7 @@ For each month $t \in [1, T_{max}]$:
      $$\text{Deficit}_t = |B_t|$$
      $$B_t = 0$$
 
-3. **Accumulate Goal Savings:**
+3. **Accumulate Goal Savings (₹):**
    $$S_t^{stressed} = S_{t-1}^{stressed} + C_t$$
 
 4. **Identify Stressed Completion Month ($t_{comp}^{stressed}$):**
@@ -129,7 +130,7 @@ For each month $t \in [1, T_{max}]$:
 
 ---
 
-## 5. Resilience Score Formulation (0�100)
+## 5. Resilience Score Formulation (0–100)
 
 The **SaveSmart Resilience Score** ($R$) is a bounded metric quantifying systemic goal durability under stress.
 
@@ -205,11 +206,11 @@ Before returning Gemini's narrative to the user, the backend executes the follow
 ```python
 def verify_gemini_narrative(narrative_text: str, engine_result: dict) -> bool:
     """
-    Scans generated text for any dollar amount ($X,XXX) or numeric percentage (X%)
+    Scans generated text for any rupee amount (₹X,XX,XXX or INR) or numeric percentage (X%)
     and asserts that each mentioned value matches an exact ground-truth value 
     present in the engine_result payload.
     """
-    # 1. Extract all currency mentions ($...)
+    # 1. Extract all currency mentions (₹, INR, Rs...)
     # 2. Extract all percentage mentions (...%)
     # 3. If any extracted metric does not appear in engine_result within a 1% tolerance,
     #    reject LLM output and serve deterministic template summary.

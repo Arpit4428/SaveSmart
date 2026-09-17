@@ -1,6 +1,7 @@
-# SaveSmart � Multi-Agent Task Board & Parallel Execution Plan
+﻿# SaveSmart — Multi-Agent Task Board & Parallel Execution Plan
 
 > **Strategy:** Strict file and module segregation allowing up to 5 agents or developers to work concurrently without merge conflicts.  
+> **Currency Standard:** Indian Rupee (INR / ₹)  
 > **Phase 0 Status:** COMPLETED  
 > **Phase 1 Target:** Core Engine Math + Backend API Scaffolding  
 
@@ -30,7 +31,7 @@
                      v                                               v
 +------------------------------------------+   +------------------------------------------+
 | PHASE 1A: Deterministic Financial Engine  |   | PHASE 1B: Backend Models & API Scaffolding|
-| (WS-A: Pure Python Math + Pytest)        |   | (WS-B: FastAPI, Motor DB, Schemas)       |
+| (WS-A: Pure Python Math in ₹ + Pytest)   |   | (WS-B: FastAPI, Motor DB, Schemas)       |
 +------------------------------------------+   +------------------------------------------+
                      |                                               |
                      +-----------------------+-----------------------+
@@ -40,7 +41,7 @@
                      v                                               v
 +------------------------------------------+   +------------------------------------------+
 | PHASE 2A: Gemini AI Explainer Layer      |   | PHASE 2B: Frontend Scaffold & Dashboard   |
-| (WS-C: Guardrails, Prompts, Tests)       |   | (WS-D: Next.js 15, Layouts, Recharts)    |
+| (WS-C: Guardrails, Prompts in ₹, Tests)  |   | (WS-D: Next.js 15, Layouts, Recharts ₹)  |
 +------------------------------------------+   +------------------------------------------+
                      |                                               |
                      +-----------------------+-----------------------+
@@ -53,7 +54,7 @@
                                              |
                                              v
 +-----------------------------------------------------------------------------------------+
-| PHASE 4: End-to-End Stress Testing, Demo Data Seeding & Deployment                      |
+| PHASE 4: End-to-End Stress Testing, Demo Data Seeding (INR) & Deployment                |
 +-----------------------------------------------------------------------------------------+
 ```
 
@@ -63,13 +64,14 @@
 
 ### Phase 0: Setup & Architecture (Current Phase)
 - [x] **TASK-001**: Initialize Git repository and `.gitignore` (Owner: Lead Architect)
-- [x] **TASK-002**: Draft `PROJECT_STATE.md` with product vision and feature tracking (Owner: Lead Architect)
+- [x] **TASK-002**: Draft `PROJECT_STATE.md` with product vision, INR currency standard, and feature tracking (Owner: Lead Architect)
 - [x] **TASK-003**: Draft `ARCHITECTURE.md` with system diagrams and component boundaries (Owner: Lead Architect)
-- [x] **TASK-004**: Draft `API_CONTRACT.md` with complete REST schemas (Owner: Lead Architect)
+- [x] **TASK-004**: Draft `API_CONTRACT.md` with complete REST schemas in INR / ₹ (Owner: Lead Architect)
 - [x] **TASK-005**: Draft `FINANCIAL_RULES.md` with mathematical formulas and scoring rules (Owner: Lead Architect)
 - [x] **TASK-006**: Draft `TASK_BOARD.md` and establish agent boundaries (Owner: Lead Architect)
 - [x] **TASK-007**: Scaffold directory tree for backend and frontend (Owner: Lead Architect)
 - [x] **TASK-008**: Commit initial architecture baseline to Git (Owner: Lead Architect)
+- [x] **TASK-009**: Audit and standardize all currency references to INR / ₹ (Owner: Lead Architect)
 
 ---
 
@@ -77,7 +79,7 @@
 
 #### Workstream A: Financial Engine
 - [ ] **TASK-A01**: Implement `backend/app/engine/models.py` (Domain dataclasses: `BaselineProfile`, `GoalSpec`, `ShockEvent`, `MonthlySnapshot`).
-- [ ] **TASK-A02**: Implement `backend/app/engine/cashflow.py` (Monthly cash flow generator and baseline goal trajectory).
+- [ ] **TASK-A02**: Implement `backend/app/engine/cashflow.py` (Monthly cash flow generator and baseline goal trajectory in ₹).
 - [ ] **TASK-A03**: Implement `backend/app/engine/shocks.py` (Single shock solvers: income drop, lump-sum spike, inflation, interest rates).
 - [ ] **TASK-A04**: Implement `backend/app/engine/cascade.py` (Sequential compound shock simulation and buffer drawdown).
 - [ ] **TASK-A05**: Implement `backend/app/engine/health.py` (Resilience score 0-100 algorithm and risk factor diagnostics).
@@ -88,7 +90,7 @@
 #### Workstream B: Backend API & MongoDB
 - [ ] **TASK-B01**: Create `backend/requirements.txt` & configure FastAPI with CORS, settings in `backend/app/core/config.py`.
 - [ ] **TASK-B02**: Setup Motor MongoDB connection lifecycle in `backend/app/db/mongodb.py`.
-- [ ] **TASK-B03**: Implement Pydantic schemas in `backend/app/schemas/` matching `API_CONTRACT.md`.
+- [ ] **TASK-B03**: Implement Pydantic schemas in `backend/app/schemas/` matching `API_CONTRACT.md` (denominating monetary fields in INR).
 - [ ] **TASK-B04**: Implement MongoDB repositories in `backend/app/db/repositories/` (`goal_repository.py`, `baseline_repository.py`).
 - [ ] **TASK-B05**: Implement `/api/v1/goals` CRUD endpoints.
 - [ ] **TASK-B06**: Implement `/api/v1/baseline` profile management endpoints.
@@ -101,14 +103,14 @@
 
 #### Workstream C: Gemini Explainer Layer
 - [ ] **TASK-C01**: Implement Gemini client wrapper with API key loading and safety settings in `backend/app/services/gemini_explainer.py`.
-- [ ] **TASK-C02**: Create system prompt templates instructing Gemini to explain verified numbers without calculating or modifying values.
+- [ ] **TASK-C02**: Create system prompt templates instructing Gemini to explain verified numbers in INR (₹) without calculating or modifying values.
 - [ ] **TASK-C03**: Implement post-generation guardrail validator (`verify_gemini_narrative`) to catch hallucinated amounts or percentages.
-- [ ] **TASK-C04**: Implement `/api/v1/explain/scenario` and `/api/v1/explain/recovery` endpoints with deterministic fallback fallback string templates.
+- [ ] **TASK-C04**: Implement `/api/v1/explain/scenario` and `/api/v1/explain/recovery` endpoints with deterministic fallback string templates.
 
 #### Workstream D: Frontend UI & Visualization
 - [ ] **TASK-D01**: Initialize Next.js 15 TypeScript project with Tailwind CSS in `frontend/`.
 - [ ] **TASK-D02**: Setup TypeScript interfaces in `frontend/src/types/` matching `API_CONTRACT.md`.
-- [ ] **TASK-D03**: Implement type-safe HTTP client in `frontend/src/lib/api-client.ts`.
+- [ ] **TASK-D03**: Implement type-safe HTTP client and INR currency formatter in `frontend/src/lib/api-client.ts` and `frontend/src/lib/utils.ts`.
 - [ ] **TASK-D04**: Build Global Navigation, Theme Provider, and Dashboard Shell (`frontend/src/app/layout.tsx`).
 - [ ] **TASK-D05**: Build Goal Builder & Baseline Management Forms (`frontend/src/app/goals/`, `frontend/src/app/baseline/`).
 - [ ] **TASK-D06**: Implement Recharts visualization components (`SurvivalChart.tsx`, `ScenarioComparatorChart.tsx`, `ResilienceGauge.tsx`).
@@ -120,8 +122,8 @@
 
 ### Phase 3 & 4: Integration, Demo Seeding, and Polish
 - [ ] **TASK-INT01**: Wire Frontend state to Backend REST API.
-- [ ] **TASK-INT02**: Create demo seed script (`backend/seed_demo_data.py`) with rich pre-loaded realistic scenarios:
-  - Scenario 1: "First-Time Homebuyer" ($35k target, $5.5k income, Tech Layoff Shock)
-  - Scenario 2: "Wedding Fund" ($18k target, $4.2k income, Medical Emergency + Inflation Cascade)
-  - Scenario 3: "Entrepreneur Safety Net" ($50k target, $7k income, Extended Revenue Drought)
+- [ ] **TASK-INT02**: Create demo seed script (`backend/seed_demo_data.py`) with rich pre-loaded realistic Indian financial scenarios:
+  - Scenario 1: "First-Time Homebuyer" (₹25,00,000 target, ₹1,20,000/mo income, Tech Layoff Shock)
+  - Scenario 2: "Wedding Fund" (₹15,00,000 target, ₹85,000/mo income, Medical Emergency + Inflation Cascade)
+  - Scenario 3: "Entrepreneur Safety Net" (₹10,00,000 target, ₹1,50,000/mo income, Extended Revenue Drought)
 - [ ] **TASK-INT03**: End-to-end user verification and presentation walkthrough.
