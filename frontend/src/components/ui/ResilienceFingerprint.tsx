@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { ResilienceFingerprint as FingerprintType } from "@/types/api";
 
 interface ResilienceFingerprintProps {
@@ -16,6 +16,8 @@ export function ResilienceFingerprint({
   title = "Financial Resilience Fingerprint",
   subtitle = "5-axis durability profile computed deterministically from verified engine math",
 }: ResilienceFingerprintProps) {
+  const [activeAxisIndex, setActiveAxisIndex] = useState<number | null>(null);
+
   if (!fingerprint) return null;
 
   const axes = [
@@ -52,10 +54,10 @@ export function ResilienceFingerprint({
   ];
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-emerald-700 bg-emerald-600";
-    if (score >= 60) return "text-blue-700 bg-blue-600";
-    if (score >= 40) return "text-amber-700 bg-amber-600";
-    return "text-rose-700 bg-rose-600";
+    if (score >= 80) return "text-emerald-700 bg-emerald-600 border-emerald-200";
+    if (score >= 60) return "text-blue-700 bg-blue-600 border-blue-200";
+    if (score >= 40) return "text-amber-700 bg-amber-600 border-amber-200";
+    return "text-rose-700 bg-rose-600 border-rose-200";
   };
 
   const getScoreBadge = (grade: string) => {
@@ -72,10 +74,10 @@ export function ResilienceFingerprint({
     }
   };
 
-  // Calculate 5-axis radar polygon points
-  const cx = 130;
-  const cy = 130;
-  const maxR = 95;
+  // Radar geometry
+  const cx = 150;
+  const cy = 150;
+  const maxR = 115;
 
   const points = axes.map((axis, i) => {
     const angle = ((-90 + i * 72) * Math.PI) / 180;
@@ -85,17 +87,18 @@ export function ResilienceFingerprint({
       y: cy + r * Math.sin(angle),
       outerX: cx + maxR * Math.cos(angle),
       outerY: cy + maxR * Math.sin(angle),
-      labelX: cx + (maxR + 22) * Math.cos(angle),
-      labelY: cy + (maxR + 18) * Math.sin(angle),
+      labelX: cx + (maxR + 24) * Math.cos(angle),
+      labelY: cy + (maxR + 20) * Math.sin(angle),
       ...axis,
     };
   });
 
   const polygonString = points.map((p) => `${p.x},${p.y}`).join(" ");
+  const activeAxis = activeAxisIndex !== null ? axes[activeAxisIndex] : null;
 
   return (
     <div className={`rounded-3xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-soft-sm space-y-6 ${className}`}>
-      {/* Header */}
+      {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-4 border-b border-stone-100">
         <div>
           <div className="text-[10px] font-display font-bold uppercase tracking-widest text-emerald-800 mb-1">
@@ -122,19 +125,23 @@ export function ResilienceFingerprint({
         </div>
       </div>
 
-      {/* Main Composition: Radar Centerpiece + Compact Grouped Telemetry */}
+      {/* Main Composition: Interactive Radar + Grouped Telemetry */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-        {/* Left 5 Cols: SVG Radar Centerpiece */}
-        <div className="lg:col-span-5 flex flex-col items-center justify-center p-3 bg-stone-50/40 rounded-2xl border border-stone-200/60">
-          <svg viewBox="0 0 260 260" className="w-56 h-56 sm:w-64 sm:h-64 overflow-visible">
+        {/* Left 6 Cols: Larger Interactive SVG Radar Centerpiece */}
+        <div className="lg:col-span-6 flex flex-col items-center justify-center p-4 bg-stone-50/40 rounded-3xl border border-stone-200/60 relative">
+          <svg viewBox="0 0 300 300" className="w-64 h-64 sm:w-72 sm:h-72 overflow-visible select-none">
             <defs>
-              <linearGradient id="fingerprint-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#047857" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#10b981" stopOpacity="0.1" />
+              <linearGradient id="fingerprintAreaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#047857" stopOpacity="0.45" />
+                <stop offset="100%" stopColor="#10b981" stopOpacity="0.12" />
               </linearGradient>
+              <filter id="radarGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+              </filter>
             </defs>
 
-            {/* Concentric grid rings */}
+            {/* Concentric grid webs (25%, 50%, 75%, 100%) */}
             {[0.25, 0.5, 0.75, 1].map((scale) => (
               <polygon
                 key={scale}
@@ -145,7 +152,7 @@ export function ResilienceFingerprint({
                     return `${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`;
                   })
                   .join(" ")}
-                fill="none"
+                fill={scale === 1 ? "#fafaf9" : "none"}
                 stroke="#e7e5e4"
                 strokeWidth={scale === 1 ? "1.5" : "1"}
                 strokeDasharray={scale === 1 ? "none" : "3 3"}
@@ -153,72 +160,156 @@ export function ResilienceFingerprint({
             ))}
 
             {/* Axis spokes */}
-            {points.map((p, idx) => (
-              <line
-                key={idx}
-                x1={cx}
-                y1={cy}
-                x2={p.outerX}
-                y2={p.outerY}
-                stroke="#e7e5e4"
-                strokeWidth="1"
-              />
-            ))}
+            {points.map((p, idx) => {
+              const isHovered = activeAxisIndex === idx;
+              return (
+                <line
+                  key={idx}
+                  x1={cx}
+                  y1={cy}
+                  x2={p.outerX}
+                  y2={p.outerY}
+                  stroke={isHovered ? "#059669" : "#e7e5e4"}
+                  strokeWidth={isHovered ? "2" : "1"}
+                  className="transition-colors duration-300"
+                />
+              );
+            })}
 
-            {/* Biometric Polygon */}
+            {/* Biometric Filled Polygon */}
             <polygon
               points={polygonString}
-              fill="url(#fingerprint-grad)"
+              fill="url(#fingerprintAreaGrad)"
               stroke="#047857"
               strokeWidth="2.5"
               strokeLinejoin="round"
+              className="transition-all duration-500"
             />
 
-            {/* Score Vertices */}
-            {points.map((p, idx) => (
-              <g key={idx}>
-                <circle cx={p.x} cy={p.y} r="4" fill="#047857" />
-                <circle cx={p.x} cy={p.y} r="6" fill="none" stroke="#ffffff" strokeWidth="2" />
-              </g>
-            ))}
+            {/* Interactive Vertices & Spokes */}
+            {points.map((p, idx) => {
+              const isHovered = activeAxisIndex === idx;
+              return (
+                <g
+                  key={idx}
+                  className="cursor-pointer group"
+                  onMouseEnter={() => setActiveAxisIndex(idx)}
+                  onMouseLeave={() => setActiveAxisIndex(null)}
+                >
+                  {/* Outer Spoke Hit Area */}
+                  <circle cx={p.x} cy={p.y} r="16" fill="transparent" />
 
-            {/* Central Score */}
+                  {/* Pulsing halo on hover */}
+                  {isHovered && (
+                    <circle
+                      cx={p.x}
+                      cy={p.y}
+                      r="10"
+                      fill="#10b981"
+                      fillOpacity="0.3"
+                      className="animate-ping"
+                    />
+                  )}
+
+                  {/* Outer Ring */}
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r={isHovered ? 7 : 5}
+                    fill="#047857"
+                    stroke="#ffffff"
+                    strokeWidth={isHovered ? 3 : 2}
+                    className="transition-all duration-200"
+                  />
+
+                  {/* Vertex Score Label */}
+                  <text
+                    x={p.outerX}
+                    y={p.outerY < cy ? p.outerY - 8 : p.outerY + 14}
+                    textAnchor="middle"
+                    className={`text-[10px] font-display font-semibold select-none transition-all ${
+                      isHovered ? "fill-emerald-800 font-bold text-xs" : "fill-stone-500"
+                    }`}
+                  >
+                    {p.score}
+                  </text>
+                </g>
+              );
+            })}
+
+            {/* Central Score Callout */}
+            <circle cx={cx} cy={cy} r="26" fill="#ffffff" stroke="#e7e5e4" strokeWidth="1.5" />
             <text
               x={cx}
-              y={cy + 4}
+              y={cy - 2}
               textAnchor="middle"
-              className="text-xs font-display font-bold fill-stone-900"
+              className="text-xs font-display font-extrabold fill-stone-950 select-none"
             >
               {fingerprint.overall_score}
             </text>
+            <text
+              x={cx}
+              y={cy + 12}
+              textAnchor="middle"
+              className="text-[9px] font-display font-bold uppercase tracking-wider fill-emerald-700 select-none"
+            >
+              {fingerprint.overall_grade}
+            </text>
           </svg>
+
+          {/* Interactive Active Axis Prompt / Callout */}
+          <div className="mt-2 text-center h-5">
+            {activeAxis ? (
+              <span className="text-[11px] font-display font-semibold text-emerald-800 animate-fadeIn">
+                {activeAxis.label}: <strong className="tabular-nums">{activeAxis.score}/100</strong> (
+                {activeAxis.score >= 80 ? "Robust" : activeAxis.score >= 60 ? "Adequate" : activeAxis.score >= 40 ? "Vulnerable" : "Critical"})
+              </span>
+            ) : (
+              <span className="text-[10px] font-display uppercase tracking-widest text-stone-400">
+                Hover any vertex or pillar to inspect
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* Right 7 Cols: Clean Grouped 5-Axis List (De-boxed & Compact) */}
-        <div className="lg:col-span-7 divide-y divide-stone-100">
-          {axes.map((axis) => {
+        {/* Right 6 Cols: Grouped 5-Axis Telemetry List */}
+        <div className="lg:col-span-6 divide-y divide-stone-100">
+          {axes.map((axis, i) => {
+            const isHovered = activeAxisIndex === i;
             const colorClass = getScoreColor(axis.score);
             const textColor = colorClass.split(" ")[0];
             const barColor = colorClass.split(" ")[1];
 
             return (
-              <div key={axis.key} className="py-2.5 first:pt-0 last:pb-0 space-y-1">
+              <div
+                key={axis.key}
+                onMouseEnter={() => setActiveAxisIndex(i)}
+                onMouseLeave={() => setActiveAxisIndex(null)}
+                className={`py-3 first:pt-0 last:pb-0 space-y-1.5 cursor-pointer rounded-2xl transition-all px-2 -mx-2 ${
+                  isHovered ? "bg-emerald-50/40" : "hover:bg-stone-50/50"
+                }`}
+              >
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-display font-semibold text-stone-900">{axis.label}</span>
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full transition-all ${isHovered ? "bg-emerald-600 scale-125" : "bg-stone-300"}`} />
+                    <span className={`font-display font-semibold tracking-tight transition-colors ${isHovered ? "text-emerald-950 font-bold" : "text-stone-900"}`}>
+                      {axis.label}
+                    </span>
+                  </div>
                   <div className="flex items-center gap-2">
                     <span className={`font-display font-bold tabular-nums ${textColor}`}>
                       {axis.score}/100
                     </span>
-                    <span className="text-[10px] font-display text-stone-400">
+                    <span className="text-[10px] font-display text-stone-400 font-medium">
                       {axis.score >= 80 ? "Robust" : axis.score >= 60 ? "Adequate" : axis.score >= 40 ? "Vulnerable" : "Critical"}
                     </span>
                   </div>
                 </div>
 
-                {/* Sleek inline meter */}
+                {/* Sleek Progress Bar with hover transition */}
                 <div className="w-full bg-stone-100 rounded-full h-1.5 overflow-hidden">
                   <div
-                    className={`${barColor} h-1.5 rounded-full transition-all`}
+                    className={`${barColor} h-1.5 rounded-full transition-all duration-500`}
                     style={{ width: `${axis.score}%` }}
                   />
                 </div>
