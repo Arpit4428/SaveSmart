@@ -18,14 +18,13 @@ import {
   Trash2,
   AlertTriangle,
   ArrowRight,
-  TrendingDown,
-  Calendar,
   AlertCircle,
   RefreshCw,
-  GitCommit,
-  HelpCircle,
   Zap,
+  ChevronDown,
+  ChevronUp,
   Activity,
+  Layers,
 } from "lucide-react";
 
 export default function StressTestPage() {
@@ -63,6 +62,11 @@ export default function StressTestPage() {
   const [loading, setLoading] = useState(false);
   const [simResult, setSimResult] = useState<SimulationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Accordion state for deep telemetry
+  const [showChainReaction, setShowChainReaction] = useState(true);
+  const [showFingerprint, setShowFingerprint] = useState(true);
+  const [showLedger, setShowLedger] = useState(false);
 
   useEffect(() => {
     api.getGoals()
@@ -117,103 +121,96 @@ export default function StressTestPage() {
   const selectedGoal = goals.find((g) => g.id === selectedGoalId);
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="space-y-10 max-w-7xl mx-auto">
       {/* Header section */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-stone-200/60 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-stone-200/80 pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-100 border border-stone-200/80 text-[10px] font-mono font-medium text-stone-600 mb-3">
-            <span>STEP 3 OF 5</span>
-            <span className="text-stone-300">•</span>
-            <span>DISRUPTION SIMULATION</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-200/50 border border-stone-300/60 text-[10px] font-display font-medium text-stone-700 tracking-wider uppercase mb-2">
+            <span>Disruption Simulation</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-display font-bold text-stone-950 tracking-tight">
-            Stress-Test Lab & Cascade Sequencer
+            Stress-Test Lab & Cascade Mode
           </h1>
-          <p className="text-base sm:text-lg text-stone-600 mt-2 max-w-3xl font-serif italic">
-            Subject your savings target to realistic income cuts, medical shocks, inflation, and compounding crises deterministically.
+          <p className="text-base sm:text-lg text-stone-600 font-serif italic mt-1">
+            SHOCK → IMPACT → OUTCOME: Calculate capital survival before disruptions happen.
           </p>
         </div>
-      </div>
 
-      {error && (
-        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200/80 text-rose-700 text-sm flex items-center gap-2.5 shadow-soft-sm">
-          <AlertCircle className="w-4 h-4 shrink-0" />
-          <span>{error}</span>
-        </div>
-      )}
+        {/* Goal & Mode Controls */}
+        <div className="flex flex-wrap items-center gap-3">
+          <select
+            value={selectedGoalId}
+            onChange={(e) => setSelectedGoalId(e.target.value)}
+            className="text-xs font-display font-semibold px-3.5 py-2 border border-stone-300/80 rounded-full bg-white text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900 shadow-soft-sm"
+          >
+            {goals.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.name} ({formatINR(g.target_amount)})
+              </option>
+            ))}
+          </select>
 
-      {/* Goal & Mode Selection Bar */}
-      <Card className="p-4 sm:p-5">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <label className="text-[10px] font-mono font-semibold text-stone-500 tracking-wider uppercase whitespace-nowrap">
-              TARGET GOAL:
-            </label>
-            <select
-              value={selectedGoalId}
-              onChange={(e) => setSelectedGoalId(e.target.value)}
-              className="text-xs font-medium px-3.5 py-2 border border-stone-200 rounded-xl bg-white focus:outline-none focus:ring-1 focus:ring-stone-900 focus:border-stone-900 flex-1 sm:w-72 transition-all"
-            >
-              {goals.map((g) => (
-                <option key={g.id} value={g.id}>
-                  {g.name} ({formatINR(g.target_amount)})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex items-center gap-1 bg-stone-100/80 p-1 rounded-full self-stretch sm:self-auto text-xs font-medium border border-stone-200/60">
+          <div className="flex items-center gap-1 bg-stone-200/50 p-1 rounded-full border border-stone-300/60 text-xs font-display font-semibold">
             <button
               onClick={() => setMode("single")}
-              className={`flex-1 sm:flex-none px-4 py-1.5 rounded-full transition-all text-xs font-medium ${
-                mode === "single" ? "bg-white text-stone-950 shadow-soft-sm font-semibold" : "text-stone-600 hover:text-stone-950"
+              className={`px-3.5 py-1.5 rounded-full transition-all ${
+                mode === "single" ? "bg-white text-stone-950 shadow-soft-sm" : "text-stone-600 hover:text-stone-950"
               }`}
             >
               Single Shock
             </button>
             <button
               onClick={() => setMode("cascade")}
-              className={`flex-1 sm:flex-none px-4 py-1.5 rounded-full transition-all text-xs font-medium ${
-                mode === "cascade" ? "bg-white text-stone-950 shadow-soft-sm font-semibold" : "text-stone-600 hover:text-stone-950"
+              className={`px-3.5 py-1.5 rounded-full transition-all ${
+                mode === "cascade" ? "bg-white text-stone-950 shadow-soft-sm" : "text-stone-600 hover:text-stone-950"
               }`}
             >
-              Cascade Mode (Multi-Shock)
+              Cascade Mode
             </button>
           </div>
         </div>
-      </Card>
+      </div>
 
-      {/* Main Grid: Controls + Results */}
+      {error && (
+        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {/* Main Grid: Controls Left + Results Right */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Shock Configuration */}
-        <div className="lg:col-span-5 xl:col-span-4 sticky top-24 space-y-6">
-          <Card>
-            <CardHeader
-              title={mode === "single" ? "Single Shock Setup" : "Cascade Event Sequencer"}
-              subtitle="Configure macroeconomic & personal financial shocks"
-            />
+        {/* Left Column: Shock Setup Form */}
+        <div className="lg:col-span-4 sticky top-24 space-y-6">
+          <div className="rounded-3xl border border-stone-200/80 bg-white p-6 shadow-soft-sm space-y-4">
+            <div className="pb-3 border-b border-stone-100">
+              <h3 className="font-display font-bold text-stone-950 text-base">
+                {mode === "single" ? "Single Shock Setup" : "Cascade Shock Sequencer"}
+              </h3>
+              <p className="text-xs text-stone-500">Inject cash flow shock parameters</p>
+            </div>
 
             {mode === "single" ? (
               <div className="space-y-4 text-xs">
                 <div>
-                  <label className="block font-medium text-stone-700 mb-1.5">Shock Category</label>
+                  <label className="block font-display font-semibold text-stone-700 mb-1.5">Shock Type</label>
                   <select
                     value={singleShock.shock_type}
                     onChange={(e) =>
                       setSingleShock({ ...singleShock, shock_type: e.target.value as ShockType })
                     }
-                    className="w-full px-3.5 py-2.5 bg-stone-50/50 border border-stone-200 rounded-xl text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900 focus:border-stone-900 focus:bg-white transition-all text-xs"
+                    className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900 text-xs font-display font-medium"
                   >
-                    <option value="income_drop">Income Reduction (Job loss, furlough)</option>
-                    <option value="lump_sum_expense">Lump Sum Outflow (Medical, home repair)</option>
-                    <option value="inflation_spike">Inflation Spike (General cost rise)</option>
+                    <option value="income_drop">Income Reduction (Job loss, gap)</option>
+                    <option value="lump_sum_expense">Lump Sum Outflow (Medical cost)</option>
+                    <option value="inflation_spike">Inflation Spike (Cost surge)</option>
                     <option value="interest_rate_hike">Interest Rate Hike (EMI jump)</option>
                   </select>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-medium text-stone-700 mb-1.5">Start Month</label>
+                    <label className="block font-display font-semibold text-stone-700 mb-1.5">Start Month</label>
                     <input
                       type="number"
                       min="1"
@@ -221,13 +218,13 @@ export default function StressTestPage() {
                       onChange={(e) =>
                         setSingleShock({ ...singleShock, start_month: parseInt(e.target.value) || 1 })
                       }
-                      className="w-full px-3.5 py-2.5 bg-stone-50/50 border border-stone-200 rounded-xl text-stone-900 tabular-nums focus:outline-none focus:ring-1 focus:ring-stone-900 focus:border-stone-900 focus:bg-white transition-all text-xs"
+                      className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-stone-900 tabular-nums focus:outline-none focus:ring-1 focus:ring-stone-900 text-xs font-display"
                     />
                   </div>
 
                   {singleShock.shock_type !== "lump_sum_expense" && (
                     <div>
-                      <label className="block font-medium text-stone-700 mb-1.5">Duration (Months)</label>
+                      <label className="block font-display font-semibold text-stone-700 mb-1.5">Duration (Mo)</label>
                       <input
                         type="number"
                         min="1"
@@ -235,7 +232,7 @@ export default function StressTestPage() {
                         onChange={(e) =>
                           setSingleShock({ ...singleShock, duration_months: parseInt(e.target.value) || 1 })
                         }
-                        className="w-full px-3.5 py-2.5 bg-stone-50/50 border border-stone-200 rounded-xl text-stone-900 tabular-nums focus:outline-none focus:ring-1 focus:ring-stone-900 focus:border-stone-900 focus:bg-white transition-all text-xs"
+                        className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-stone-900 tabular-nums focus:outline-none focus:ring-1 focus:ring-stone-900 text-xs font-display"
                       />
                     </div>
                   )}
@@ -243,7 +240,7 @@ export default function StressTestPage() {
 
                 {singleShock.shock_type === "lump_sum_expense" ? (
                   <div>
-                    <label className="block font-medium text-stone-700 mb-1.5">Expense Outflow (₹)</label>
+                    <label className="block font-display font-semibold text-stone-700 mb-1.5">Expense Outflow (₹)</label>
                     <input
                       type="number"
                       step="5000"
@@ -251,13 +248,13 @@ export default function StressTestPage() {
                       onChange={(e) =>
                         setSingleShock({ ...singleShock, amount: parseFloat(e.target.value) || 0 })
                       }
-                      className="w-full px-3.5 py-2.5 bg-stone-50/50 border border-stone-200 rounded-xl text-stone-900 tabular-nums focus:outline-none focus:ring-1 focus:ring-stone-900 focus:border-stone-900 focus:bg-white transition-all text-xs"
+                      className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-stone-900 tabular-nums focus:outline-none focus:ring-1 focus:ring-stone-900 text-xs font-display"
                     />
                   </div>
                 ) : (
                   <div>
-                    <label className="block font-medium text-stone-700 mb-1.5">
-                      Magnitude Impact: {((singleShock.magnitude_percent || 0) * 100).toFixed(0)}%
+                    <label className="block font-display font-semibold text-stone-700 mb-1.5">
+                      Magnitude: {((singleShock.magnitude_percent || 0) * 100).toFixed(0)}%
                     </label>
                     <input
                       type="range"
@@ -272,41 +269,30 @@ export default function StressTestPage() {
                     />
                   </div>
                 )}
-
-                <div>
-                  <label className="block font-medium text-stone-700 mb-1.5">Description / Notes</label>
-                  <input
-                    type="text"
-                    value={singleShock.description}
-                    onChange={(e) => setSingleShock({ ...singleShock, description: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-stone-50/50 border border-stone-200 rounded-xl text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-1 focus:ring-stone-900 focus:border-stone-900 focus:bg-white transition-all text-xs"
-                    placeholder="e.g. Furlough or Medical co-pay"
-                  />
-                </div>
               </div>
             ) : (
               <div className="space-y-4 text-xs">
                 <div className="flex justify-between items-center">
-                  <span className="font-semibold text-stone-900">Cascade Sequence Events</span>
+                  <span className="font-display font-semibold text-stone-900">Cascade Shocks</span>
                   <button
                     type="button"
                     onClick={addCascadeShock}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium text-stone-800 bg-stone-100 hover:bg-stone-200 border border-stone-200 transition-colors"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-display font-semibold text-stone-800 bg-stone-100 hover:bg-stone-200 transition-colors"
                   >
-                    <Plus className="w-3.5 h-3.5 text-stone-700" /> Add Shock
+                    <Plus className="w-3.5 h-3.5" /> Add Shock
                   </button>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {cascadeShocks.map((s, idx) => (
-                    <div key={idx} className="p-3.5 bg-stone-50/70 border border-stone-200/80 rounded-xl space-y-2.5">
+                    <div key={idx} className="p-3 bg-stone-50 border border-stone-200/80 rounded-2xl space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="font-semibold text-stone-900">Event #{idx + 1}</span>
+                        <span className="font-display font-semibold text-stone-900 text-[11px]">Shock #{idx + 1}</span>
                         {cascadeShocks.length > 1 && (
                           <button
                             type="button"
                             onClick={() => removeCascadeShock(idx)}
-                            className="text-stone-400 hover:text-rose-600 p-1 rounded transition-colors"
+                            className="text-stone-400 hover:text-rose-600 p-1 rounded"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -314,85 +300,74 @@ export default function StressTestPage() {
                       </div>
 
                       <div className="grid grid-cols-2 gap-2">
-                        <div>
-                          <label className="block text-[11px] text-stone-500 mb-1">Type</label>
-                          <select
-                            value={s.shock_type}
-                            onChange={(e) => {
-                              const updated = [...cascadeShocks];
-                              updated[idx].shock_type = e.target.value as ShockType;
-                              setCascadeShocks(updated);
-                            }}
-                            className="w-full px-2.5 py-1.5 text-xs border border-stone-200 rounded-lg bg-white text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900"
-                          >
-                            <option value="income_drop">Income Drop</option>
-                            <option value="lump_sum_expense">Lump Sum Cost</option>
-                            <option value="inflation_spike">Inflation</option>
-                            <option value="interest_rate_hike">Rate Hike</option>
-                          </select>
-                        </div>
+                        <select
+                          value={s.shock_type}
+                          onChange={(e) => {
+                            const updated = [...cascadeShocks];
+                            updated[idx].shock_type = e.target.value as ShockType;
+                            setCascadeShocks(updated);
+                          }}
+                          className="px-2 py-1 text-xs border border-stone-200 rounded-lg bg-white text-stone-900 font-display"
+                        >
+                          <option value="income_drop">Income Drop</option>
+                          <option value="lump_sum_expense">Lump Sum Cost</option>
+                          <option value="inflation_spike">Inflation</option>
+                          <option value="interest_rate_hike">Rate Hike</option>
+                        </select>
 
-                        <div>
-                          <label className="block text-[11px] text-stone-500 mb-1">Start Month</label>
-                          <input
-                            type="number"
-                            min="1"
-                            value={s.start_month}
-                            onChange={(e) => {
-                              const updated = [...cascadeShocks];
-                              updated[idx].start_month = parseInt(e.target.value) || 1;
-                              setCascadeShocks(updated);
-                            }}
-                            className="w-full px-2.5 py-1.5 text-xs border border-stone-200 rounded-lg bg-white text-stone-900 tabular-nums focus:outline-none focus:ring-1 focus:ring-stone-900"
-                          />
-                        </div>
+                        <input
+                          type="number"
+                          min="1"
+                          placeholder="Start Mo"
+                          value={s.start_month}
+                          onChange={(e) => {
+                            const updated = [...cascadeShocks];
+                            updated[idx].start_month = parseInt(e.target.value) || 1;
+                            setCascadeShocks(updated);
+                          }}
+                          className="px-2 py-1 text-xs border border-stone-200 rounded-lg bg-white text-stone-900 tabular-nums font-display"
+                        />
                       </div>
 
                       {s.shock_type === "lump_sum_expense" ? (
-                        <div>
-                          <label className="block text-[11px] text-stone-500 mb-1">Amount (₹)</label>
-                          <input
-                            type="number"
-                            step="5000"
-                            value={s.amount}
-                            onChange={(e) => {
-                              const updated = [...cascadeShocks];
-                              updated[idx].amount = parseFloat(e.target.value) || 0;
-                              setCascadeShocks(updated);
-                            }}
-                            className="w-full px-2.5 py-1.5 text-xs border border-stone-200 rounded-lg bg-white text-stone-900 tabular-nums focus:outline-none focus:ring-1 focus:ring-stone-900"
-                          />
-                        </div>
+                        <input
+                          type="number"
+                          step="5000"
+                          placeholder="Amount in ₹"
+                          value={s.amount}
+                          onChange={(e) => {
+                            const updated = [...cascadeShocks];
+                            updated[idx].amount = parseFloat(e.target.value) || 0;
+                            setCascadeShocks(updated);
+                          }}
+                          className="w-full px-2 py-1 text-xs border border-stone-200 rounded-lg bg-white text-stone-900 tabular-nums font-display"
+                        />
                       ) : (
                         <div className="grid grid-cols-2 gap-2">
-                          <div>
-                            <label className="block text-[11px] text-stone-500 mb-1">Magnitude (0-1)</label>
-                            <input
-                              type="number"
-                              step="0.05"
-                              value={s.magnitude_percent}
-                              onChange={(e) => {
-                                const updated = [...cascadeShocks];
-                                updated[idx].magnitude_percent = parseFloat(e.target.value) || 0;
-                                setCascadeShocks(updated);
-                              }}
-                              className="w-full px-2.5 py-1.5 text-xs border border-stone-200 rounded-lg bg-white text-stone-900 tabular-nums focus:outline-none focus:ring-1 focus:ring-stone-900"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-[11px] text-stone-500 mb-1">Duration (Mo)</label>
-                            <input
-                              type="number"
-                              min="1"
-                              value={s.duration_months}
-                              onChange={(e) => {
-                                const updated = [...cascadeShocks];
-                                updated[idx].duration_months = parseInt(e.target.value) || 1;
-                                setCascadeShocks(updated);
-                              }}
-                              className="w-full px-2.5 py-1.5 text-xs border border-stone-200 rounded-lg bg-white text-stone-900 tabular-nums focus:outline-none focus:ring-1 focus:ring-stone-900"
-                            />
-                          </div>
+                          <input
+                            type="number"
+                            step="0.05"
+                            placeholder="Magnitude (0-1)"
+                            value={s.magnitude_percent}
+                            onChange={(e) => {
+                              const updated = [...cascadeShocks];
+                              updated[idx].magnitude_percent = parseFloat(e.target.value) || 0;
+                              setCascadeShocks(updated);
+                            }}
+                            className="px-2 py-1 text-xs border border-stone-200 rounded-lg bg-white text-stone-900 tabular-nums font-display"
+                          />
+                          <input
+                            type="number"
+                            min="1"
+                            placeholder="Duration (Mo)"
+                            value={s.duration_months}
+                            onChange={(e) => {
+                              const updated = [...cascadeShocks];
+                              updated[idx].duration_months = parseInt(e.target.value) || 1;
+                              setCascadeShocks(updated);
+                            }}
+                            className="px-2 py-1 text-xs border border-stone-200 rounded-lg bg-white text-stone-900 tabular-nums font-display"
+                          />
                         </div>
                       )}
                     </div>
@@ -401,28 +376,28 @@ export default function StressTestPage() {
               </div>
             )}
 
-            <div className="pt-4 border-t border-stone-100 mt-4">
+            <div className="pt-2">
               <button
                 type="button"
                 onClick={handleRunSimulation}
                 disabled={loading || !selectedGoalId}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-stone-900 hover:bg-black text-white font-medium rounded-xl shadow-soft-sm transition-all text-xs disabled:opacity-50 active:scale-[0.99]"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-stone-950 hover:bg-black text-white font-display font-semibold rounded-full shadow-soft-sm transition-all text-xs disabled:opacity-50 active:scale-95"
               >
                 {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
                 {loading ? "Running Math Engine..." : "Execute Stress Test"}
               </button>
             </div>
-          </Card>
+          </div>
         </div>
 
-        {/* Right Column: Simulation Results & Visualizer */}
-        <div className="lg:col-span-7 xl:col-span-8 space-y-6">
+        {/* Right Column: Simulation Results */}
+        <div className="lg:col-span-8 space-y-6">
           {simResult ? (
             <>
-              {/* Top Result Indicators: Sleek Open Strip */}
-              <div className="rounded-2xl border border-stone-200/80 bg-white shadow-soft-sm overflow-hidden divide-y sm:divide-y-0 sm:divide-x divide-stone-200/80 grid grid-cols-2 sm:grid-cols-4">
-                <div className="p-5 space-y-1">
-                  <div className="text-stone-500 text-[10px] font-mono font-semibold tracking-wider uppercase">RESILIENCE SCORE</div>
+              {/* 1. PRIMARY RESULT: 4 Key Metric Figures */}
+              <div className="rounded-3xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-soft-sm grid grid-cols-2 sm:grid-cols-4 gap-6 divide-y sm:divide-y-0 sm:divide-x divide-stone-100">
+                <div className="space-y-1">
+                  <div className="text-stone-400 text-[10px] font-display font-bold uppercase tracking-wider">RESILIENCE SCORE</div>
                   <div className="text-3xl font-display font-bold text-stone-950 tabular-nums tracking-tight">
                     {simResult.resilience_score}<span className="text-sm font-normal text-stone-400">/100</span>
                   </div>
@@ -431,63 +406,67 @@ export default function StressTestPage() {
                   </div>
                 </div>
 
-                <div className="p-5 space-y-1">
-                  <div className="text-stone-500 text-[10px] font-mono font-semibold tracking-wider uppercase">DEADLINE SLIPPAGE</div>
+                <div className="space-y-1 sm:pl-6 pt-4 sm:pt-0">
+                  <div className="text-stone-400 text-[10px] font-display font-bold uppercase tracking-wider">DEADLINE SLIPPAGE</div>
                   <div className="text-3xl font-display font-bold text-amber-700 tabular-nums tracking-tight">
-                    +{simResult.stressed.slippage_months} <span className="text-xs font-normal text-stone-500">Mos</span>
+                    +{simResult.stressed.slippage_months} <span className="text-xs font-normal text-stone-400">Mos</span>
                   </div>
-                  <div className="text-[11px] text-stone-400">
-                    Finished at M{simResult.stressed.completion_month || 36}
-                  </div>
+                  <p className="text-[11px] text-stone-400">
+                    Finishes M{simResult.stressed.completion_month || 36}
+                  </p>
                 </div>
 
-                <div className="p-5 space-y-1">
-                  <div className="text-stone-500 text-[10px] font-mono font-semibold tracking-wider uppercase">CAPITAL SHORTFALL</div>
+                <div className="space-y-1 sm:pl-6 pt-4 sm:pt-0">
+                  <div className="text-stone-400 text-[10px] font-display font-bold uppercase tracking-wider">CAPITAL SHORTFALL</div>
                   <div className="text-3xl font-display font-bold text-rose-700 tabular-nums tracking-tight">
                     {formatINR(simResult.stressed.capital_deficit)}
                   </div>
-                  <div className="text-[11px] text-stone-400">At initial deadline</div>
+                  <p className="text-[11px] text-stone-400">At initial deadline</p>
                 </div>
 
-                <div className="p-5 space-y-1">
-                  <div className="text-stone-500 text-[10px] font-mono font-semibold tracking-wider uppercase">MINIMUM LIQUIDITY</div>
+                <div className="space-y-1 sm:pl-6 pt-4 sm:pt-0">
+                  <div className="text-stone-400 text-[10px] font-display font-bold uppercase tracking-wider">MIN LIQUIDITY</div>
                   <div className="text-3xl font-display font-bold text-stone-950 tabular-nums tracking-tight">
                     {formatINR(simResult.stressed.minimum_cash_buffer)}
                   </div>
-                  <div className="text-[11px] font-medium text-stone-600 flex items-center gap-1.5">
+                  <div className="text-[11px] font-display font-semibold flex items-center gap-1.5 pt-0.5">
                     <span className={`w-2 h-2 rounded-full ${simResult.stressed.buffer_exhausted ? "bg-rose-600" : "bg-emerald-600"}`} />
-                    {simResult.stressed.buffer_exhausted ? "Buffer Depleted" : "Buffer Preserved"}
+                    <span className={simResult.stressed.buffer_exhausted ? "text-rose-700" : "text-emerald-800"}>
+                      {simResult.stressed.buffer_exhausted ? "Buffer Depleted" : "Buffer Preserved"}
+                    </span>
                   </div>
                 </div>
               </div>
 
-              {/* Insolvency Warning Card */}
+              {/* Insolvency Warning Banner */}
               {simResult.cascade_triggered_insolvency && (
-                <div className="p-5 rounded-2xl bg-rose-50/80 border border-rose-200 text-rose-950 text-xs space-y-2 shadow-soft-sm">
+                <div className="p-5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-950 text-xs space-y-1 shadow-soft-sm">
                   <div className="flex items-center gap-2 font-display font-bold text-sm text-rose-950">
                     <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
-                    Critical Insolvency Triggered!
+                    Critical Buffer Insolvency Triggered
                   </div>
                   <p className="leading-relaxed text-rose-800">
-                    Emergency cushion was fully exhausted in Month {simResult.insolvency_first_month}. Peak cashflow deficit reached {formatINR(simResult.peak_deficit)}. Immediate recovery planning is required to avoid default.
+                    Emergency cushion was fully exhausted in Month {simResult.insolvency_first_month}. Peak deficit reached {formatINR(simResult.peak_deficit)}.
                   </p>
                 </div>
               )}
 
-              {/* Interactive Recharts Trajectory */}
-              <Card className="p-6 sm:p-7">
-                <CardHeader
-                  title="Goal Trajectory: Baseline vs. Stressed Simulation"
-                  subtitle="Monthly cumulative goal balance projection in INR (₹)"
-                  action={
-                    <Link
-                      href="/recovery"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-stone-950 hover:bg-black rounded-full transition-colors shadow-soft-sm"
-                    >
-                      Compare Recovery Plans <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
-                  }
-                />
+              {/* 2. KEY VISUAL: Trajectory Comparison Chart */}
+              <div className="rounded-3xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-soft-sm space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-stone-100">
+                  <div>
+                    <h3 className="font-display font-bold text-base text-stone-950 tracking-tight">
+                      Goal Trajectory: Baseline vs. Stressed Simulation
+                    </h3>
+                    <p className="text-xs text-stone-500">Monthly cumulative savings balance in INR (₹)</p>
+                  </div>
+                  <Link
+                    href="/recovery"
+                    className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-display font-semibold text-white bg-stone-950 hover:bg-black rounded-full transition-colors shadow-soft-sm shrink-0"
+                  >
+                    Compare Recovery Plans <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
 
                 <SurvivalChart
                   baselineCurve={simResult.monthly_timeline.map((t) => t.baseline_balance)}
@@ -495,182 +474,51 @@ export default function StressTestPage() {
                   targetAmount={selectedGoal?.target_amount}
                   targetDeadlineMonths={selectedGoal?.target_months}
                 />
-              </Card>
+              </div>
 
-              {/* AI Explanation Layer */}
-              <AIExplanationCard
-                goalId={selectedGoalId}
-                explanationType={mode === "cascade" ? "cascade" : "stress_test"}
-                shocks={mode === "cascade" ? cascadeShocks : [singleShock]}
-                horizonMonths={36}
-                title={mode === "cascade" ? "AI Cascade Analysis: Why Multi-Shocks Compound" : "AI Stress-Test Analysis: Impact & Drivers"}
-              />
-
-              {/* CASCADE MODE: Financial Chain Reaction Visualization */}
-              {simResult.chain_reaction_steps && simResult.chain_reaction_steps.length > 0 && (
-                <Card className="p-6 sm:p-7">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-stone-200/80 mb-5">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <Zap className="w-4 h-4 text-amber-600" />
-                        <h3 className="font-display font-bold text-stone-950 text-base tracking-tight">
-                          Financial Chain Reaction (Cascade Breakdown)
-                        </h3>
-                      </div>
-                      <p className="text-xs text-stone-500 mt-1">
-                        Step-by-step mathematical transmission explaining how compounded shocks erode goal solvency
-                      </p>
-                    </div>
-                    <span className="text-xs font-mono font-medium bg-stone-100 text-stone-700 border border-stone-200 px-3 py-1 rounded-full self-start sm:self-auto">
-                      {simResult.chain_reaction_steps.length} Sequenced Steps
-                    </span>
-                  </div>
-
-                  {/* Progressive 5-Stage Visual Transmission Pipeline */}
-                  <div className="mb-6 p-4 rounded-2xl bg-stone-50 border border-stone-200/80">
-                    <div className="text-[10px] font-mono font-semibold uppercase tracking-wider text-stone-500 mb-3">
-                      Compounding Transmission Pipeline
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 text-center text-xs">
-                      <div className="p-3.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm relative">
-                        <div className="font-mono font-bold text-[10px] text-stone-500 uppercase">1. Trigger</div>
-                        <div className="font-semibold text-stone-950 text-xs mt-0.5">Macro / Life Shock</div>
-                        <div className="text-[10px] text-stone-400 mt-0.5">Disruption begins</div>
-                      </div>
-                      <div className="p-3.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm relative">
-                        <div className="font-mono font-bold text-[10px] text-stone-500 uppercase">2. Cash-Flow</div>
-                        <div className="font-semibold text-stone-950 text-xs mt-0.5">Inflow Cut</div>
-                        <div className="text-[10px] text-stone-400 mt-0.5">Net cashflow drops</div>
-                      </div>
-                      <div className="p-3.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm relative">
-                        <div className="font-mono font-bold text-[10px] text-stone-500 uppercase">3. Reserves</div>
-                        <div className="font-semibold text-stone-950 text-xs mt-0.5">Buffer Absorbs</div>
-                        <div className="text-[10px] text-stone-400 mt-0.5">Emergency fund burns</div>
-                      </div>
-                      <div className="p-3.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm relative">
-                        <div className="font-mono font-bold text-[10px] text-stone-500 uppercase">4. Savings</div>
-                        <div className="font-semibold text-stone-950 text-xs mt-0.5">Savings Paused</div>
-                        <div className="text-[10px] text-stone-400 mt-0.5">Goal monthly cut</div>
-                      </div>
-                      <div className="p-3.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm relative">
-                        <div className="font-mono font-bold text-[10px] text-stone-500 uppercase">5. Outcome</div>
-                        <div className="font-semibold text-stone-950 text-xs mt-0.5">Deadline Delay</div>
-                        <div className="text-[10px] text-stone-400 mt-0.5">Target slippage</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    {simResult.chain_reaction_steps.map((step) => (
-                      <div
-                        key={step.step_number}
-                        className={`p-4 rounded-xl border text-xs transition-all ${
-                          step.is_critical
-                            ? "border-rose-300 bg-rose-50/40 shadow-soft-sm"
-                            : "border-stone-200/80 bg-white shadow-soft-sm"
-                        }`}
-                      >
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                          <div className="flex items-center gap-2.5">
-                            <span className={`w-5 h-5 rounded-full flex items-center justify-center font-semibold text-[11px] ${
-                              step.is_critical ? "bg-rose-600 text-white" : "bg-stone-900 text-white"
-                            }`}>
-                              {step.step_number}
-                            </span>
-                            <span className="font-semibold text-stone-950 text-xs">{step.title}</span>
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase bg-stone-100 text-stone-700 border border-stone-200">
-                              {step.timing}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center gap-3 text-[11px] tabular-nums">
-                            <span className="text-stone-500">
-                              Buffer: <span className="font-semibold text-stone-800">{formatINR(step.remaining_buffer)}</span>
-                            </span>
-                            {step.cumulative_delay_added > 0 && (
-                              <span className="text-amber-700 font-semibold">
-                                +{step.cumulative_delay_added} mo delay
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        <p className="text-stone-600 leading-relaxed mb-3">
-                          {step.goal_impact_description}
-                        </p>
-
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2.5 border-t border-stone-100 text-[11px]">
-                          <div>
-                            <span className="text-stone-400">Monthly Cash-flow: </span>
-                            <span className={`tabular-nums font-semibold ${step.monthly_cashflow_impact < 0 ? "text-rose-700" : "text-stone-700"}`}>
-                              {step.monthly_cashflow_impact < 0 ? "-" : ""}{formatINR(Math.abs(step.monthly_cashflow_impact))}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-stone-400">Contribution Cut: </span>
-                            <span className="tabular-nums font-semibold text-amber-700">
-                              {formatINR(step.monthly_contribution_change)}/mo
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-stone-400">Disruption: </span>
-                            <span className="font-medium text-stone-700 uppercase">
-                              {step.shock_type.replace(/_/g, " ")}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              )}
-
-              {/* WHY DID MY GOAL FAIL? Root-Cause Diagnostic Card */}
+              {/* 3. ROOT CAUSE ANALYSIS: Why Did My Goal Fail? */}
               {simResult.failure_diagnostic && (
-                <div className="p-6 sm:p-7 rounded-2xl border border-stone-200/80 bg-white shadow-soft-sm space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-stone-200/80">
+                <div className="rounded-3xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-soft-sm space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-stone-100">
                     <div>
-                      <div className="flex items-center gap-2">
-                        <AlertTriangle className="w-4 h-4 text-amber-600" />
-                        <h3 className="font-display font-bold text-stone-950 text-base tracking-tight">
-                          Deterministic Root-Cause Analysis: &ldquo;Why Did My Goal Fail / Become Fragile?&rdquo;
-                        </h3>
+                      <div className="text-[10px] font-display font-bold uppercase tracking-wider text-amber-800 mb-0.5">
+                        Quantitative Attribution
                       </div>
-                      <p className="text-xs text-stone-500 mt-1">
-                        Quantitative attribution without AI speculation — directly derived from verified engine mechanics
-                      </p>
+                      <h3 className="font-serif italic text-xl sm:text-2xl text-stone-950">
+                        Why Did My Goal Fail / Become Fragile?
+                      </h3>
                     </div>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-mono font-medium bg-stone-100 text-stone-800 border border-stone-200 uppercase self-start sm:self-auto">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-display font-semibold bg-stone-100 text-stone-800 border border-stone-200 uppercase self-start sm:self-auto">
                       Driver: {simResult.failure_diagnostic.primary_vulnerability}
                     </span>
                   </div>
 
                   {/* Headline & 4-metric Summary */}
-                  <div className="bg-stone-50 rounded-2xl p-5 border border-stone-200/70 space-y-4">
-                    <div className="font-serif italic text-sm text-stone-900 leading-snug">
+                  <div className="bg-stone-50/70 rounded-2xl p-5 border border-stone-200/60 space-y-3">
+                    <p className="font-serif italic text-stone-900 text-sm leading-relaxed">
                       {simResult.failure_diagnostic.headline}
-                    </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs pt-1 border-t border-stone-200/60">
+                    </p>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs pt-2 border-t border-stone-200/60">
                       <div>
-                        <div className="text-[10px] font-mono text-stone-500 uppercase">Cash-Flow Contraction</div>
+                        <div className="text-[10px] font-display font-bold uppercase text-stone-400">Cash-Flow Cut</div>
                         <div className="font-display font-bold tabular-nums text-rose-700 text-lg mt-0.5">
                           {formatINR(simResult.failure_diagnostic.cashflow_drop_monthly)}<span className="text-xs font-normal">/mo</span>
                         </div>
                       </div>
                       <div>
-                        <div className="text-[10px] font-mono text-stone-500 uppercase">Buffer Absorbed</div>
+                        <div className="text-[10px] font-display font-bold uppercase text-stone-400">Buffer Absorbed</div>
                         <div className="font-display font-bold tabular-nums text-stone-950 text-lg mt-0.5">
                           {formatINR(simResult.failure_diagnostic.buffer_absorbed_total)}
                         </div>
                       </div>
                       <div>
-                        <div className="text-[10px] font-mono text-stone-500 uppercase">Monthly Contribution Cut</div>
+                        <div className="text-[10px] font-display font-bold uppercase text-stone-400">Contribution Cut</div>
                         <div className="font-display font-bold tabular-nums text-amber-700 text-lg mt-0.5">
                           {formatINR(simResult.failure_diagnostic.contribution_drop_monthly)}<span className="text-xs font-normal">/mo</span>
                         </div>
                       </div>
                       <div>
-                        <div className="text-[10px] font-mono text-stone-500 uppercase">Deadline Delay</div>
+                        <div className="text-[10px] font-display font-bold uppercase text-stone-400">Deadline Delay</div>
                         <div className="font-display font-bold tabular-nums text-stone-950 text-lg mt-0.5">
                           +{simResult.failure_diagnostic.deadline_slippage_months} Mos
                         </div>
@@ -678,14 +526,14 @@ export default function StressTestPage() {
                     </div>
                   </div>
 
-                  {/* 5-Step Numbered Root Causes */}
-                  <div className="space-y-2.5 text-xs">
-                    <div className="font-mono font-semibold text-stone-900 text-[10px] uppercase tracking-wider mb-2">
-                      Failure Progression Sequence:
+                  {/* Root Causes List */}
+                  <div className="space-y-2 text-xs">
+                    <div className="font-display font-bold text-stone-400 text-[10px] uppercase tracking-wider">
+                      Failure Progression Sequence
                     </div>
                     {simResult.failure_diagnostic.root_causes.map((cause, idx) => (
-                      <div key={idx} className="flex items-start gap-3 p-3.5 rounded-xl bg-stone-50/50 border border-stone-200/70 text-stone-700 shadow-soft-sm">
-                        <span className="w-5 h-5 rounded-full bg-stone-900 text-white font-mono font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                      <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-stone-50/50 border border-stone-200/60 text-stone-700">
+                        <span className="w-5 h-5 rounded-full bg-stone-900 text-white font-display font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
                           {idx + 1}
                         </span>
                         <span className="leading-relaxed">{cause}</span>
@@ -695,53 +543,152 @@ export default function StressTestPage() {
                 </div>
               )}
 
-              {/* Next Steps Transition Hub */}
-              <div className="p-6 sm:p-7 rounded-2xl bg-stone-950 text-white shadow-soft-md flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-                <div>
-                  <div className="text-[10px] font-mono font-semibold uppercase tracking-wider text-emerald-400">
-                    Next Analytical Steps
-                  </div>
-                  <h4 className="font-display font-bold text-base text-white mt-1">
-                    Navigate Stressed Trajectory & Recovery Options
-                  </h4>
-                  <p className="text-xs text-stone-400 mt-1 max-w-xl leading-relaxed">
-                    Examine your safe buffer runway on the Survival Map, then solve deterministic recovery strategies.
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-3 shrink-0">
-                  <Link
-                    href="/survival"
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-stone-950 bg-white hover:bg-stone-100 rounded-full transition-colors shadow-soft-sm"
-                  >
-                    Goal Survival Map <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                  <Link
-                    href="/recovery"
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-white bg-emerald-700 hover:bg-emerald-800 rounded-full transition-colors shadow-soft-sm"
-                  >
-                    Recovery Planner <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
+              {/* 4. AI EXPLANATION LAYER */}
+              <AIExplanationCard
+                goalId={selectedGoalId}
+                explanationType={mode === "cascade" ? "cascade" : "stress_test"}
+                shocks={mode === "cascade" ? cascadeShocks : [singleShock]}
+                horizonMonths={36}
+                title={mode === "cascade" ? "AI Cascade Analysis: Why Multi-Shocks Compound" : "AI Stress-Test Analysis: Impact & Drivers"}
+              />
 
-              {/* Financial Resilience Fingerprint */}
+              {/* 5. CASCADE MODE: Financial Chain Reaction Sequencer */}
+              {simResult.chain_reaction_steps && simResult.chain_reaction_steps.length > 0 && (
+                <div className="rounded-3xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-soft-sm space-y-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowChainReaction(!showChainReaction)}
+                    className="w-full flex items-center justify-between text-left pb-3 border-b border-stone-100"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Zap className="w-4 h-4 text-amber-600" />
+                        <h3 className="font-display font-bold text-stone-950 text-base tracking-tight">
+                          Financial Chain Reaction (Cascade Sequencer)
+                        </h3>
+                      </div>
+                      <p className="text-xs text-stone-400 mt-0.5">
+                        Mathematical step-by-step transmission pipeline
+                      </p>
+                    </div>
+                    <span className="text-stone-400">
+                      {showChainReaction ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    </span>
+                  </button>
+
+                  {showChainReaction && (
+                    <div className="space-y-4 pt-2">
+                      {/* Progressive 5-Stage Visual Transmission Pipeline */}
+                      <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200/80">
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs">
+                          <div className="p-2.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm">
+                            <div className="font-display font-bold text-[10px] text-stone-400 uppercase">1. Trigger</div>
+                            <div className="font-display font-semibold text-stone-950 text-xs mt-0.5">Macro Shock</div>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm">
+                            <div className="font-display font-bold text-[10px] text-stone-400 uppercase">2. Cash-Flow</div>
+                            <div className="font-display font-semibold text-stone-950 text-xs mt-0.5">Inflow Cut</div>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm">
+                            <div className="font-display font-bold text-[10px] text-stone-400 uppercase">3. Reserves</div>
+                            <div className="font-display font-semibold text-stone-950 text-xs mt-0.5">Buffer Absorbs</div>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm">
+                            <div className="font-display font-bold text-[10px] text-stone-400 uppercase">4. Savings</div>
+                            <div className="font-display font-semibold text-stone-950 text-xs mt-0.5">Savings Paused</div>
+                          </div>
+                          <div className="p-2.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm col-span-2 sm:col-span-1">
+                            <div className="font-display font-bold text-[10px] text-stone-400 uppercase">5. Outcome</div>
+                            <div className="font-display font-semibold text-stone-950 text-xs mt-0.5">Deadline Delay</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2.5">
+                        {simResult.chain_reaction_steps.map((step) => (
+                          <div
+                            key={step.step_number}
+                            className={`p-4 rounded-2xl border text-xs transition-all ${
+                              step.is_critical
+                                ? "border-rose-300 bg-rose-50/40 shadow-soft-sm"
+                                : "border-stone-200/80 bg-white shadow-soft-sm"
+                            }`}
+                          >
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                              <div className="flex items-center gap-2">
+                                <span className={`w-5 h-5 rounded-full flex items-center justify-center font-display font-bold text-[10px] ${
+                                  step.is_critical ? "bg-rose-600 text-white" : "bg-stone-900 text-white"
+                                }`}>
+                                  {step.step_number}
+                                </span>
+                                <span className="font-display font-semibold text-stone-950 text-xs">{step.title}</span>
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-display uppercase bg-stone-100 text-stone-700 border border-stone-200">
+                                  {step.timing}
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-3 text-[11px] tabular-nums font-display">
+                                <span className="text-stone-500">
+                                  Buffer: <span className="font-semibold text-stone-800">{formatINR(step.remaining_buffer)}</span>
+                                </span>
+                                {step.cumulative_delay_added > 0 && (
+                                  <span className="text-amber-700 font-semibold">
+                                    +{step.cumulative_delay_added} mo delay
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            <p className="text-stone-600 leading-relaxed mb-2">
+                              {step.goal_impact_description}
+                            </p>
+
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 border-t border-stone-100 text-[11px] font-display">
+                              <div>
+                                <span className="text-stone-400">Cash-flow: </span>
+                                <span className={`tabular-nums font-semibold ${step.monthly_cashflow_impact < 0 ? "text-rose-700" : "text-stone-700"}`}>
+                                  {step.monthly_cashflow_impact < 0 ? "-" : ""}{formatINR(Math.abs(step.monthly_cashflow_impact))}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-stone-400">Contribution Cut: </span>
+                                <span className="tabular-nums font-semibold text-amber-700">
+                                  {formatINR(step.monthly_contribution_change)}/mo
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-stone-400">Disruption: </span>
+                                <span className="font-medium text-stone-700 uppercase">
+                                  {step.shock_type.replace(/_/g, " ")}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 6. RESILIENCE FINGERPRINT */}
               {simResult.resilience_fingerprint && (
                 <ResilienceFingerprint fingerprint={simResult.resilience_fingerprint} />
               )}
 
-              {/* Assumption Ledger */}
+              {/* 7. ASSUMPTIONS LEDGER */}
               {simResult.assumption_ledger && (
                 <AssumptionLedger ledger={simResult.assumption_ledger} />
               )}
             </>
           ) : (
-            <Card className="py-24 text-center">
-              <ShieldAlert className="w-12 h-12 text-stone-300 mx-auto mb-3" />
-              <h3 className="font-semibold text-stone-800 text-sm">Stress-Test Simulation Ready</h3>
+            <div className="py-24 text-center rounded-3xl border border-stone-200/80 bg-white p-8">
+              <ShieldAlert className="w-10 h-10 text-stone-300 mx-auto mb-3" />
+              <h3 className="font-display font-semibold text-stone-800 text-sm">Stress-Test Simulation Ready</h3>
               <p className="text-xs text-stone-500 max-w-sm mx-auto mt-1">
-                Configure your financial shock parameters on the left and click Execute to view mathematical impact.
+                Configure your financial shock parameters on the left and click Execute to view deterministic mathematical outcomes.
               </p>
-            </Card>
+            </div>
           )}
         </div>
       </div>

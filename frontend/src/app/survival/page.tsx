@@ -18,8 +18,11 @@ import {
   CheckCircle2,
   Clock,
   TrendingDown,
-  Compass,
   ArrowRight,
+  ChevronDown,
+  ChevronUp,
+  Table,
+  Layers,
 } from "lucide-react";
 
 export default function SurvivalMapPage() {
@@ -28,6 +31,11 @@ export default function SurvivalMapPage() {
   const [survivalData, setSurvivalData] = useState<SurvivalMapData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Progressive disclosure accordions
+  const [showBufferChart, setShowBufferChart] = useState(false);
+  const [showMilestones, setShowMilestones] = useState(false);
+  const [showLedger, setShowLedger] = useState(false);
 
   useEffect(() => {
     api.getGoals()
@@ -69,19 +77,19 @@ export default function SurvivalMapPage() {
     switch (status) {
       case "SURVIVED":
         return {
-          bg: "bg-emerald-50 text-emerald-700 border-emerald-200",
+          bg: "bg-emerald-50 text-emerald-800 border-emerald-200/80",
           icon: <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />,
           label: "GOAL SURVIVED",
         };
       case "DELAYED":
         return {
-          bg: "bg-amber-50 text-amber-700 border-amber-200",
+          bg: "bg-amber-50 text-amber-900 border-amber-200/80",
           icon: <Clock className="w-4 h-4 text-amber-600 shrink-0" />,
           label: "GOAL DELAYED",
         };
       default:
         return {
-          bg: "bg-rose-50 text-rose-700 border-rose-200",
+          bg: "bg-rose-50 text-rose-900 border-rose-200/80",
           icon: <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />,
           label: "CRITICAL SHORTFALL",
         };
@@ -91,176 +99,109 @@ export default function SurvivalMapPage() {
   const statusInfo = getStatusBadge(survivalData?.final_status);
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-stone-200/60 pb-6">
+    <div className="space-y-10 max-w-7xl mx-auto">
+      {/* Top Editorial Header & Selector */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-stone-200/80 pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-100 border border-stone-200/80 text-[10px] font-mono font-medium text-stone-600 mb-3">
-            <span>STEP 4 OF 5</span>
-            <span className="text-stone-300">•</span>
-            <span>DISRUPTION DURABILITY</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-200/50 border border-stone-300/60 text-[10px] font-display font-medium text-stone-700 tracking-wider uppercase mb-2">
+            <span>Primary Analytical Feature</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-display font-bold text-stone-950 tracking-tight">
-            Goal Survival Map & Durability Analysis
+            Goal Survival Map
           </h1>
-          <p className="text-base sm:text-lg text-stone-600 mt-2 max-w-3xl font-serif italic">
-            Answers the core question: &ldquo;<span className="text-stone-950 font-medium">Will my financial goal survive this disruption?</span>&rdquo;
+          <p className="text-base sm:text-lg text-stone-600 font-serif italic mt-1">
+            &ldquo;Will my financial goal survive this disruption?&rdquo;
           </p>
+        </div>
+
+        {/* Goal Selector */}
+        <div className="flex items-center gap-2">
+          <label className="text-[11px] font-display font-bold uppercase text-stone-400">Goal:</label>
+          <select
+            value={selectedGoalId}
+            onChange={(e) => setSelectedGoalId(e.target.value)}
+            className="text-xs font-display font-semibold px-3 py-2 border border-stone-300/80 rounded-full bg-white text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900 shadow-soft-sm"
+          >
+            {goals.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.name} ({formatINR(g.target_amount)})
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
       {error && (
-        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200/80 text-rose-700 text-sm flex items-center gap-2.5 shadow-soft-sm">
+        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Goal Selector Bar */}
-      <Card className="p-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <label className="text-xs font-semibold text-stone-700 tracking-wider uppercase whitespace-nowrap">SELECT GOAL:</label>
-            <select
-              value={selectedGoalId}
-              onChange={(e) => setSelectedGoalId(e.target.value)}
-              className="text-xs font-medium px-3.5 py-2 border border-stone-200 rounded-xl bg-white focus:outline-none focus:ring-1 focus:ring-stone-900 focus:border-stone-900 w-72 transition-all"
-            >
-              {goals.map((g) => (
-                <option key={g.id} value={g.id}>
-                  {g.name} ({formatINR(g.target_amount)})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex items-center gap-4 text-xs font-medium">
-            <span className="flex items-center gap-1.5 text-stone-700">
-              <span className="w-2.5 h-2.5 rounded-full bg-stone-800" />
-              Baseline Plan
-            </span>
-            <span className="flex items-center gap-1.5 text-rose-600">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-600" />
-              Stressed Shock
-            </span>
-            <span className="flex items-center gap-1.5 text-emerald-600">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
-              Recovered Path
-            </span>
-          </div>
-        </div>
-      </Card>
-
       {loading ? (
-        <div className="py-24 flex flex-col justify-center items-center text-sm text-stone-500">
-          <RefreshCw className="w-5 h-5 animate-spin mb-2 text-stone-400" />
-          <span>Computing survival trajectories & safe buffer runway...</span>
+        <div className="py-24 flex flex-col justify-center items-center text-xs text-stone-500 space-y-2">
+          <RefreshCw className="w-5 h-5 animate-spin text-stone-800" />
+          <span className="font-display font-medium">Computing survival trajectories & safe buffer runway...</span>
         </div>
       ) : survivalData ? (
         <>
-          {/* Survival Verdict Banner / Signature Editorial Masthead */}
-          <div className={`p-6 sm:p-8 rounded-2xl border transition-all ${statusInfo.bg}`}>
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          {/* 1. PRIMARY RESULT: Verdict Banner */}
+          <div className={`p-6 sm:p-8 rounded-3xl border shadow-soft-sm ${statusInfo.bg}`}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
               <div className="space-y-2">
                 <div className="flex items-center gap-2.5 flex-wrap">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/80 border border-current/20 shadow-soft-sm">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-display font-bold uppercase tracking-wider bg-white/90 border border-current/20 shadow-soft-sm">
                     {statusInfo.icon}
                     {statusInfo.label}
                   </span>
-                  <span className="text-stone-300">•</span>
-                  <span className="text-xs text-stone-700 font-mono">
-                    Target: <strong className="font-semibold">{formatINR(survivalData.target_amount || selectedGoal?.target_amount || 0)}</strong>
+                  <span className="text-stone-300">/</span>
+                  <span className="text-xs font-display text-stone-700 font-medium">
+                    Target: <strong className="font-bold">{formatINR(survivalData.target_amount || selectedGoal?.target_amount || 0)}</strong>
                   </span>
-                  <span className="text-stone-300">•</span>
-                  <span className="text-xs text-stone-600 font-mono">
-                    Horizon: {survivalData.total_months} Months
+                  <span className="text-stone-300">/</span>
+                  <span className="text-xs font-display text-stone-600">
+                    Horizon: {survivalData.total_months} Mos
                   </span>
                 </div>
                 <h2 className="text-xl sm:text-2xl font-display font-bold text-stone-950 tracking-tight leading-snug">
                   {survivalData.survival_verdict || "Simulation analysis calculated successfully."}
                 </h2>
-                <p className="text-xs sm:text-sm text-stone-700 max-w-3xl leading-relaxed font-serif italic">
-                  Deterministic simulation validates whether capital accumulation stays solvent under simulated shock without depleting your emergency buffer.
-                </p>
               </div>
 
-              <div className="flex sm:flex-col items-baseline sm:items-end justify-between sm:justify-center shrink-0 pt-4 sm:pt-0 sm:border-l sm:border-stone-300/60 sm:pl-8">
-                <span className="text-[10px] uppercase font-semibold text-stone-500 tracking-wider font-mono">Target Deadline</span>
+              <div className="flex sm:flex-col items-baseline sm:items-end justify-between sm:justify-center shrink-0 pt-3 sm:pt-0 sm:border-l sm:border-stone-300/60 sm:pl-8">
+                <span className="text-[10px] uppercase font-display font-bold text-stone-500 tracking-wider">Target Deadline</span>
                 <span className="text-3xl sm:text-4xl font-display font-bold text-stone-950 tabular-nums tracking-tight">
                   Month {survivalData.target_deadline_months || selectedGoal?.target_months || 0}
                 </span>
-                <span className="text-[11px] text-stone-500 mt-0.5">Scheduled completion</span>
               </div>
             </div>
           </div>
 
-          {/* 6 Analytical Metric Indicators: Sleek Open Strip */}
-          <div className="rounded-2xl border border-stone-200/80 bg-white shadow-soft-sm overflow-hidden divide-y lg:divide-y-0 lg:divide-x divide-stone-200/80 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
-            <div className="p-5 space-y-1">
-              <div className="text-[10px] font-semibold text-stone-500 tracking-wider uppercase font-mono">SURVIVAL STATUS</div>
-              <div className={`text-xl font-display font-bold tracking-tight ${
-                survivalData.final_status === "SURVIVED" ? "text-emerald-700" :
-                survivalData.final_status === "DELAYED" ? "text-amber-700" : "text-rose-700"
-              }`}>
-                {survivalData.final_status || "ANALYZED"}
+          {/* 2. KEY VISUAL (HERO): Dominant Trajectory Chart */}
+          <div className="rounded-3xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-soft-sm space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-stone-100">
+              <div>
+                <h3 className="font-display font-bold text-base text-stone-950 tracking-tight">
+                  Cumulative Goal Trajectory: Baseline vs Stressed vs Recovered
+                </h3>
+                <p className="text-xs text-stone-500">
+                  Visualizes multi-month capital accumulation under disruption in INR (₹)
+                </p>
               </div>
-              <div className="text-[11px] text-stone-400">Post-stress durability</div>
+
+              <div className="flex items-center gap-3 text-xs font-display font-medium">
+                <span className="flex items-center gap-1.5 text-stone-700">
+                  <span className="w-2.5 h-2.5 rounded-full bg-stone-800" /> Baseline
+                </span>
+                <span className="flex items-center gap-1.5 text-rose-600">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-600" /> Stressed
+                </span>
+                <span className="flex items-center gap-1.5 text-emerald-700">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" /> Recovered
+                </span>
+              </div>
             </div>
 
-            <div className="p-5 space-y-1">
-              <div className="text-[10px] font-semibold text-stone-500 tracking-wider uppercase font-mono">FIRST UNSAFE MONTH</div>
-              <div className="text-xl font-display font-bold text-stone-950 tabular-nums tracking-tight">
-                {survivalData.first_unsafe_month ? `Month ${survivalData.first_unsafe_month}` : "None (Safe)"}
-              </div>
-              <div className="text-[11px] text-stone-400">Below buffer floor</div>
-            </div>
-
-            <div className="p-5 space-y-1">
-              <div className="text-[10px] font-semibold text-stone-500 tracking-wider uppercase font-mono">MAX DRAWDOWN</div>
-              <div className="text-xl font-display font-bold text-rose-700 tabular-nums tracking-tight">
-                {formatINR(survivalData.max_drawdown || 0)}
-              </div>
-              <div className="text-[11px] text-stone-400">Peak deficit vs base</div>
-            </div>
-
-            <div className="p-5 space-y-1">
-              <div className="text-[10px] font-semibold text-stone-500 tracking-wider uppercase font-mono">DEADLINE SLIPPAGE</div>
-              <div className="text-xl font-display font-bold text-amber-700 tabular-nums tracking-tight">
-                +{survivalData.deadline_slippage || 0} Mos
-              </div>
-              <div className="text-[11px] text-stone-400">Unmitigated delay</div>
-            </div>
-
-            <div className="p-5 space-y-1">
-              <div className="text-[10px] font-semibold text-stone-500 tracking-wider uppercase font-mono">CAPITAL SHORTFALL</div>
-              <div className="text-xl font-display font-bold text-rose-700 tabular-nums tracking-tight">
-                {formatINR(survivalData.capital_shortfall || 0)}
-              </div>
-              <div className="text-[11px] text-stone-400">At target deadline</div>
-            </div>
-
-            <div className="p-5 space-y-1">
-              <div className="text-[10px] font-semibold text-stone-500 tracking-wider uppercase font-mono">RECOVERY POINT</div>
-              <div className="text-xl font-display font-bold text-emerald-700 tabular-nums tracking-tight">
-                {survivalData.recovery_point_month ? `Month ${survivalData.recovery_point_month}` : "Post-Horizon"}
-              </div>
-              <div className="text-[11px] text-stone-400">Balanced plan parity</div>
-            </div>
-          </div>
-
-          {/* AI Explanation Layer */}
-          <AIExplanationCard
-            goalId={selectedGoalId}
-            explanationType="survival"
-            title="AI Goal Survival Map Interpretation"
-          />
-
-          {/* Trajectory Comparison Chart */}
-          <Card className="p-6 sm:p-7">
-            <CardHeader
-              title="Multi-Scenario Cumulative Goal Trajectory"
-              subtitle={`Simulated capital accumulation across ${survivalData.total_months} months in INR (₹)`}
-            />
             <SurvivalChart
               baselineCurve={survivalData.curves.baseline}
               stressedCurve={survivalData.curves.stressed}
@@ -270,91 +211,204 @@ export default function SurvivalMapPage() {
               firstUnsafeMonth={survivalData.first_unsafe_month}
               recoveryPointMonth={survivalData.recovery_point_month}
             />
-          </Card>
+          </div>
 
-          {/* Safety Buffer Runway Chart */}
-          {survivalData.buffer_curves && (
-            <Card className="p-6 sm:p-7">
-              <CardHeader
-                title="Liquid Safety Buffer Runway"
-                subtitle="Emergency fund balance compared against safe threshold and insolvency floor in INR (₹)"
-              />
-              <BufferRunwayChart
-                baselineCurve={survivalData.buffer_curves.baseline}
-                stressedCurve={survivalData.buffer_curves.stressed}
-                recoveredCurve={survivalData.buffer_curves.recovered_balanced}
-                safeBufferThreshold={survivalData.safe_buffer_threshold}
-              />
-            </Card>
-          )}
-
-          {/* Comparative Month Milestones */}
-          <div className="rounded-2xl border border-stone-200/80 bg-white p-6 sm:p-7 shadow-soft-sm space-y-4">
-            <div>
-              <h3 className="font-display font-bold text-stone-950 text-base tracking-tight">Milestone Comparative Table</h3>
-              <p className="text-xs text-stone-500 mt-0.5">Quarterly checkpoints comparing the impact of shocks and recovery</p>
+          {/* 3. KEY METRICS: 4 Core Analytical Figures (De-boxed Sleek Row) */}
+          <div className="rounded-3xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-soft-sm grid grid-cols-2 sm:grid-cols-4 gap-6 divide-y sm:divide-y-0 sm:divide-x divide-stone-100">
+            <div className="space-y-1">
+              <div className="text-[10px] font-display font-bold uppercase tracking-wider text-stone-400">FIRST UNSAFE MONTH</div>
+              <div className="text-2xl sm:text-3xl font-display font-bold text-stone-950 tabular-nums">
+                {survivalData.first_unsafe_month ? `Month ${survivalData.first_unsafe_month}` : "None (Safe)"}
+              </div>
+              <p className="text-[11px] text-stone-400">Buffer floor breach</p>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="border-b border-stone-200 text-stone-500 font-semibold">
-                    <th className="py-3 px-4 font-mono uppercase text-[10px] tracking-wider">Timeline</th>
-                    <th className="py-3 px-4 font-mono uppercase text-[10px] tracking-wider text-stone-700">Baseline Target</th>
-                    <th className="py-3 px-4 font-mono uppercase text-[10px] tracking-wider text-rose-700">Stressed Shock</th>
-                    <th className="py-3 px-4 font-mono uppercase text-[10px] tracking-wider text-emerald-700">Balanced Recovery</th>
-                    <th className="py-3 px-4 font-mono uppercase text-[10px] tracking-wider text-right">Recovery Delta</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-stone-100 font-mono text-xs">
-                  {[3, 6, 12, 18, 24, 30, 36].map((m) => {
-                    if (m >= survivalData.curves.baseline.length) return null;
-                    const b = survivalData.curves.baseline[m] || 0;
-                    const s = survivalData.curves.stressed[m] || 0;
-                    const r = survivalData.curves.recovered_balanced[m] || 0;
-                    const delta = r - s;
 
-                    return (
-                      <tr key={m} className="hover:bg-stone-50/70 transition-colors">
-                        <td className="py-3 px-4 font-sans font-medium text-stone-900">Month {m}</td>
-                        <td className="py-3 px-4 tabular-nums text-stone-600">{formatINR(b)}</td>
-                        <td className="py-3 px-4 tabular-nums text-rose-700">{formatINR(s)}</td>
-                        <td className="py-3 px-4 tabular-nums text-emerald-700 font-medium">{formatINR(r)}</td>
-                        <td className="py-3 px-4 text-right tabular-nums font-semibold text-emerald-700">
-                          {delta > 0 ? `+${formatINR(delta)}` : formatINR(delta)}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+            <div className="space-y-1 sm:pl-6 pt-4 sm:pt-0">
+              <div className="text-[10px] font-display font-bold uppercase tracking-wider text-stone-400">MAX DRAWDOWN</div>
+              <div className="text-2xl sm:text-3xl font-display font-bold text-rose-700 tabular-nums">
+                {formatINR(survivalData.max_drawdown || 0)}
+              </div>
+              <p className="text-[11px] text-stone-400">Peak deficit vs baseline</p>
+            </div>
+
+            <div className="space-y-1 sm:pl-6 pt-4 sm:pt-0">
+              <div className="text-[10px] font-display font-bold uppercase tracking-wider text-stone-400">DEADLINE SLIPPAGE</div>
+              <div className="text-2xl sm:text-3xl font-display font-bold text-amber-700 tabular-nums">
+                +{survivalData.deadline_slippage || 0} Mos
+              </div>
+              <p className="text-[11px] text-stone-400">Unmitigated delay</p>
+            </div>
+
+            <div className="space-y-1 sm:pl-6 pt-4 sm:pt-0">
+              <div className="text-[10px] font-display font-bold uppercase tracking-wider text-stone-400">RECOVERY POINT</div>
+              <div className="text-2xl sm:text-3xl font-display font-bold text-emerald-800 tabular-nums">
+                {survivalData.recovery_point_month ? `Month ${survivalData.recovery_point_month}` : "Post-Horizon"}
+              </div>
+              <p className="text-[11px] text-stone-400">Target parity reached</p>
             </div>
           </div>
 
-          {/* Next Step Transition CTA */}
-          <div className="p-6 sm:p-7 rounded-2xl bg-stone-950 text-white shadow-soft-md flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-            <div>
-              <div className="text-[10px] font-mono font-semibold uppercase tracking-wider text-emerald-400">
-                Recommended Next Step
+          {/* 4. IMPORTANT INSIGHT: AI Explanation Layer */}
+          <AIExplanationCard
+            goalId={selectedGoalId}
+            explanationType="survival"
+            title="AI Goal Survival Map Interpretation"
+          />
+
+          {/* 5. OPTIONAL DETAILS: Progressive Disclosure Accordions */}
+          <div className="space-y-3 pt-2">
+            {/* Accordion 1: Liquid Safety Buffer Runway */}
+            {survivalData.buffer_curves && (
+              <div className="rounded-2xl border border-stone-200/80 bg-white shadow-soft-sm overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setShowBufferChart(!showBufferChart)}
+                  className="w-full p-5 flex items-center justify-between text-left hover:bg-stone-50/50 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="p-2 rounded-xl bg-stone-100 text-stone-700">
+                      <TrendingDown className="w-4 h-4" />
+                    </span>
+                    <div>
+                      <h4 className="font-display font-semibold text-sm text-stone-950">
+                        Liquid Safety Buffer Runway Chart
+                      </h4>
+                      <p className="text-xs text-stone-400">Emergency fund balance compared against safe threshold</p>
+                    </div>
+                  </div>
+                  <span className="text-stone-400">
+                    {showBufferChart ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  </span>
+                </button>
+
+                {showBufferChart && (
+                  <div className="p-6 border-t border-stone-100 bg-stone-50/30">
+                    <BufferRunwayChart
+                      baselineCurve={survivalData.buffer_curves.baseline}
+                      stressedCurve={survivalData.buffer_curves.stressed}
+                      recoveredCurve={survivalData.buffer_curves.recovered_balanced}
+                      safeBufferThreshold={survivalData.safe_buffer_threshold}
+                    />
+                  </div>
+                )}
               </div>
-              <h4 className="font-display font-bold text-base text-white mt-1">
-                Compare Recovery Pathways for This Disruption
+            )}
+
+            {/* Accordion 2: Milestone Table */}
+            <div className="rounded-2xl border border-stone-200/80 bg-white shadow-soft-sm overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setShowMilestones(!showMilestones)}
+                className="w-full p-5 flex items-center justify-between text-left hover:bg-stone-50/50 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="p-2 rounded-xl bg-stone-100 text-stone-700">
+                    <Table className="w-4 h-4" />
+                  </span>
+                  <div>
+                    <h4 className="font-display font-semibold text-sm text-stone-950">
+                      Quarterly Milestone Comparison Table
+                    </h4>
+                    <p className="text-xs text-stone-400">Quarterly numeric checkpoints across 36 months</p>
+                  </div>
+                </div>
+                <span className="text-stone-400">
+                  {showMilestones ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </span>
+              </button>
+
+              {showMilestones && (
+                <div className="p-6 border-t border-stone-100 overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-stone-200 text-stone-400 font-display font-bold uppercase text-[10px]">
+                        <th className="py-2.5 px-3">Timeline</th>
+                        <th className="py-2.5 px-3 text-stone-700">Baseline Target</th>
+                        <th className="py-2.5 px-3 text-rose-700">Stressed Shock</th>
+                        <th className="py-2.5 px-3 text-emerald-800">Balanced Recovery</th>
+                        <th className="py-2.5 px-3 text-right">Delta</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-stone-100 font-display text-xs">
+                      {[3, 6, 12, 18, 24, 30, 36].map((m) => {
+                        if (m >= survivalData.curves.baseline.length) return null;
+                        const b = survivalData.curves.baseline[m] || 0;
+                        const s = survivalData.curves.stressed[m] || 0;
+                        const r = survivalData.curves.recovered_balanced[m] || 0;
+                        const delta = r - s;
+
+                        return (
+                          <tr key={m} className="hover:bg-stone-50/70 transition-colors">
+                            <td className="py-2.5 px-3 font-semibold text-stone-900">Month {m}</td>
+                            <td className="py-2.5 px-3 tabular-nums text-stone-600">{formatINR(b)}</td>
+                            <td className="py-2.5 px-3 tabular-nums text-rose-700">{formatINR(s)}</td>
+                            <td className="py-2.5 px-3 tabular-nums text-emerald-800 font-semibold">{formatINR(r)}</td>
+                            <td className="py-2.5 px-3 text-right tabular-nums font-bold text-emerald-800">
+                              {delta > 0 ? `+${formatINR(delta)}` : formatINR(delta)}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            {/* Accordion 3: Assumptions Ledger */}
+            {survivalData.assumption_ledger && (
+              <div className="rounded-2xl border border-stone-200/80 bg-white shadow-soft-sm overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setShowLedger(!showLedger)}
+                  className="w-full p-5 flex items-center justify-between text-left hover:bg-stone-50/50 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="p-2 rounded-xl bg-stone-100 text-stone-700">
+                      <Layers className="w-4 h-4" />
+                    </span>
+                    <div>
+                      <h4 className="font-display font-semibold text-sm text-stone-950">
+                        Financial Assumptions Ledger
+                      </h4>
+                      <p className="text-xs text-stone-400">Underlying inflation, return rates, and emergency reserve rules</p>
+                    </div>
+                  </div>
+                  <span className="text-stone-400">
+                    {showLedger ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  </span>
+                </button>
+
+                {showLedger && (
+                  <div className="p-6 border-t border-stone-100">
+                    <AssumptionLedger ledger={survivalData.assumption_ledger} />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Action Transition to Recovery Planner */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-stone-950 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-5 shadow-soft-sm">
+            <div className="space-y-1">
+              <div className="text-[10px] font-display font-bold uppercase tracking-wider text-emerald-400">
+                Recovery Blueprint Available
+              </div>
+              <h4 className="font-display font-bold text-base text-white">
+                Compare 3 Algorithmic Recovery Pathways
               </h4>
-              <p className="text-xs text-stone-400 mt-1 max-w-xl leading-relaxed">
-                Evaluate deterministic trade-offs between aggressive flexible spending cuts and extended completion deadlines.
+              <p className="text-xs text-stone-400 max-w-xl">
+                Evaluate deterministic trade-offs between boosting flexible savings vs extending target deadlines.
               </p>
             </div>
             <Link
               href="/recovery"
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-stone-950 bg-white hover:bg-stone-100 rounded-full transition-colors shadow-soft-sm shrink-0"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-display font-bold text-stone-950 bg-white hover:bg-stone-100 rounded-full transition-colors shrink-0"
             >
-              Open Adaptive Recovery Planner <ArrowRight className="w-3.5 h-3.5" />
+              <span>Open Recovery Planner</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
-
-          {/* Transparent Assumptions Ledger */}
-          {survivalData.assumption_ledger && (
-            <AssumptionLedger ledger={survivalData.assumption_ledger} />
-          )}
         </>
       ) : null}
     </div>
