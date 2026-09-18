@@ -101,27 +101,29 @@ export default function BaselinePage() {
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-stone-200/60 pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-stone-100 border border-stone-200/60 text-[11px] font-medium text-stone-600 mb-2">
-            <span>Step 2 of 5</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-100 border border-stone-200/80 text-[10px] font-mono font-medium text-stone-600 mb-3">
+            <span>STEP 2 OF 5</span>
             <span className="text-stone-300">•</span>
-            <span>Cash Flow Foundations</span>
+            <span>CASH FLOW FOUNDATIONS</span>
           </div>
-          <h1 className="text-3xl font-semibold text-stone-950 tracking-tight">Financial Baseline Profile</h1>
-          <p className="text-sm text-stone-500 mt-1 max-w-2xl">
+          <h1 className="text-3xl sm:text-4xl font-display font-bold text-stone-950 tracking-tight">
+            Financial Baseline Profile
+          </h1>
+          <p className="text-base sm:text-lg text-stone-600 mt-2 max-w-3xl font-serif italic">
             Define your net income, non-negotiable living costs, flexible spending, and liabilities in INR (₹).
           </p>
         </div>
       </div>
 
       {savedSuccess && (
-        <div className="p-4 rounded-xl bg-emerald-50/80 border border-emerald-200 text-emerald-900 text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-soft-sm">
+        <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-soft-sm">
           <div className="flex items-center gap-2.5">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+            <CheckCircle2 className="w-5 h-5 text-emerald-700 shrink-0" />
             <span className="font-medium">Baseline saved successfully! Free cash flow recalculated deterministically by Financial Engine.</span>
           </div>
           <Link
             href="/stress-test"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-800 hover:bg-emerald-900 text-white font-medium rounded-xl text-xs transition-colors shrink-0 shadow-soft-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-800 hover:bg-emerald-900 text-white font-medium rounded-full text-xs transition-colors shrink-0 shadow-soft-sm"
           >
             Proceed to Stress-Test Lab <ArrowRight className="w-3.5 h-3.5" />
           </Link>
@@ -139,7 +141,7 @@ export default function BaselinePage() {
         {/* Left 7-8 Cols: Detailed Inputs */}
         <div className="lg:col-span-7 xl:col-span-8 space-y-6">
           {/* Income & Emergency Fund */}
-          <Card>
+          <Card className="p-6 sm:p-7">
             <CardHeader title="1. Monthly Net Income & Emergency Fund" subtitle="Your core liquid capacity in INR (₹)" />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
@@ -403,17 +405,17 @@ export default function BaselinePage() {
 
         {/* Right Col: Live Financial Summary */}
         <div className="lg:col-span-5 xl:col-span-4 sticky top-24">
-          <Card>
+          <Card className="p-6 sm:p-7">
             <CardHeader title="Deterministic Engine Summary" subtitle="Live cashflow calculation in INR (₹)" />
 
             <div className="space-y-4 text-xs">
-              <div className="flex justify-between py-2 border-b border-stone-100">
-                <span className="text-stone-500">Net Take-Home Income:</span>
+              <div className="flex justify-between py-2 border-b border-stone-100 font-mono">
+                <span className="text-stone-500 font-sans">Net Take-Home Income:</span>
                 <span className="font-semibold text-stone-900 tabular-nums">{formatINR(profile.monthly_net_income)}</span>
               </div>
 
-              <div className="flex justify-between py-2 border-b border-stone-100">
-                <span className="text-stone-500">Total Fixed Expenses:</span>
+              <div className="flex justify-between py-2 border-b border-stone-100 font-mono">
+                <span className="text-stone-500 font-sans">Total Fixed Expenses:</span>
                 <span className="font-semibold text-stone-900 tabular-nums">
                   {formatINR(
                     Object.values(profile.fixed_expenses).reduce((a, b) => (typeof b === "number" ? a + b : a), 0)
@@ -421,8 +423,8 @@ export default function BaselinePage() {
                 </span>
               </div>
 
-              <div className="flex justify-between py-2 border-b border-stone-100">
-                <span className="text-stone-500">Total Discretionary:</span>
+              <div className="flex justify-between py-2 border-b border-stone-100 font-mono">
+                <span className="text-stone-500 font-sans">Total Discretionary:</span>
                 <span className="font-semibold text-stone-900 tabular-nums">
                   {formatINR(
                     Object.values(profile.discretionary_expenses).reduce((a, b) => (typeof b === "number" ? a + b : a), 0)
@@ -430,22 +432,22 @@ export default function BaselinePage() {
                 </span>
               </div>
 
-              <div className="flex justify-between py-2 border-b border-stone-100">
-                <span className="text-stone-500">Total Debt Payments:</span>
+              <div className="flex justify-between py-2 border-b border-stone-100 font-mono">
+                <span className="text-stone-500 font-sans">Total Debt Payments:</span>
                 <span className="font-semibold text-stone-900 tabular-nums">
                   {formatINR(profile.debt_commitments.reduce((a, b) => a + b.monthly_payment, 0))}
                 </span>
               </div>
 
               {profile.summary && (
-                <div className="p-4 bg-stone-50 border border-stone-200/80 rounded-2xl space-y-1.5">
-                  <div className="text-[11px] font-semibold text-stone-500 uppercase tracking-wider">
+                <div className="p-5 bg-stone-50 border border-stone-200/80 rounded-2xl space-y-2">
+                  <div className="text-[10px] font-mono font-semibold text-stone-500 uppercase tracking-wider">
                     Net Free Cash Flow (FCF)
                   </div>
-                  <div className="text-2xl font-bold text-stone-950 tabular-nums tracking-tight">
+                  <div className="text-3xl sm:text-4xl font-display font-bold text-stone-950 tabular-nums tracking-tight">
                     {formatINR(profile.summary.net_free_cash_flow)}
                   </div>
-                  <div className="text-xs text-stone-500 pt-1 border-t border-stone-200/60">
+                  <div className="text-xs text-stone-500 pt-1.5 border-t border-stone-200/60 font-mono">
                     Savings Capacity: <strong className="font-semibold text-stone-900">{formatPercent(profile.summary.savings_capacity_percent)}</strong>
                   </div>
                 </div>
@@ -455,7 +457,7 @@ export default function BaselinePage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-stone-900 hover:bg-black text-white font-medium rounded-xl shadow-soft-sm transition-all text-xs disabled:opacity-50 active:scale-[0.99]"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-stone-950 hover:bg-black text-white font-medium rounded-full shadow-soft-sm transition-all text-xs disabled:opacity-50 active:scale-[0.99]"
                 >
                   <Save className="w-4 h-4" />
                   {saving ? "Calculating & Saving..." : "Save Baseline Profile"}

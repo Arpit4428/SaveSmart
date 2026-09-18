@@ -80,15 +80,15 @@ export default function RecoveryPage() {
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-stone-200/60 pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-stone-100 border border-stone-200/60 text-[11px] font-medium text-stone-600 mb-2">
-            <span>Step 5 of 5</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-100 border border-stone-200/80 text-[10px] font-mono font-medium text-stone-600 mb-3">
+            <span>STEP 5 OF 5</span>
             <span className="text-stone-300">•</span>
-            <span>Adaptive Resolution</span>
+            <span>ADAPTIVE RESOLUTION</span>
           </div>
-          <h1 className="text-3xl font-semibold text-stone-950 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-display font-bold text-stone-950 tracking-tight">
             Adaptive Recovery Planner & Trade-Off Simulator
           </h1>
-          <p className="text-sm text-stone-500 mt-1 max-w-2xl">
+          <p className="text-base sm:text-lg text-stone-600 mt-2 max-w-3xl font-serif italic">
             Compare 3 deterministic pathways solved by Python optimization to restore your goal after disruption.
           </p>
         </div>
@@ -102,10 +102,12 @@ export default function RecoveryPage() {
       )}
 
       {/* Goal Selector */}
-      <Card className="p-4">
+      <Card className="p-4 sm:p-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <label className="text-xs font-semibold text-stone-700 tracking-wider uppercase whitespace-nowrap">OPTIMIZE GOAL:</label>
+            <label className="text-[10px] font-mono font-semibold text-stone-500 tracking-wider uppercase whitespace-nowrap">
+              OPTIMIZE GOAL:
+            </label>
             <select
               value={selectedGoalId}
               onChange={(e) => setSelectedGoalId(e.target.value)}
@@ -119,7 +121,7 @@ export default function RecoveryPage() {
             </select>
           </div>
 
-          <div className="text-xs text-stone-500 font-medium">
+          <div className="text-xs font-mono text-stone-500">
             3 Deterministic Solutions Solved via Pure Python Engine
           </div>
         </div>
@@ -131,14 +133,14 @@ export default function RecoveryPage() {
           <span>Solving recovery trade-offs & deterministic trajectories...</span>
         </div>
       ) : plans.length === 0 ? (
-        <Card className="py-16 text-center text-sm text-stone-500 border-2 border-dashed border-stone-200 rounded-2xl p-8">
-          <p className="font-medium text-stone-700">No recovery plans available for this goal</p>
+        <div className="py-16 text-center text-sm text-stone-500 border-2 border-dashed border-stone-200 rounded-2xl p-8 bg-stone-50/50">
+          <p className="font-medium text-stone-700 font-display">No recovery plans available for this goal</p>
           <p className="text-xs text-stone-400 mt-1">Please ensure a baseline profile and goal have been established.</p>
-        </Card>
+        </div>
       ) : (
         <>
           {/* Visual Strategy Trajectory Comparator */}
-          <Card>
+          <Card className="p-6 sm:p-7">
             <CardHeader
               title="Recovery Trajectory Comparator: 3 Deterministic Pathways"
               subtitle="Comparison of Aggressive vs. Balanced vs. Extended recovery curves against the unmitigated Stressed path"
@@ -153,57 +155,54 @@ export default function RecoveryPage() {
             />
           </Card>
 
-          {/* Side-by-Side 3 Recovery Plan Cards */}
+          {/* Side-by-Side 3 Recovery Plan Cards: Visually Distinctive Profiles */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {plans.map((plan) => {
               const isSelected = plan.plan_id === selectedPlanId;
 
-              // Trade-off profiles for the 3 neutral strategies
-              const tradeOffProfile =
+              // Visually distinctive personality styles for each pathway
+              const profileStyle =
                 plan.plan_id === "aggressive"
                   ? {
-                      pressure: "High",
-                      pressureColor: "text-rose-700 bg-rose-50 border-rose-200/80",
-                      lifestyle: "Deep Cuts (-50%)",
-                      deadline: "On-Time Target",
-                      buffer: "Max Buffer Preserved",
+                      tag: "High Pressure",
+                      tagClass: "text-amber-800 bg-amber-50 border-amber-200/80",
+                      activeBorder: "border-amber-700 ring-1 ring-amber-700 bg-amber-50/20",
+                      accentNum: "text-amber-700",
                     }
                   : plan.plan_id === "extended"
                   ? {
-                      pressure: "Low",
-                      pressureColor: "text-stone-700 bg-stone-100 border-stone-200",
-                      lifestyle: "Minor Cuts (-15%)",
-                      deadline: `Extended (+${plan.slippage_months} mos)`,
-                      buffer: "Slow Buffer Recovery",
+                      tag: "Low Pressure",
+                      tagClass: "text-stone-700 bg-stone-100 border-stone-200",
+                      activeBorder: "border-stone-800 ring-1 ring-stone-800 bg-stone-50/30",
+                      accentNum: "text-stone-700",
                     }
                   : {
-                      pressure: "Moderate",
-                      pressureColor: "text-emerald-700 bg-emerald-50 border-emerald-200/80",
-                      lifestyle: "Balanced Cuts (-30%)",
-                      deadline: `Mild Delay (+${plan.slippage_months} mos)`,
-                      buffer: "Balanced Buffer",
+                      tag: "Moderate Pressure",
+                      tagClass: "text-emerald-800 bg-emerald-50 border-emerald-200/80",
+                      activeBorder: "border-emerald-700 ring-1 ring-emerald-700 bg-emerald-50/20",
+                      accentNum: "text-emerald-700",
                     };
 
               return (
                 <div
                   key={plan.plan_id}
                   onClick={() => setSelectedPlanId(plan.plan_id)}
-                  className={`cursor-pointer rounded-2xl border p-6 transition-all relative flex flex-col justify-between ${
+                  className={`cursor-pointer rounded-2xl border p-6 sm:p-7 transition-all relative flex flex-col justify-between ${
                     isSelected
-                      ? "border-stone-900 bg-stone-50/50 shadow-soft-md ring-1 ring-stone-900"
+                      ? `${profileStyle.activeBorder} shadow-soft-md`
                       : "border-stone-200/80 bg-white hover:border-stone-300 shadow-soft-sm"
                   }`}
                 >
                   <div className="space-y-4">
                     <div className="flex justify-between items-start">
                       <div>
-                        <div className="flex items-center gap-1.5 mb-1.5">
-                          <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${tradeOffProfile.pressureColor}`}>
-                            {tradeOffProfile.pressure} Pressure
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <span className={`text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${profileStyle.tagClass}`}>
+                            {profileStyle.tag}
                           </span>
                         </div>
-                        <h3 className="font-semibold text-stone-950 text-base tracking-tight">{plan.name}</h3>
-                        <p className="text-xs text-stone-500 mt-0.5">
+                        <h3 className="font-display font-bold text-stone-950 text-lg tracking-tight">{plan.name}</h3>
+                        <p className="text-xs font-mono text-stone-500 mt-0.5">
                           Finishes Month {plan.target_completion_month} (+{plan.slippage_months} mos)
                         </p>
                       </div>
@@ -219,31 +218,31 @@ export default function RecoveryPage() {
                     <div className="space-y-2.5 pt-4 border-t border-stone-100 text-xs">
                       <div className="flex justify-between">
                         <span className="text-stone-500">Flexible Spending Cut:</span>
-                        <span className="font-semibold text-stone-900 tabular-nums">
+                        <span className="font-semibold text-stone-900 tabular-nums font-mono">
                           {formatPercent(plan.discretionary_cut_percent * 100)}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-stone-500">Monthly Budget Freed:</span>
-                        <span className="font-semibold text-emerald-700 tabular-nums">
+                        <span className={`font-semibold tabular-nums font-mono ${profileStyle.accentNum}`}>
                           {formatINR(plan.discretionary_savings_monthly)}/mo
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-stone-500">Adjusted Monthly Savings:</span>
-                        <span className="font-bold text-stone-950 tabular-nums">
+                        <span className="font-bold text-stone-950 tabular-nums font-mono">
                           {formatINR(plan.monthly_contribution_adjusted)}/mo
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-stone-500">Buffer Preserved:</span>
-                        <span className="font-semibold text-stone-900 tabular-nums">
+                        <span className="font-semibold text-stone-900 tabular-nums font-mono">
                           {formatINR(plan.buffer_preserved || 0)}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-stone-500">Time to Full Recovery:</span>
-                        <span className="font-medium text-stone-800 tabular-nums">
+                        <span className="font-medium text-stone-800 tabular-nums font-mono">
                           {plan.time_to_recover_months ? `${plan.time_to_recover_months} Mos` : "On Deadline"}
                         </span>
                       </div>
@@ -253,9 +252,9 @@ export default function RecoveryPage() {
                   <div className="mt-6 pt-4 border-t border-stone-100">
                     <button
                       type="button"
-                      className={`w-full py-2.5 px-4 text-xs font-medium rounded-xl transition-all ${
+                      className={`w-full py-2.5 px-4 text-xs font-medium rounded-full transition-all ${
                         isSelected
-                          ? "bg-stone-900 text-white shadow-soft-sm"
+                          ? "bg-stone-950 text-white shadow-soft-sm font-semibold"
                           : "bg-stone-100 text-stone-700 hover:bg-stone-200/80"
                       }`}
                     >
@@ -276,64 +275,74 @@ export default function RecoveryPage() {
 
           {/* Detailed Strategy Breakdown & Trade-Off Matrix ("What It Costs You") */}
           {activePlan && (
-            <Card className="p-6 space-y-6">
-              <CardHeader
-                title={`Strategy Deep-Dive: ${activePlan.name}`}
-                subtitle="Transparent trade-offs, lifestyle impacts, and capital recovery metrics"
-              />
+            <div className="p-6 sm:p-7 rounded-2xl border border-stone-200/80 bg-white shadow-soft-sm space-y-6">
+              <div className="pb-4 border-b border-stone-200/80">
+                <h3 className="font-display font-bold text-stone-950 text-base tracking-tight">
+                  Strategy Deep-Dive: {activePlan.name}
+                </h3>
+                <p className="text-xs text-stone-500 mt-1">
+                  Transparent trade-offs, lifestyle impacts, and capital recovery metrics
+                </p>
+              </div>
 
               {/* 3 Core Metric Tiles */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                <div className="p-4 rounded-xl bg-stone-50/70 border border-stone-200/80 space-y-1">
-                  <div className="text-stone-500 font-medium text-[11px] uppercase tracking-wider">Timeline Shift</div>
-                  <div className="text-xl font-bold text-stone-950 tabular-nums">
-                    +{activePlan.slippage_months} Months
+                <div className="p-5 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-1">
+                  <div className="text-stone-500 font-mono font-semibold text-[10px] uppercase tracking-wider">
+                    Timeline Shift
                   </div>
-                  <p className="text-stone-500 text-[11px] pt-1 border-t border-stone-200/60">
-                    New target completion milestone: Month {activePlan.target_completion_month}
+                  <div className="text-2xl sm:text-3xl font-display font-bold text-stone-950 tabular-nums">
+                    +{activePlan.slippage_months} <span className="text-xs font-normal text-stone-500">Months</span>
+                  </div>
+                  <p className="text-stone-500 text-[11px] pt-1.5 border-t border-stone-200/60 font-mono">
+                    New target milestone: Month {activePlan.target_completion_month}
                   </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-stone-50/70 border border-stone-200/80 space-y-1">
-                  <div className="text-stone-500 font-medium text-[11px] uppercase tracking-wider">Monthly Discretionary Cut</div>
-                  <div className="text-xl font-bold text-emerald-700 tabular-nums">
-                    Save {formatINR(activePlan.discretionary_savings_monthly)}/mo
+                <div className="p-5 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-1">
+                  <div className="text-stone-500 font-mono font-semibold text-[10px] uppercase tracking-wider">
+                    Monthly Discretionary Cut
                   </div>
-                  <p className="text-stone-500 text-[11px] pt-1 border-t border-stone-200/60">
-                    Trim discretionary spending by {formatPercent(activePlan.discretionary_cut_percent * 100)}
+                  <div className="text-2xl sm:text-3xl font-display font-bold text-emerald-700 tabular-nums">
+                    Save {formatINR(activePlan.discretionary_savings_monthly)}<span className="text-xs font-normal text-stone-500">/mo</span>
+                  </div>
+                  <p className="text-stone-500 text-[11px] pt-1.5 border-t border-stone-200/60 font-mono">
+                    Trim flexible spending by {formatPercent(activePlan.discretionary_cut_percent * 100)}
                   </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-stone-50/70 border border-stone-200/80 space-y-1">
-                  <div className="text-stone-500 font-medium text-[11px] uppercase tracking-wider">Liquid Buffer Preserved</div>
-                  <div className="text-xl font-bold text-stone-950 tabular-nums">
+                <div className="p-5 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-1">
+                  <div className="text-stone-500 font-mono font-semibold text-[10px] uppercase tracking-wider">
+                    Liquid Buffer Preserved
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-display font-bold text-stone-950 tabular-nums">
                     {formatINR(activePlan.buffer_preserved || 0)}
                   </div>
-                  <p className="text-stone-500 text-[11px] pt-1 border-t border-stone-200/60">
+                  <p className="text-stone-500 text-[11px] pt-1.5 border-t border-stone-200/60 font-mono">
                     Replenished by Month {activePlan.emergency_buffer_replenished_month}
                   </p>
                 </div>
               </div>
 
               {/* Trade-Off Matrix: What It Costs You */}
-              <div className="rounded-2xl border border-stone-200/80 bg-stone-50/50 p-5 space-y-4">
+              <div className="rounded-2xl border border-stone-200/80 bg-stone-50/70 p-6 space-y-4">
                 <div className="flex items-center gap-2">
                   <Coins className="w-4 h-4 text-stone-700" />
-                  <h4 className="font-semibold text-stone-950 text-xs uppercase tracking-wider">
+                  <h4 className="font-mono font-semibold text-stone-950 text-[11px] uppercase tracking-wider">
                     Trade-Off Analysis: What This Strategy Costs You
                   </h4>
                 </div>
 
                 {activePlan.trade_offs && (
-                  <p className="text-xs text-stone-700 bg-white p-4 rounded-xl border border-stone-200/80 leading-relaxed shadow-soft-sm">
+                  <p className="text-xs text-stone-700 bg-white p-4 rounded-xl border border-stone-200/80 leading-relaxed shadow-soft-sm font-serif italic text-sm">
                     {activePlan.trade_offs}
                   </p>
                 )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1 text-xs">
                   {/* Advantages (Pros) */}
-                  <div className="bg-white p-4 rounded-xl border border-stone-200/80 space-y-2.5 shadow-soft-sm">
-                    <div className="font-semibold text-emerald-800 text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+                  <div className="bg-white p-5 rounded-2xl border border-stone-200/80 space-y-3 shadow-soft-sm">
+                    <div className="font-mono font-bold text-emerald-800 text-[11px] uppercase tracking-wider flex items-center gap-1.5">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                       Key Advantages (Pros)
                     </div>
@@ -352,8 +361,8 @@ export default function RecoveryPage() {
                   </div>
 
                   {/* Sacrifices (Cons) */}
-                  <div className="bg-white p-4 rounded-xl border border-stone-200/80 space-y-2.5 shadow-soft-sm">
-                    <div className="font-semibold text-rose-800 text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+                  <div className="bg-white p-5 rounded-2xl border border-stone-200/80 space-y-3 shadow-soft-sm">
+                    <div className="font-mono font-bold text-rose-800 text-[11px] uppercase tracking-wider flex items-center gap-1.5">
                       <XCircle className="w-4 h-4 text-rose-600" />
                       Lifestyle & Timeline Costs (Cons)
                     </div>
@@ -372,16 +381,16 @@ export default function RecoveryPage() {
                   </div>
                 </div>
               </div>
-            </Card>
+            </div>
           )}
 
           {/* Next Step Transition CTA to Survival Map */}
-          <div className="p-6 rounded-2xl bg-stone-900 text-white shadow-soft-md flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+          <div className="p-6 sm:p-7 rounded-2xl bg-stone-950 text-white shadow-soft-md flex flex-col sm:flex-row sm:items-center justify-between gap-5">
             <div>
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-emerald-400">
+              <div className="text-[10px] font-mono font-semibold uppercase tracking-wider text-emerald-400">
                 Integrated Visualization
               </div>
-              <h4 className="font-semibold text-base text-white mt-1">
+              <h4 className="font-display font-bold text-base text-white mt-1">
                 Validate Recovered Curve on Goal Survival Map
               </h4>
               <p className="text-xs text-stone-400 mt-1 max-w-xl leading-relaxed">
@@ -390,7 +399,7 @@ export default function RecoveryPage() {
             </div>
             <Link
               href="/survival"
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-stone-900 bg-white hover:bg-stone-100 rounded-xl transition-colors shadow-soft-sm shrink-0"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-stone-950 bg-white hover:bg-stone-100 rounded-full transition-colors shadow-soft-sm shrink-0"
             >
               View on Goal Survival Map <ArrowRight className="w-3.5 h-3.5" />
             </Link>

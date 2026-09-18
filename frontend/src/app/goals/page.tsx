@@ -104,13 +104,15 @@ export default function GoalsPage() {
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-stone-200/60 pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-stone-100 border border-stone-200/60 text-[11px] font-medium text-stone-600 mb-2">
-            <span>Step 1 of 5</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-100 border border-stone-200/80 text-[10px] font-mono font-medium text-stone-600 mb-3">
+            <span>STEP 1 OF 5</span>
             <span className="text-stone-300">•</span>
-            <span>Target Architecture</span>
+            <span>TARGET ARCHITECTURE</span>
           </div>
-          <h1 className="text-3xl font-semibold text-stone-950 tracking-tight">Goal Builder & Health Analyzer</h1>
-          <p className="text-sm text-stone-500 mt-1 max-w-2xl">
+          <h1 className="text-3xl sm:text-4xl font-display font-bold text-stone-950 tracking-tight">
+            Goal Builder & Health Analyzer
+          </h1>
+          <p className="text-base sm:text-lg text-stone-600 mt-2 max-w-3xl font-serif italic">
             Configure savings goals and analyze pre-shock financial durability deterministically before subjecting them to simulated disruptions.
           </p>
         </div>
@@ -126,7 +128,7 @@ export default function GoalsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left 7-8 Cols: Goal List & Diagnostics */}
         <div className="lg:col-span-7 xl:col-span-8 space-y-6">
-          <Card>
+          <Card className="p-6 sm:p-7">
             <CardHeader
               title="Registered Savings Goals"
               subtitle="All targets and monthly commitments computed deterministically by engine"
@@ -138,8 +140,8 @@ export default function GoalsPage() {
                 <span>Loading registered goals...</span>
               </div>
             ) : goals.length === 0 ? (
-              <div className="py-16 text-center text-sm text-stone-500 border-2 border-dashed border-stone-200 rounded-2xl p-8">
-                <p className="font-medium text-stone-700">No savings goals created yet</p>
+              <div className="py-16 text-center text-sm text-stone-500 border-2 border-dashed border-stone-200 rounded-2xl p-8 bg-stone-50/50">
+                <p className="font-medium text-stone-700 font-display">No savings goals created yet</p>
                 <p className="text-xs text-stone-400 mt-1">Use the builder form on the right to establish your primary target.</p>
               </div>
             ) : (
@@ -150,32 +152,32 @@ export default function GoalsPage() {
                   return (
                     <div
                       key={goal.id}
-                      className={`p-5 rounded-2xl border transition-all ${
+                      className={`p-5 sm:p-6 rounded-2xl border transition-all ${
                         isInspecting
-                          ? "border-stone-900 bg-stone-50/50 shadow-soft-md"
+                          ? "border-stone-900 bg-stone-50/60 shadow-soft-md ring-1 ring-stone-900"
                           : "border-stone-200/80 bg-white hover:border-stone-300 shadow-soft-sm"
                       }`}
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                           <div className="flex items-center gap-2.5 flex-wrap">
-                            <h3 className="font-semibold text-stone-950 text-base tracking-tight">{goal.name}</h3>
-                            <span className="text-[10px] uppercase font-mono tracking-wider px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200">
+                            <h3 className="font-display font-bold text-stone-950 text-lg tracking-tight">{goal.name}</h3>
+                            <span className="text-[10px] uppercase font-mono tracking-wider px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200">
                               {goal.category}
                             </span>
                             <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-stone-100/70 text-stone-500">
                               {goal.priority} priority
                             </span>
                           </div>
-                          <p className="text-xs text-stone-500 mt-1">
-                            Target Horizon: <span className="font-medium text-stone-700">{goal.target_months} months</span>
+                          <p className="text-xs text-stone-500 mt-1 font-mono">
+                            Target Horizon: <span className="font-medium text-stone-800">{goal.target_months} months</span>
                           </p>
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0">
                           <button
                             onClick={() => handleInspectHealth(goal)}
-                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-stone-800 bg-stone-100 hover:bg-stone-200/80 border border-stone-200 rounded-full transition-colors"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-stone-900 bg-stone-100 hover:bg-stone-200/80 border border-stone-200 rounded-full transition-colors"
                           >
                             <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
                             Goal Health
@@ -191,14 +193,14 @@ export default function GoalsPage() {
                       </div>
 
                       {/* Progress Bar */}
-                      <div className="space-y-1.5 pt-3">
+                      <div className="space-y-1.5 pt-4">
                         <div className="w-full bg-stone-100 rounded-full h-2 overflow-hidden">
                           <div
                             className="bg-emerald-600 h-2 rounded-full transition-all duration-500"
                             style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
                           />
                         </div>
-                        <div className="flex justify-between text-xs text-stone-500 tabular-nums">
+                        <div className="flex justify-between text-xs text-stone-500 tabular-nums font-mono">
                           <span>Current: <strong className="font-semibold text-stone-800">{formatINR(goal.current_balance)}</strong></span>
                           <span>Target: <strong className="font-semibold text-stone-800">{formatINR(goal.target_amount)}</strong> ({progress.toFixed(0)}%)</span>
                         </div>
@@ -206,7 +208,7 @@ export default function GoalsPage() {
 
                       <div className="pt-3 mt-3 border-t border-stone-100 flex justify-between items-center text-xs">
                         <span className="text-stone-500">Calculated Required Monthly Contribution:</span>
-                        <span className="font-semibold text-stone-900 tabular-nums">
+                        <span className="font-display font-bold text-stone-950 tabular-nums text-sm">
                           {formatINR(goal.monthly_contribution || 0)}/mo
                         </span>
                       </div>
@@ -219,20 +221,20 @@ export default function GoalsPage() {
 
           {/* Goal Health Inspection Modal / Card */}
           {inspectingGoal && (
-            <Card className="border-stone-300 shadow-soft-md">
+            <div className="p-6 sm:p-7 rounded-2xl border border-stone-300 bg-white shadow-soft-md space-y-6">
               <div className="flex items-start justify-between pb-4 border-b border-stone-200">
                 <div>
-                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/60 text-[10px] font-semibold text-emerald-700 uppercase tracking-wider mb-1">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/60 text-[10px] font-mono font-semibold text-emerald-700 uppercase tracking-wider mb-1">
                     Pre-Shock Evaluation
                   </div>
-                  <h3 className="font-semibold text-stone-950 text-base tracking-tight">
+                  <h3 className="font-display font-bold text-stone-950 text-lg tracking-tight">
                     Pre-Shock Health Diagnostics: {inspectingGoal.name}
                   </h3>
-                  <p className="text-xs text-stone-500">Evaluated against your baseline cash flow</p>
+                  <p className="text-xs text-stone-500 font-serif italic">Evaluated against your baseline cash flow</p>
                 </div>
                 <button
                   onClick={() => setInspectingGoal(null)}
-                  className="p-1 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors"
+                  className="p-1.5 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -244,49 +246,51 @@ export default function GoalsPage() {
                   <span>Evaluating financial resilience across cash flow and debt liabilities...</span>
                 </div>
               ) : healthReport ? (
-                <div className="space-y-6 pt-4 text-xs">
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div className="p-3.5 bg-stone-50 rounded-xl border border-stone-200/70">
-                      <div className="text-[11px] text-stone-500 font-medium">Resilience Score</div>
-                      <div className="text-xl font-bold text-stone-950 tabular-nums mt-0.5">
-                        {healthReport.baseline_resilience_score}/100
+                <div className="space-y-6 text-xs">
+                  <div className="rounded-2xl border border-stone-200/80 bg-white shadow-soft-sm overflow-hidden divide-y sm:divide-y-0 sm:divide-x divide-stone-200/80 grid grid-cols-2 sm:grid-cols-4">
+                    <div className="p-4 space-y-1">
+                      <div className="text-[10px] font-mono font-semibold text-stone-500 uppercase">Resilience Score</div>
+                      <div className="text-2xl font-display font-bold text-stone-950 tabular-nums">
+                        {healthReport.baseline_resilience_score}<span className="text-xs font-normal text-stone-400">/100</span>
                       </div>
-                      <Badge grade={healthReport.health_status} className="mt-2" />
+                      <div className="pt-1">
+                        <Badge grade={healthReport.health_status} />
+                      </div>
                     </div>
 
-                    <div className="p-3.5 bg-stone-50 rounded-xl border border-stone-200/70">
-                      <div className="text-[11px] text-stone-500 font-medium">FCF Margin</div>
-                      <div className={`text-base font-bold tabular-nums mt-0.5 ${healthReport.free_cash_flow_margin >= 0 ? "text-emerald-700" : "text-rose-700"}`}>
+                    <div className="p-4 space-y-1">
+                      <div className="text-[10px] font-mono font-semibold text-stone-500 uppercase">FCF Margin</div>
+                      <div className={`text-xl font-display font-bold tabular-nums ${healthReport.free_cash_flow_margin >= 0 ? "text-emerald-700" : "text-rose-700"}`}>
                         {formatINR(healthReport.free_cash_flow_margin)}
                       </div>
-                      <div className="text-[11px] text-stone-400 mt-1">Monthly buffer</div>
+                      <div className="text-[11px] text-stone-400">Monthly buffer</div>
                     </div>
 
-                    <div className="p-3.5 bg-stone-50 rounded-xl border border-stone-200/70">
-                      <div className="text-[11px] text-stone-500 font-medium">Emergency Cushion</div>
-                      <div className="text-base font-bold text-stone-950 tabular-nums mt-0.5">
+                    <div className="p-4 space-y-1">
+                      <div className="text-[10px] font-mono font-semibold text-stone-500 uppercase">Emergency Cushion</div>
+                      <div className="text-xl font-display font-bold text-stone-950 tabular-nums">
                         {healthReport.emergency_buffer_months} mos
                       </div>
-                      <div className="text-[11px] text-stone-400 mt-1">Fixed costs coverage</div>
+                      <div className="text-[11px] text-stone-400">Fixed costs coverage</div>
                     </div>
 
-                    <div className="p-3.5 bg-stone-50 rounded-xl border border-stone-200/70">
-                      <div className="text-[11px] text-stone-500 font-medium">Debt to Income</div>
-                      <div className="text-base font-bold text-stone-950 tabular-nums mt-0.5">
+                    <div className="p-4 space-y-1">
+                      <div className="text-[10px] font-mono font-semibold text-stone-500 uppercase">Debt to Income</div>
+                      <div className="text-xl font-display font-bold text-stone-950 tabular-nums">
                         {(healthReport.debt_to_income_ratio * 100).toFixed(1)}%
                       </div>
-                      <div className="text-[11px] text-stone-400 mt-1">Monthly burden</div>
+                      <div className="text-[11px] text-stone-400">Monthly burden</div>
                     </div>
                   </div>
 
                   {healthReport.risk_factors.length > 0 && (
                     <div className="space-y-2">
-                      <h4 className="font-semibold text-stone-900 text-xs uppercase tracking-wider">Identified Vulnerabilities:</h4>
+                      <h4 className="font-mono font-semibold text-stone-900 text-[10px] uppercase tracking-wider">Identified Vulnerabilities:</h4>
                       <div className="space-y-2">
                         {healthReport.risk_factors.map((rf, idx) => (
                           <div
                             key={idx}
-                            className="p-3 rounded-xl bg-white border border-stone-200 flex items-start gap-2.5 text-xs shadow-soft-sm"
+                            className="p-3 rounded-xl bg-stone-50 border border-stone-200 flex items-start gap-2.5 text-xs shadow-soft-sm"
                           >
                             <Badge variant={rf.severity === "HIGH" ? "danger" : "warning"}>
                               {rf.severity}
@@ -320,20 +324,20 @@ export default function GoalsPage() {
                     <span className="text-stone-500 font-medium text-xs">Ready to test against disruptions?</span>
                     <Link
                       href="/stress-test"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-stone-900 hover:bg-black text-white font-medium rounded-xl text-xs transition-colors shadow-soft-sm"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-stone-950 hover:bg-black text-white font-medium rounded-full text-xs transition-colors shadow-soft-sm"
                     >
                       Stress-Test This Goal <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
                 </div>
               ) : null}
-            </Card>
+            </div>
           )}
         </div>
 
         {/* Right Col: Goal Creator Form */}
         <div className="lg:col-span-5 xl:col-span-4 sticky top-24">
-          <Card>
+          <Card className="p-6 sm:p-7">
             <CardHeader
               title="Create New Goal"
               subtitle="Set your target amount and timeline in INR (₹)"

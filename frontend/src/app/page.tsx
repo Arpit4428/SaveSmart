@@ -96,7 +96,7 @@ export default function DashboardPage() {
   const attentionRequired = isOvercommitted || fragileGoalCount > 0;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12 max-w-7xl mx-auto">
       {/* Demo Preset Modal */}
       <DemoPresetModal
         isOpen={isDemoModalOpen}
@@ -104,57 +104,60 @@ export default function DashboardPage() {
         onSuccess={() => loadData()}
       />
 
-      {/* Top Banner / System Status */}
-      <div className="space-y-4 pb-6 border-b border-stone-200/70">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-stone-100 border border-stone-200/70 text-[11px] text-stone-600 font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
-            <span>Stress-test your financial goals before you commit.</span>
+      {/* Hero Section: Editorial Asymmetric Header */}
+      <div className="pt-2 pb-8 border-b border-stone-200/80">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-200/50 border border-stone-300/60 text-[11px] font-display text-stone-700 tracking-wider uppercase font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0 animate-pulse" />
+            <span>Deterministic Financial Engine</span>
           </div>
 
           {/* 5-Step Process Sequence */}
-          <div className="hidden md:flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider text-stone-400">
-            <span className="text-stone-700 font-semibold">Build</span>
-            <span>→</span>
-            <span className="text-stone-700 font-semibold">Baseline</span>
-            <span>→</span>
-            <span className="text-stone-700 font-semibold">Stress Test</span>
-            <span>→</span>
-            <span className="text-stone-700 font-semibold">Understand</span>
-            <span>→</span>
-            <span className="text-stone-700 font-semibold">Recover</span>
+          <div className="hidden md:flex items-center gap-2 text-[10px] font-display uppercase tracking-widest text-stone-400">
+            <span className="text-stone-900 font-semibold">Build</span>
+            <span className="text-stone-300">/</span>
+            <span className="text-stone-900 font-semibold">Baseline</span>
+            <span className="text-stone-300">/</span>
+            <span className="text-stone-900 font-semibold">Stress Test</span>
+            <span className="text-stone-300">/</span>
+            <span className="text-stone-900 font-semibold">Understand</span>
+            <span className="text-stone-300">/</span>
+            <span className="text-stone-900 font-semibold">Recover</span>
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-stone-950 tracking-tight">
-              Financial Resilience Dashboard
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+          <div className="lg:col-span-8 space-y-3">
+            <h1 className="font-serif italic text-4xl sm:text-5xl lg:text-6xl text-stone-950 leading-[1.08] tracking-tight">
+              Stress-test your financial goals <br className="hidden sm:inline" />
+              <span className="not-italic font-display font-medium text-stone-900 text-3xl sm:text-4xl lg:text-5xl">
+                before you commit.
+              </span>
             </h1>
-            <p className="text-sm text-stone-500 mt-1 max-w-2xl leading-relaxed">
-              Real-time baseline cash flow, active savings commitments, and deterministic shock resistance status.
+            <p className="text-sm sm:text-base text-stone-600 max-w-2xl font-sans leading-relaxed pt-1">
+              SaveSmart verifies capital durability against job loss, medical emergencies, and compounding inflation before reality tests them for you.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="lg:col-span-4 flex flex-wrap lg:justify-end items-center gap-2.5">
             <button
               type="button"
               onClick={() => setIsDemoModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-stone-800 bg-stone-100 hover:bg-stone-200/70 border border-stone-200/80 rounded-full shadow-soft-sm transition-all active:scale-95"
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-display font-semibold text-stone-900 bg-stone-200/60 hover:bg-stone-200 border border-stone-300/70 rounded-full transition-all active:scale-[0.98]"
             >
-              <Sparkles className="w-3.5 h-3.5 text-stone-600" />
+              <Sparkles className="w-3.5 h-3.5 text-stone-700" />
               Demo Presets
             </button>
             <Link
               href="/stress-test"
-              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-full shadow-soft-sm transition-all active:scale-95"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-display font-semibold text-white bg-rose-700 hover:bg-rose-800 rounded-full shadow-soft-sm transition-all active:scale-[0.98]"
             >
               <ShieldAlert className="w-3.5 h-3.5" />
               Run Stress-Test
             </Link>
             <Link
               href="/goals"
-              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-stone-900 bg-white hover:bg-stone-50 border border-stone-200/80 rounded-full shadow-soft-sm transition-all active:scale-95"
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-display font-semibold text-stone-900 bg-white hover:bg-stone-50 border border-stone-300/70 rounded-full shadow-soft-sm transition-all active:scale-[0.98]"
             >
               <Target className="w-3.5 h-3.5" />
               Create Goal
@@ -165,16 +168,16 @@ export default function DashboardPage() {
 
       {/* Attention Required Banner */}
       {attentionRequired && (
-        <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/70 border border-amber-200/80 text-amber-950 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-soft-sm">
+        <div className="p-5 rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-950 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-soft-sm">
           <div className="flex items-start sm:items-center gap-3">
-            <span className="p-1 rounded-lg bg-amber-100 text-amber-700 shrink-0 mt-0.5 sm:mt-0">
+            <span className="p-1.5 rounded-full bg-amber-200/70 text-amber-800 shrink-0 mt-0.5 sm:mt-0">
               <AlertCircle className="w-4 h-4" />
             </span>
             <div className="leading-relaxed">
-              <span className="font-bold">Resilience Alert: </span>
+              <span className="font-display font-bold uppercase tracking-wider text-[11px] text-amber-900">Resilience Alert: </span>
               {isOvercommitted ? (
                 <span>
-                  Total monthly goal commitments ({formatINR(totalMonthlyCommitment)}/mo) exceed your verified Free Cash Flow ({formatINR(freeCashFlow)}/mo).
+                  Total monthly goal commitments (<strong className="tabular-nums font-semibold">{formatINR(totalMonthlyCommitment)}</strong>/mo) exceed verified Free Cash Flow (<strong className="tabular-nums font-semibold">{formatINR(freeCashFlow)}</strong>/mo).
                 </span>
               ) : (
                 <span>
@@ -186,7 +189,7 @@ export default function DashboardPage() {
           </div>
           <Link
             href="/stress-test"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-100 hover:bg-amber-200/70 font-semibold text-amber-900 transition-colors shrink-0 text-xs"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-amber-900 text-amber-50 hover:bg-amber-950 font-display font-semibold transition-colors shrink-0 text-xs"
           >
             Launch Stress Test <ArrowRight className="w-3.5 h-3.5" />
           </Link>
@@ -194,86 +197,87 @@ export default function DashboardPage() {
       )}
 
       {error && (
-        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-2">
+        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-2">
           <AlertTriangle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Overview Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-        <Card className="p-6">
-          <div className="flex items-center justify-between text-xs text-stone-500 font-medium mb-3">
-            <span className="tracking-wider uppercase text-[11px] font-semibold text-stone-400">NET MONTHLY INCOME</span>
-            <span className="p-1.5 rounded-lg bg-stone-100 text-stone-600">
-              <Wallet className="w-3.5 h-3.5" />
-            </span>
+      {/* Signature Financial Status Masthead: De-boxed & Striking */}
+      <div className="rounded-3xl bg-white border border-stone-200/80 p-8 sm:p-10 shadow-soft-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          {/* Main FCF Focus: Oversized Figure */}
+          <div className="lg:col-span-5 space-y-3 lg:border-r lg:border-stone-200/80 lg:pr-8">
+            <div className="flex items-center gap-2 text-[11px] font-display font-bold uppercase tracking-widest text-emerald-800">
+              <span className="w-2 h-2 rounded-full bg-emerald-600" />
+              <span>Net Free Cash Flow (FCF)</span>
+            </div>
+            <div className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-stone-950 tracking-tighter tabular-nums">
+              {formatINR(baseline?.summary?.net_free_cash_flow || 0)}
+            </div>
+            <p className="text-xs text-stone-500 leading-relaxed max-w-sm">
+              True liquid discretionary capacity each month after funding all non-negotiable living expenses and debt payments.
+            </p>
+            <div className="pt-2 flex items-center gap-3 text-xs">
+              <span className="font-display font-semibold text-stone-700 bg-stone-100 px-2.5 py-1 rounded-full border border-stone-200">
+                Capacity: {formatPercent(baseline?.summary?.savings_capacity_percent || 0)}
+              </span>
+              <span className="text-stone-400 text-[11px]">Target: 20-30%</span>
+            </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-bold text-stone-950 tracking-tight font-mono tabular-nums">
-            {formatINR(baseline?.monthly_net_income || 0)}
-          </div>
-          <div className="text-xs text-stone-500 mt-1.5">Take-home earnings</div>
-        </Card>
 
-        <Card className="p-6">
-          <div className="flex items-center justify-between text-xs text-stone-500 font-medium mb-3">
-            <span className="tracking-wider uppercase text-[11px] font-semibold text-stone-400">FREE CASH FLOW (FCF)</span>
-            <span className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700">
-              <TrendingUp className="w-3.5 h-3.5" />
-            </span>
-          </div>
-          <div className="text-2xl sm:text-3xl font-bold text-emerald-700 tracking-tight font-mono tabular-nums">
-            {formatINR(baseline?.summary?.net_free_cash_flow || 0)}
-          </div>
-          <div className="text-xs text-stone-500 mt-1.5">
-            Capacity: <strong className="text-stone-700">{formatPercent(baseline?.summary?.savings_capacity_percent || 0)}</strong>
-          </div>
-        </Card>
+          {/* Supporting 3 Oversized Metric Columns */}
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+            <div className="space-y-1">
+              <div className="text-[11px] font-display font-bold uppercase tracking-wider text-stone-400">
+                Net Monthly Income
+              </div>
+              <div className="text-2xl sm:text-3xl font-display font-bold text-stone-950 tracking-tight tabular-nums">
+                {formatINR(baseline?.monthly_net_income || 0)}
+              </div>
+              <p className="text-[11px] text-stone-500 pt-1">Take-home earnings in INR</p>
+            </div>
 
-        <Card className="p-6">
-          <div className="flex items-center justify-between text-xs text-stone-500 font-medium mb-3">
-            <span className="tracking-wider uppercase text-[11px] font-semibold text-stone-400">EMERGENCY CUSHION</span>
-            <span className="p-1.5 rounded-lg bg-sky-50 text-sky-700">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-            </span>
-          </div>
-          <div className="text-2xl sm:text-3xl font-bold text-stone-950 tracking-tight font-mono tabular-nums">
-            {formatINR(baseline?.emergency_fund_balance || 0)}
-          </div>
-          <div className="text-xs text-stone-500 mt-1.5">Instant liquid buffer</div>
-        </Card>
+            <div className="space-y-1">
+              <div className="text-[11px] font-display font-bold uppercase tracking-wider text-stone-400">
+                Emergency Cushion
+              </div>
+              <div className="text-2xl sm:text-3xl font-display font-bold text-stone-950 tracking-tight tabular-nums">
+                {formatINR(baseline?.emergency_fund_balance || 0)}
+              </div>
+              <p className="text-[11px] text-stone-500 pt-1">Instant liquid reserves</p>
+            </div>
 
-        <Card className="p-6">
-          <div className="flex items-center justify-between text-xs text-stone-500 font-medium mb-3">
-            <span className="tracking-wider uppercase text-[11px] font-semibold text-stone-400">ACTIVE SAVINGS GOALS</span>
-            <span className="p-1.5 rounded-lg bg-stone-100 text-stone-600">
-              <Target className="w-3.5 h-3.5" />
-            </span>
+            <div className="space-y-1">
+              <div className="text-[11px] font-display font-bold uppercase tracking-wider text-stone-400">
+                Active Savings Goals
+              </div>
+              <div className="text-2xl sm:text-3xl font-display font-bold text-stone-950 tracking-tight tabular-nums">
+                {goals.length} <span className="text-xs font-sans font-normal text-stone-400">Targets</span>
+              </div>
+              <p className="text-[11px] text-stone-500 pt-1">Monitored for resilience</p>
+            </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-bold text-stone-950 tracking-tight font-mono tabular-nums">
-            {goals.length} <span className="text-sm font-sans font-normal text-stone-500">Goals</span>
-          </div>
-          <div className="text-xs text-stone-500 mt-1.5">Monitored for resilience</div>
-        </Card>
+        </div>
       </div>
 
       {/* Main Grid: Goals & Financial Baseline Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left 2 Cols: Goals List */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card className="p-6 sm:p-8">
-            <CardHeader
-              title="Active Savings Goals"
-              subtitle="Goals evaluated against cashflow viability and monthly commitment"
-              action={
-                <Link
-                  href="/goals"
-                  className="text-xs font-semibold text-stone-900 hover:text-emerald-700 inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-stone-200 hover:border-stone-300 transition-colors"
-                >
-                  Manage Goals <ArrowRight className="w-3 h-3" />
-                </Link>
-              }
-            />
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left 7-8 Cols: Goals List */}
+        <div className="lg:col-span-7 xl:col-span-8 space-y-6">
+          <div className="bg-white rounded-3xl border border-stone-200/80 p-6 sm:p-8 shadow-soft-sm">
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pb-5 border-b border-stone-100 mb-5">
+              <div>
+                <h3 className="font-serif italic text-2xl sm:text-3xl text-stone-950">Active Savings Goals</h3>
+                <p className="text-xs text-stone-500 mt-1">Goals evaluated against cashflow viability and monthly commitment</p>
+              </div>
+              <Link
+                href="/goals"
+                className="text-xs font-display font-semibold text-stone-900 hover:text-emerald-800 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200/80 transition-colors shrink-0"
+              >
+                Manage Goals <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
 
             {goals.length === 0 ? (
               <div className="py-14 text-center">
@@ -288,14 +292,14 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={() => setIsDemoModalOpen(true)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-stone-800 bg-stone-100 hover:bg-stone-200/70 border border-stone-200/80 rounded-full shadow-soft-sm transition-all active:scale-95"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-display font-semibold text-stone-800 bg-stone-100 hover:bg-stone-200/70 border border-stone-200/80 rounded-full shadow-soft-sm transition-all active:scale-95"
                   >
                     <Sparkles className="w-3.5 h-3.5 text-stone-600" />
                     Load Demo Scenarios
                   </button>
                   <Link
                     href="/goals"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-stone-900 hover:bg-stone-800 rounded-full shadow-soft-sm transition-all active:scale-95"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-display font-semibold text-white bg-stone-900 hover:bg-black rounded-full shadow-soft-sm transition-all active:scale-95"
                   >
                     Create Custom Goal
                   </Link>
@@ -308,11 +312,11 @@ export default function DashboardPage() {
                   const gHealth = goalHealthMap[g.id];
 
                   return (
-                    <div key={g.id} className="py-5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div key={g.id} className="py-6 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
                       <div className="space-y-2 flex-1">
                         <div className="flex flex-wrap items-center gap-2.5">
-                          <h4 className="font-semibold text-sm text-stone-950 tracking-tight">{g.name}</h4>
-                          <span className="text-[10px] uppercase px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 font-mono font-medium border border-stone-200/60">
+                          <h4 className="font-display font-semibold text-base text-stone-950 tracking-tight">{g.name}</h4>
+                          <span className="text-[10px] uppercase px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-700 font-display font-semibold border border-stone-200">
                             {g.category}
                           </span>
                           <span className="text-xs font-medium text-stone-500">
@@ -323,28 +327,28 @@ export default function DashboardPage() {
                           )}
                         </div>
 
-                        <div className="w-full bg-stone-100 rounded-full h-1.5 overflow-hidden mt-2">
+                        <div className="w-full bg-stone-100 rounded-full h-2 overflow-hidden mt-3">
                           <div
-                            className="bg-emerald-600 h-1.5 rounded-full transition-all"
+                            className="bg-emerald-700 h-2 rounded-full transition-all duration-500"
                             style={{ width: `${Math.min(100, Math.max(0, progressPct))}%` }}
                           />
                         </div>
-                        <div className="flex justify-between text-xs text-stone-500 pt-0.5">
-                          <span>Accumulated: <strong className="text-stone-700 font-mono">{formatINR(g.current_balance)}</strong></span>
-                          <span>Target: <strong className="text-stone-700 font-mono">{formatINR(g.target_amount)}</strong> ({progressPct.toFixed(0)}%)</span>
+                        <div className="flex justify-between text-xs text-stone-500 pt-1 tabular-nums">
+                          <span>Accumulated: <strong className="text-stone-800 font-semibold">{formatINR(g.current_balance)}</strong></span>
+                          <span>Target: <strong className="text-stone-800 font-semibold">{formatINR(g.target_amount)}</strong> ({progressPct.toFixed(0)}%)</span>
                         </div>
                       </div>
 
                       <div className="flex sm:flex-col items-end justify-between sm:justify-center border-t sm:border-t-0 pt-3 sm:pt-0 gap-2 shrink-0">
                         <div className="text-right">
-                          <div className="text-[10px] uppercase font-semibold text-stone-400 tracking-wider">Required Monthly</div>
-                          <div className="font-bold text-base text-stone-950 font-mono tabular-nums">
+                          <div className="text-[10px] uppercase font-display font-semibold text-stone-400 tracking-wider">Required Monthly</div>
+                          <div className="font-display font-bold text-lg text-stone-950 tabular-nums">
                             {formatINR(g.monthly_contribution || 0)}/mo
                           </div>
                         </div>
                         <Link
                           href={`/stress-test`}
-                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-700 hover:text-rose-800 bg-rose-50 hover:bg-rose-100/70 border border-rose-200/70 px-3 py-1 rounded-full transition-colors"
+                          className="inline-flex items-center gap-1.5 text-xs font-display font-semibold text-stone-900 bg-stone-100 hover:bg-stone-200/80 px-3.5 py-1.5 rounded-full transition-colors"
                         >
                           Stress-Test <ArrowRight className="w-3 h-3" />
                         </Link>
@@ -354,87 +358,87 @@ export default function DashboardPage() {
                 })}
               </div>
             )}
-          </Card>
+          </div>
 
-          {/* Quick Flow Navigation */}
+          {/* Quick Flow Navigation Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link href="/stress-test" className="block group">
-              <Card className="hover:border-stone-400 hover:shadow-card-hover transition-all p-5">
-                <span className="p-2 rounded-xl bg-rose-50 text-rose-600 inline-block mb-3 group-hover:scale-105 transition-transform">
+              <div className="rounded-2xl border border-stone-200/80 bg-white hover:border-stone-400 transition-all p-5 shadow-soft-sm">
+                <span className="p-2.5 rounded-xl bg-stone-100 text-rose-700 inline-block mb-3 group-hover:scale-105 transition-transform">
                   <ShieldAlert className="w-4 h-4" />
                 </span>
-                <h4 className="font-semibold text-sm text-stone-950 tracking-tight">Stress-Test Lab</h4>
+                <h4 className="font-display font-semibold text-sm text-stone-950 tracking-tight">Stress-Test Lab</h4>
                 <p className="text-xs text-stone-500 mt-1 leading-relaxed">
                   Test job disruption, medical costs, or compound cascades.
                 </p>
-              </Card>
+              </div>
             </Link>
 
             <Link href="/recovery" className="block group">
-              <Card className="hover:border-stone-400 hover:shadow-card-hover transition-all p-5">
-                <span className="p-2 rounded-xl bg-emerald-50 text-emerald-600 inline-block mb-3 group-hover:scale-105 transition-transform">
+              <div className="rounded-2xl border border-stone-200/80 bg-white hover:border-stone-400 transition-all p-5 shadow-soft-sm">
+                <span className="p-2.5 rounded-xl bg-stone-100 text-emerald-800 inline-block mb-3 group-hover:scale-105 transition-transform">
                   <RefreshCw className="w-4 h-4" />
                 </span>
-                <h4 className="font-semibold text-sm text-stone-950 tracking-tight">Recovery Planner</h4>
+                <h4 className="font-display font-semibold text-sm text-stone-950 tracking-tight">Recovery Planner</h4>
                 <p className="text-xs text-stone-500 mt-1 leading-relaxed">
                   Solve 3 deterministic paths (Aggressive, Balanced, Extended).
                 </p>
-              </Card>
+              </div>
             </Link>
 
             <Link href="/survival" className="block group">
-              <Card className="hover:border-stone-400 hover:shadow-card-hover transition-all p-5">
-                <span className="p-2 rounded-xl bg-sky-50 text-sky-600 inline-block mb-3 group-hover:scale-105 transition-transform">
+              <div className="rounded-2xl border border-stone-200/80 bg-white hover:border-stone-400 transition-all p-5 shadow-soft-sm">
+                <span className="p-2.5 rounded-xl bg-stone-100 text-stone-800 inline-block mb-3 group-hover:scale-105 transition-transform">
                   <TrendingUp className="w-4 h-4" />
                 </span>
-                <h4 className="font-semibold text-sm text-stone-950 tracking-tight">Goal Survival Map</h4>
+                <h4 className="font-display font-semibold text-sm text-stone-950 tracking-tight">Goal Survival Map</h4>
                 <p className="text-xs text-stone-500 mt-1 leading-relaxed">
                   Compare multi-month balance trajectories & safe zones.
                 </p>
-              </Card>
+              </div>
             </Link>
           </div>
         </div>
 
         {/* Right Col: Financial Baseline Summary */}
-        <div className="space-y-4">
-          <Card className="p-6 sm:p-7">
-            <CardHeader
-              title="Baseline Financial Profile"
-              subtitle="Verified income, fixed, and discretionary allocation"
-              action={
-                <Link
-                  href="/baseline"
-                  className="text-xs font-semibold text-stone-900 hover:text-emerald-700 px-3 py-1 rounded-full border border-stone-200 hover:border-stone-300 transition-colors"
-                >
-                  Edit
-                </Link>
-              }
-            />
+        <div className="lg:col-span-5 xl:col-span-4 sticky top-24">
+          <div className="rounded-3xl border border-stone-200/80 bg-white p-6 sm:p-7 shadow-soft-sm">
+            <div className="flex items-center justify-between pb-4 border-b border-stone-100 mb-4">
+              <div>
+                <h3 className="font-display font-semibold text-base text-stone-950 tracking-tight">Baseline Profile</h3>
+                <p className="text-xs text-stone-500">Verified cash flow allocation</p>
+              </div>
+              <Link
+                href="/baseline"
+                className="text-xs font-display font-semibold text-stone-900 hover:text-emerald-800 px-3 py-1 rounded-full bg-stone-100 hover:bg-stone-200/80 transition-colors"
+              >
+                Edit
+              </Link>
+            </div>
 
             {baseline ? (
               <div className="space-y-4 text-xs">
                 <div className="flex justify-between py-2.5 border-b border-stone-100">
-                  <span className="text-stone-600">Fixed Obligations</span>
-                  <span className="font-semibold text-stone-950 font-mono">
+                  <span className="text-stone-500">Fixed Obligations</span>
+                  <span className="font-semibold text-stone-950 tabular-nums font-display">
                     {formatINR(baseline.summary?.total_fixed_expenses || 0)}
                   </span>
                 </div>
                 <div className="flex justify-between py-2.5 border-b border-stone-100">
-                  <span className="text-stone-600">Discretionary Spending</span>
-                  <span className="font-semibold text-stone-950 font-mono">
+                  <span className="text-stone-500">Discretionary Spending</span>
+                  <span className="font-semibold text-stone-950 tabular-nums font-display">
                     {formatINR(baseline.summary?.total_discretionary_expenses || 0)}
                   </span>
                 </div>
                 <div className="flex justify-between py-2.5 border-b border-stone-100">
-                  <span className="text-stone-600">Debt Commitments</span>
-                  <span className="font-semibold text-stone-950 font-mono">
+                  <span className="text-stone-500">Debt Commitments</span>
+                  <span className="font-semibold text-stone-950 tabular-nums font-display">
                     {formatINR(baseline.summary?.total_debt_payments || 0)}
                   </span>
                 </div>
                 <div className="flex justify-between py-3 border-b border-stone-100 font-medium">
                   <span className="text-stone-950 font-semibold">Net Free Cash Flow</span>
-                  <span className="text-emerald-700 font-bold font-mono text-sm">
+                  <span className="text-emerald-800 font-bold font-display text-sm tabular-nums">
                     {formatINR(baseline.summary?.net_free_cash_flow || 0)}
                   </span>
                 </div>
@@ -443,7 +447,7 @@ export default function DashboardPage() {
                   <div className="text-xs text-stone-500 mb-2">Savings Margin Capacity</div>
                   <div className="w-full bg-stone-100 rounded-full h-2 overflow-hidden">
                     <div
-                      className="bg-emerald-600 h-2 rounded-full transition-all"
+                      className="bg-emerald-700 h-2 rounded-full transition-all"
                       style={{
                         width: `${Math.min(
                           100,
@@ -452,9 +456,9 @@ export default function DashboardPage() {
                       }}
                     />
                   </div>
-                  <div className="flex justify-between text-[11px] text-stone-400 mt-1.5">
+                  <div className="flex justify-between text-[11px] text-stone-400 mt-1.5 tabular-nums">
                     <span>Target Range: 20-30%</span>
-                    <span className="font-mono font-medium text-stone-700">
+                    <span className="font-display font-medium text-stone-700">
                       {formatPercent(baseline.summary?.savings_capacity_percent || 0)}
                     </span>
                   </div>
@@ -462,7 +466,7 @@ export default function DashboardPage() {
 
                 <div className="pt-4 mt-2 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-400">
                   <span>Standard: Indian Rupee (INR / ₹)</span>
-                  <span className="inline-flex items-center gap-1 text-emerald-700 font-medium">
+                  <span className="inline-flex items-center gap-1 text-emerald-800 font-medium">
                     <CheckCircle2 className="w-3.5 h-3.5" /> Engine Verified
                   </span>
                 </div>
@@ -472,13 +476,13 @@ export default function DashboardPage() {
                 <p>No financial baseline profile found.</p>
                 <Link
                   href="/baseline"
-                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-stone-900 text-white rounded-full text-xs font-semibold hover:bg-stone-800 transition-colors shadow-soft-sm"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-stone-900 text-white rounded-full text-xs font-semibold hover:bg-black transition-colors shadow-soft-sm"
                 >
                   Configure Baseline Profile <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             )}
-          </Card>
+          </div>
         </div>
       </div>
     </div>

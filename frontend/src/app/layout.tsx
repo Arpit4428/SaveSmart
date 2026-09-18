@@ -14,25 +14,25 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col bg-[#fafaf9] text-[#09090b] selection:bg-emerald-100 selection:text-emerald-900">
-        <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-stone-200/70 transition-all">
+      <body className="min-h-screen flex flex-col bg-[#faf9f6] text-[#141312] selection:bg-emerald-100 selection:text-emerald-950 font-sans antialiased">
+        <header className="sticky top-0 z-50 bg-[#faf9f6]/90 backdrop-blur-md border-b border-stone-200/60 transition-all">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div className="flex items-center gap-8">
               <Link href="/" className="flex items-center gap-2.5 group">
-                <span className="w-8 h-8 rounded-xl bg-stone-900 text-white flex items-center justify-center font-bold text-xs tracking-wider shadow-soft-sm group-hover:bg-emerald-700 transition-colors">
+                <span className="w-8 h-8 rounded-lg bg-stone-900 text-stone-100 flex items-center justify-center font-display font-bold text-xs tracking-wider shadow-soft-sm group-hover:bg-emerald-800 transition-colors">
                   SS
                 </span>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="font-semibold text-base tracking-tight text-stone-950">
+                <div className="flex items-baseline gap-2">
+                  <span className="font-display font-semibold text-base tracking-tight text-stone-950">
                     SaveSmart
                   </span>
-                  <span className="text-[10px] font-mono font-medium text-stone-500 bg-stone-100/80 px-1.5 py-0.5 rounded-md border border-stone-200/60">
+                  <span className="text-[10px] font-display font-medium text-stone-500 bg-stone-100/90 px-1.5 py-0.5 rounded-md border border-stone-200/60 tracking-wider">
                     INR / ₹
                   </span>
                 </div>
               </Link>
 
-              <nav className="hidden lg:flex items-center gap-1 bg-stone-100/70 p-1 rounded-full border border-stone-200/60 text-xs font-medium text-stone-600">
+              <nav className="hidden lg:flex items-center gap-1 bg-stone-200/40 p-1 rounded-full border border-stone-200/60 text-xs font-medium text-stone-600">
                 <Link
                   href="/"
                   className="px-3.5 py-1.5 rounded-full hover:text-stone-950 hover:bg-white hover:shadow-soft-sm transition-all"
@@ -73,9 +73,9 @@ export default function RootLayout({
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-stone-200/80 shadow-soft-sm text-xs font-medium text-stone-700">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[11px] text-stone-600">Engine Live</span>
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-stone-200/70 shadow-soft-sm text-xs font-medium text-stone-700">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                <span className="text-[11px] font-display font-medium text-stone-600">Engine Live</span>
               </div>
             </div>
           </div>

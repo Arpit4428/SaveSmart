@@ -30,6 +30,12 @@ async function runQA() {
     pageErrors.push(`[PAGE UNCAUGHT ERROR] ${err.message}`);
   });
 
+  page.on('response', (res) => {
+    if (res.status() >= 400) {
+      console.log(`   [HTTP ${res.status()}] ${res.url()}`);
+    }
+  });
+
   page.on('requestfailed', (req) => {
     requestFailures.push(`[REQUEST FAILED] ${req.method()} ${req.url()} - ${req.failure()?.errorText}`);
   });

@@ -121,14 +121,16 @@ export default function StressTestPage() {
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-stone-200/60 pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-stone-100 border border-stone-200/60 text-[11px] font-medium text-stone-600 mb-2">
-            <span>Step 3 of 5</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-100 border border-stone-200/80 text-[10px] font-mono font-medium text-stone-600 mb-3">
+            <span>STEP 3 OF 5</span>
             <span className="text-stone-300">•</span>
-            <span>Disruption Simulation</span>
+            <span>DISRUPTION SIMULATION</span>
           </div>
-          <h1 className="text-3xl font-semibold text-stone-950 tracking-tight">Stress-Test Lab & Cascade Sequencer</h1>
-          <p className="text-sm text-stone-500 mt-1 max-w-2xl">
-            Subject your goal to realistic income disruptions, emergency medical bills, inflation, and cascading crises deterministically.
+          <h1 className="text-3xl sm:text-4xl font-display font-bold text-stone-950 tracking-tight">
+            Stress-Test Lab & Cascade Sequencer
+          </h1>
+          <p className="text-base sm:text-lg text-stone-600 mt-2 max-w-3xl font-serif italic">
+            Subject your savings target to realistic income cuts, medical shocks, inflation, and compounding crises deterministically.
           </p>
         </div>
       </div>
@@ -141,10 +143,12 @@ export default function StressTestPage() {
       )}
 
       {/* Goal & Mode Selection Bar */}
-      <Card className="p-4">
+      <Card className="p-4 sm:p-5">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3 w-full sm:w-auto">
-            <label className="text-xs font-semibold text-stone-700 tracking-wider uppercase whitespace-nowrap">TARGET GOAL:</label>
+            <label className="text-[10px] font-mono font-semibold text-stone-500 tracking-wider uppercase whitespace-nowrap">
+              TARGET GOAL:
+            </label>
             <select
               value={selectedGoalId}
               onChange={(e) => setSelectedGoalId(e.target.value)}
@@ -158,11 +162,11 @@ export default function StressTestPage() {
             </select>
           </div>
 
-          <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-full self-stretch sm:self-auto text-xs font-medium border border-stone-200/60">
+          <div className="flex items-center gap-1 bg-stone-100/80 p-1 rounded-full self-stretch sm:self-auto text-xs font-medium border border-stone-200/60">
             <button
               onClick={() => setMode("single")}
               className={`flex-1 sm:flex-none px-4 py-1.5 rounded-full transition-all text-xs font-medium ${
-                mode === "single" ? "bg-white text-stone-950 shadow-soft-sm" : "text-stone-600 hover:text-stone-950"
+                mode === "single" ? "bg-white text-stone-950 shadow-soft-sm font-semibold" : "text-stone-600 hover:text-stone-950"
               }`}
             >
               Single Shock
@@ -170,7 +174,7 @@ export default function StressTestPage() {
             <button
               onClick={() => setMode("cascade")}
               className={`flex-1 sm:flex-none px-4 py-1.5 rounded-full transition-all text-xs font-medium ${
-                mode === "cascade" ? "bg-white text-stone-950 shadow-soft-sm" : "text-stone-600 hover:text-stone-950"
+                mode === "cascade" ? "bg-white text-stone-950 shadow-soft-sm font-semibold" : "text-stone-600 hover:text-stone-950"
               }`}
             >
               Cascade Mode (Multi-Shock)
@@ -415,67 +419,70 @@ export default function StressTestPage() {
         <div className="lg:col-span-7 xl:col-span-8 space-y-6">
           {simResult ? (
             <>
-              {/* Top Result Indicators */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <Card className="p-4">
-                  <div className="text-stone-500 text-[11px] font-medium tracking-wider uppercase">RESILIENCE SCORE</div>
-                  <div className="text-2xl font-bold text-stone-950 mt-1 tabular-nums">
-                    {simResult.resilience_score}/100
+              {/* Top Result Indicators: Sleek Open Strip */}
+              <div className="rounded-2xl border border-stone-200/80 bg-white shadow-soft-sm overflow-hidden divide-y sm:divide-y-0 sm:divide-x divide-stone-200/80 grid grid-cols-2 sm:grid-cols-4">
+                <div className="p-5 space-y-1">
+                  <div className="text-stone-500 text-[10px] font-mono font-semibold tracking-wider uppercase">RESILIENCE SCORE</div>
+                  <div className="text-3xl font-display font-bold text-stone-950 tabular-nums tracking-tight">
+                    {simResult.resilience_score}<span className="text-sm font-normal text-stone-400">/100</span>
                   </div>
-                  <Badge grade={simResult.resilience_grade} className="mt-2" />
-                </Card>
+                  <div className="pt-1">
+                    <Badge grade={simResult.resilience_grade} />
+                  </div>
+                </div>
 
-                <Card className="p-4">
-                  <div className="text-stone-500 text-[11px] font-medium tracking-wider uppercase">DEADLINE SLIPPAGE</div>
-                  <div className="text-2xl font-bold text-amber-700 mt-1 tabular-nums">
-                    +{simResult.stressed.slippage_months} Mos
+                <div className="p-5 space-y-1">
+                  <div className="text-stone-500 text-[10px] font-mono font-semibold tracking-wider uppercase">DEADLINE SLIPPAGE</div>
+                  <div className="text-3xl font-display font-bold text-amber-700 tabular-nums tracking-tight">
+                    +{simResult.stressed.slippage_months} <span className="text-xs font-normal text-stone-500">Mos</span>
                   </div>
-                  <div className="text-[11px] text-stone-400 mt-1">
+                  <div className="text-[11px] text-stone-400">
                     Finished at M{simResult.stressed.completion_month || 36}
                   </div>
-                </Card>
+                </div>
 
-                <Card className="p-4">
-                  <div className="text-stone-500 text-[11px] font-medium tracking-wider uppercase">CAPITAL SHORTFALL</div>
-                  <div className="text-2xl font-bold text-rose-700 mt-1 tabular-nums">
+                <div className="p-5 space-y-1">
+                  <div className="text-stone-500 text-[10px] font-mono font-semibold tracking-wider uppercase">CAPITAL SHORTFALL</div>
+                  <div className="text-3xl font-display font-bold text-rose-700 tabular-nums tracking-tight">
                     {formatINR(simResult.stressed.capital_deficit)}
                   </div>
-                  <div className="text-[11px] text-stone-400 mt-1">At initial deadline</div>
-                </Card>
+                  <div className="text-[11px] text-stone-400">At initial deadline</div>
+                </div>
 
-                <Card className="p-4">
-                  <div className="text-stone-500 text-[11px] font-medium tracking-wider uppercase">MINIMUM LIQUIDITY</div>
-                  <div className="text-2xl font-bold text-stone-950 mt-1 tabular-nums">
+                <div className="p-5 space-y-1">
+                  <div className="text-stone-500 text-[10px] font-mono font-semibold tracking-wider uppercase">MINIMUM LIQUIDITY</div>
+                  <div className="text-3xl font-display font-bold text-stone-950 tabular-nums tracking-tight">
                     {formatINR(simResult.stressed.minimum_cash_buffer)}
                   </div>
-                  <div className="text-[11px] text-stone-500 mt-1">
+                  <div className="text-[11px] font-medium text-stone-600 flex items-center gap-1.5">
+                    <span className={`w-2 h-2 rounded-full ${simResult.stressed.buffer_exhausted ? "bg-rose-600" : "bg-emerald-600"}`} />
                     {simResult.stressed.buffer_exhausted ? "Buffer Depleted" : "Buffer Preserved"}
                   </div>
-                </Card>
+                </div>
               </div>
 
               {/* Insolvency Warning Card */}
               {simResult.cascade_triggered_insolvency && (
-                <div className="p-4 rounded-xl bg-rose-50 border border-rose-200/80 text-rose-900 text-xs space-y-1.5 shadow-soft-sm">
-                  <div className="flex items-center gap-2 font-semibold text-sm text-rose-950">
+                <div className="p-5 rounded-2xl bg-rose-50/80 border border-rose-200 text-rose-950 text-xs space-y-2 shadow-soft-sm">
+                  <div className="flex items-center gap-2 font-display font-bold text-sm text-rose-950">
                     <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
                     Critical Insolvency Triggered!
                   </div>
-                  <p className="leading-relaxed">
+                  <p className="leading-relaxed text-rose-800">
                     Emergency cushion was fully exhausted in Month {simResult.insolvency_first_month}. Peak cashflow deficit reached {formatINR(simResult.peak_deficit)}. Immediate recovery planning is required to avoid default.
                   </p>
                 </div>
               )}
 
               {/* Interactive Recharts Trajectory */}
-              <Card>
+              <Card className="p-6 sm:p-7">
                 <CardHeader
                   title="Goal Trajectory: Baseline vs. Stressed Simulation"
                   subtitle="Monthly cumulative goal balance projection in INR (₹)"
                   action={
                     <Link
                       href="/recovery"
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-white bg-stone-900 hover:bg-black rounded-full transition-colors shadow-soft-sm"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-stone-950 hover:bg-black rounded-full transition-colors shadow-soft-sm"
                     >
                       Compare Recovery Plans <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
@@ -501,12 +508,12 @@ export default function StressTestPage() {
 
               {/* CASCADE MODE: Financial Chain Reaction Visualization */}
               {simResult.chain_reaction_steps && simResult.chain_reaction_steps.length > 0 && (
-                <Card className="p-6">
-                  <div className="flex items-center justify-between pb-4 border-b border-stone-200/80 mb-5">
+                <Card className="p-6 sm:p-7">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-stone-200/80 mb-5">
                     <div>
                       <div className="flex items-center gap-2">
                         <Zap className="w-4 h-4 text-amber-600" />
-                        <h3 className="font-semibold text-stone-950 text-base tracking-tight">
+                        <h3 className="font-display font-bold text-stone-950 text-base tracking-tight">
                           Financial Chain Reaction (Cascade Breakdown)
                         </h3>
                       </div>
@@ -514,39 +521,39 @@ export default function StressTestPage() {
                         Step-by-step mathematical transmission explaining how compounded shocks erode goal solvency
                       </p>
                     </div>
-                    <span className="text-xs font-mono font-medium bg-stone-100 text-stone-700 border border-stone-200 px-2.5 py-1 rounded-full">
+                    <span className="text-xs font-mono font-medium bg-stone-100 text-stone-700 border border-stone-200 px-3 py-1 rounded-full self-start sm:self-auto">
                       {simResult.chain_reaction_steps.length} Sequenced Steps
                     </span>
                   </div>
 
                   {/* Progressive 5-Stage Visual Transmission Pipeline */}
-                  <div className="mb-6 p-4 rounded-xl bg-stone-50 border border-stone-200/80">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-stone-500 mb-3">
+                  <div className="mb-6 p-4 rounded-2xl bg-stone-50 border border-stone-200/80">
+                    <div className="text-[10px] font-mono font-semibold uppercase tracking-wider text-stone-500 mb-3">
                       Compounding Transmission Pipeline
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 text-center text-xs">
-                      <div className="p-3 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm">
-                        <div className="font-bold text-[10px] text-stone-600 uppercase">1. Trigger</div>
+                      <div className="p-3.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm relative">
+                        <div className="font-mono font-bold text-[10px] text-stone-500 uppercase">1. Trigger</div>
                         <div className="font-semibold text-stone-950 text-xs mt-0.5">Macro / Life Shock</div>
                         <div className="text-[10px] text-stone-400 mt-0.5">Disruption begins</div>
                       </div>
-                      <div className="p-3 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm">
-                        <div className="font-bold text-[10px] text-stone-600 uppercase">2. Cash-Flow</div>
+                      <div className="p-3.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm relative">
+                        <div className="font-mono font-bold text-[10px] text-stone-500 uppercase">2. Cash-Flow</div>
                         <div className="font-semibold text-stone-950 text-xs mt-0.5">Inflow Cut</div>
                         <div className="text-[10px] text-stone-400 mt-0.5">Net cashflow drops</div>
                       </div>
-                      <div className="p-3 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm">
-                        <div className="font-bold text-[10px] text-stone-600 uppercase">3. Reserves</div>
+                      <div className="p-3.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm relative">
+                        <div className="font-mono font-bold text-[10px] text-stone-500 uppercase">3. Reserves</div>
                         <div className="font-semibold text-stone-950 text-xs mt-0.5">Buffer Absorbs</div>
                         <div className="text-[10px] text-stone-400 mt-0.5">Emergency fund burns</div>
                       </div>
-                      <div className="p-3 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm">
-                        <div className="font-bold text-[10px] text-stone-600 uppercase">4. Savings</div>
+                      <div className="p-3.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm relative">
+                        <div className="font-mono font-bold text-[10px] text-stone-500 uppercase">4. Savings</div>
                         <div className="font-semibold text-stone-950 text-xs mt-0.5">Savings Paused</div>
                         <div className="text-[10px] text-stone-400 mt-0.5">Goal monthly cut</div>
                       </div>
-                      <div className="p-3 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm">
-                        <div className="font-bold text-[10px] text-stone-600 uppercase">5. Outcome</div>
+                      <div className="p-3.5 rounded-xl bg-white border border-stone-200/80 shadow-soft-sm relative">
+                        <div className="font-mono font-bold text-[10px] text-stone-500 uppercase">5. Outcome</div>
                         <div className="font-semibold text-stone-950 text-xs mt-0.5">Deadline Delay</div>
                         <div className="text-[10px] text-stone-400 mt-0.5">Target slippage</div>
                       </div>
@@ -620,12 +627,12 @@ export default function StressTestPage() {
 
               {/* WHY DID MY GOAL FAIL? Root-Cause Diagnostic Card */}
               {simResult.failure_diagnostic && (
-                <Card className="p-6 border-stone-300">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-stone-200/80 mb-5">
+                <div className="p-6 sm:p-7 rounded-2xl border border-stone-200/80 bg-white shadow-soft-sm space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-stone-200/80">
                     <div>
                       <div className="flex items-center gap-2">
                         <AlertTriangle className="w-4 h-4 text-amber-600" />
-                        <h3 className="font-semibold text-stone-950 text-base tracking-tight">
+                        <h3 className="font-display font-bold text-stone-950 text-base tracking-tight">
                           Deterministic Root-Cause Analysis: &ldquo;Why Did My Goal Fail / Become Fragile?&rdquo;
                         </h3>
                       </div>
@@ -633,38 +640,38 @@ export default function StressTestPage() {
                         Quantitative attribution without AI speculation — directly derived from verified engine mechanics
                       </p>
                     </div>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-medium bg-stone-100 text-stone-800 border border-stone-200">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-mono font-medium bg-stone-100 text-stone-800 border border-stone-200 uppercase self-start sm:self-auto">
                       Driver: {simResult.failure_diagnostic.primary_vulnerability}
                     </span>
                   </div>
 
                   {/* Headline & 4-metric Summary */}
-                  <div className="bg-stone-50 rounded-xl p-4 border border-stone-200/70 mb-5">
-                    <div className="font-semibold text-stone-950 text-xs mb-3">
+                  <div className="bg-stone-50 rounded-2xl p-5 border border-stone-200/70 space-y-4">
+                    <div className="font-serif italic text-sm text-stone-900 leading-snug">
                       {simResult.failure_diagnostic.headline}
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs pt-1 border-t border-stone-200/60">
                       <div>
-                        <div className="text-[11px] text-stone-500">Cash-Flow Contraction</div>
-                        <div className="font-bold tabular-nums text-rose-700 mt-0.5">
-                          {formatINR(simResult.failure_diagnostic.cashflow_drop_monthly)}/mo
+                        <div className="text-[10px] font-mono text-stone-500 uppercase">Cash-Flow Contraction</div>
+                        <div className="font-display font-bold tabular-nums text-rose-700 text-lg mt-0.5">
+                          {formatINR(simResult.failure_diagnostic.cashflow_drop_monthly)}<span className="text-xs font-normal">/mo</span>
                         </div>
                       </div>
                       <div>
-                        <div className="text-[11px] text-stone-500">Emergency Buffer Absorbed</div>
-                        <div className="font-bold tabular-nums text-stone-950 mt-0.5">
+                        <div className="text-[10px] font-mono text-stone-500 uppercase">Buffer Absorbed</div>
+                        <div className="font-display font-bold tabular-nums text-stone-950 text-lg mt-0.5">
                           {formatINR(simResult.failure_diagnostic.buffer_absorbed_total)}
                         </div>
                       </div>
                       <div>
-                        <div className="text-[11px] text-stone-500">Monthly Contribution Cut</div>
-                        <div className="font-bold tabular-nums text-amber-700 mt-0.5">
-                          {formatINR(simResult.failure_diagnostic.contribution_drop_monthly)}/mo
+                        <div className="text-[10px] font-mono text-stone-500 uppercase">Monthly Contribution Cut</div>
+                        <div className="font-display font-bold tabular-nums text-amber-700 text-lg mt-0.5">
+                          {formatINR(simResult.failure_diagnostic.contribution_drop_monthly)}<span className="text-xs font-normal">/mo</span>
                         </div>
                       </div>
                       <div>
-                        <div className="text-[11px] text-stone-500">Deadline Delay</div>
-                        <div className="font-bold tabular-nums text-stone-950 mt-0.5">
+                        <div className="text-[10px] font-mono text-stone-500 uppercase">Deadline Delay</div>
+                        <div className="font-display font-bold tabular-nums text-stone-950 text-lg mt-0.5">
                           +{simResult.failure_diagnostic.deadline_slippage_months} Mos
                         </div>
                       </div>
@@ -672,29 +679,29 @@ export default function StressTestPage() {
                   </div>
 
                   {/* 5-Step Numbered Root Causes */}
-                  <div className="space-y-2 text-xs">
-                    <div className="font-semibold text-stone-900 text-xs uppercase tracking-wider mb-2">
+                  <div className="space-y-2.5 text-xs">
+                    <div className="font-mono font-semibold text-stone-900 text-[10px] uppercase tracking-wider mb-2">
                       Failure Progression Sequence:
                     </div>
                     {simResult.failure_diagnostic.root_causes.map((cause, idx) => (
-                      <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-stone-50/50 border border-stone-200/60 text-stone-700 shadow-soft-sm">
-                        <span className="w-5 h-5 rounded-full bg-stone-200 text-stone-800 font-semibold text-[11px] flex items-center justify-center shrink-0 mt-0.5">
+                      <div key={idx} className="flex items-start gap-3 p-3.5 rounded-xl bg-stone-50/50 border border-stone-200/70 text-stone-700 shadow-soft-sm">
+                        <span className="w-5 h-5 rounded-full bg-stone-900 text-white font-mono font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
                           {idx + 1}
                         </span>
                         <span className="leading-relaxed">{cause}</span>
                       </div>
                     ))}
                   </div>
-                </Card>
+                </div>
               )}
 
               {/* Next Steps Transition Hub */}
-              <div className="p-6 rounded-2xl bg-stone-900 text-white shadow-soft-md flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+              <div className="p-6 sm:p-7 rounded-2xl bg-stone-950 text-white shadow-soft-md flex flex-col sm:flex-row sm:items-center justify-between gap-5">
                 <div>
-                  <div className="text-[11px] font-semibold uppercase tracking-wider text-emerald-400">
+                  <div className="text-[10px] font-mono font-semibold uppercase tracking-wider text-emerald-400">
                     Next Analytical Steps
                   </div>
-                  <h4 className="font-semibold text-base text-white mt-1">
+                  <h4 className="font-display font-bold text-base text-white mt-1">
                     Navigate Stressed Trajectory & Recovery Options
                   </h4>
                   <p className="text-xs text-stone-400 mt-1 max-w-xl leading-relaxed">
@@ -704,13 +711,13 @@ export default function StressTestPage() {
                 <div className="flex flex-wrap items-center gap-3 shrink-0">
                   <Link
                     href="/survival"
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-stone-900 bg-white hover:bg-stone-100 rounded-xl transition-colors shadow-soft-sm"
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-stone-950 bg-white hover:bg-stone-100 rounded-full transition-colors shadow-soft-sm"
                   >
                     Goal Survival Map <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                   <Link
                     href="/recovery"
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors shadow-soft-sm"
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-white bg-emerald-700 hover:bg-emerald-800 rounded-full transition-colors shadow-soft-sm"
                   >
                     Recovery Planner <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
