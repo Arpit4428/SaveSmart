@@ -41,9 +41,33 @@ async function runQA() {
 
   try {
     // ----------------------------------------------------
-    // STEP 1: CREATE A GOAL & CHECK HEALTH WITH FINGERPRINT
+    // STEP 1: SAVE A FINANCIAL BASELINE
     // ----------------------------------------------------
-    console.log('👉 Step 1: Navigating to /goals...');
+    console.log('👉 Step 1: Navigating to /baseline...');
+    await page.goto('http://localhost:3000/baseline', { waitUntil: 'networkidle' });
+
+    console.log('   Configuring Monthly Baseline Profile in INR...');
+    const incomeInput = page.locator('input[min="0"][step="1000"]').first();
+    await incomeInput.fill('150000');
+
+    const emergencyInput = page.locator('input[min="0"][step="1000"]').nth(1);
+    await emergencyInput.fill('400000');
+
+    const rentInput = page.locator('input[min="0"][step="500"]').first();
+    await rentInput.fill('40000');
+
+    await page.click('button:has-text("Save Baseline Profile")');
+    await page.waitForTimeout(2000);
+
+    const successMsg = page.locator('text=/saved successfully/i').first();
+    await successMsg.waitFor({ state: 'visible', timeout: 5000 });
+    await page.screenshot({ path: path.join(screenshotsDir, '01_baseline_saved.png') });
+    console.log('   ✅ Financial Baseline saved & verified successfully! Screenshot captured.');
+
+    // ----------------------------------------------------
+    // STEP 2: CREATE A GOAL & CHECK HEALTH WITH FINGERPRINT
+    // ----------------------------------------------------
+    console.log('\n👉 Step 2: Navigating to /goals...');
     await page.goto('http://localhost:3000/goals', { waitUntil: 'networkidle' });
 
     console.log('   Creating Goal: "Dream Home Down Payment"...');
@@ -88,32 +112,8 @@ async function runQA() {
       console.log('   ✅ AI Explanation generated and verified in Goal Health Modal!');
     }
     
-    await page.screenshot({ path: path.join(screenshotsDir, '01_goal_health.png') });
+    await page.screenshot({ path: path.join(screenshotsDir, '02_goal_health.png') });
     console.log('   ✅ Goal Health with 5-axis Fingerprint & AI Card verified! Screenshot captured.');
-
-    // ----------------------------------------------------
-    // STEP 2: SAVE A FINANCIAL BASELINE
-    // ----------------------------------------------------
-    console.log('\n👉 Step 2: Navigating to /baseline...');
-    await page.goto('http://localhost:3000/baseline', { waitUntil: 'networkidle' });
-
-    console.log('   Configuring Monthly Baseline Profile in INR...');
-    const incomeInput = page.locator('input[min="0"][step="1000"]').first();
-    await incomeInput.fill('150000');
-
-    const emergencyInput = page.locator('input[min="0"][step="1000"]').nth(1);
-    await emergencyInput.fill('400000');
-
-    const rentInput = page.locator('input[min="0"][step="500"]').first();
-    await rentInput.fill('40000');
-
-    await page.click('button:has-text("Save Baseline Profile")');
-    await page.waitForTimeout(2000);
-
-    const successMsg = page.locator('text=/saved successfully/i').first();
-    await successMsg.waitFor({ state: 'visible', timeout: 5000 });
-    await page.screenshot({ path: path.join(screenshotsDir, '02_baseline_saved.png') });
-    console.log('   ✅ Financial Baseline saved & verified successfully! Screenshot captured.');
 
     // ----------------------------------------------------
     // STEP 3: OPEN DASHBOARD
@@ -126,6 +126,19 @@ async function runQA() {
 
     const baselineIncome = page.locator('text=/1,50,000/i').first();
     await baselineIncome.waitFor({ state: 'visible', timeout: 5000 });
+
+    // Test 1-Click Demo Presets Modal
+    console.log('   Testing 1-Click Demo Presets Modal...');
+    const demoPresetBtn = page.locator('button:has-text("Demo Presets")').first();
+    await demoPresetBtn.click();
+    await page.waitForTimeout(600);
+    const modalTitle = page.locator('text=/Load Hackathon Demo Scenario/i').first();
+    await modalTitle.waitFor({ state: 'visible', timeout: 5000 });
+    const closeBtn = page.locator('div.fixed.inset-0 button').first();
+    await closeBtn.click();
+    await page.waitForTimeout(500);
+    console.log('   ✅ 1-Click Demo Presets Modal verified!');
+
     await page.screenshot({ path: path.join(screenshotsDir, '03_dashboard.png') });
     console.log('   ✅ Dashboard loaded verified Goal and Baseline data from backend APIs! Screenshot captured.');
 

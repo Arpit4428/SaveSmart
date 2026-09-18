@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { api } from "@/lib/api-client";
 import { Goal, SurvivalMapData } from "@/types/api";
 import { formatINR } from "@/lib/utils";
@@ -18,6 +19,7 @@ import {
   Clock,
   TrendingDown,
   Compass,
+  ArrowRight,
 } from "lucide-react";
 
 export default function SurvivalMapPage() {
@@ -250,6 +252,8 @@ export default function SurvivalMapPage() {
               recoveredCurve={survivalData.curves.recovered_balanced}
               targetAmount={survivalData.target_amount || selectedGoal?.target_amount}
               targetDeadlineMonths={survivalData.target_deadline_months || selectedGoal?.target_months}
+              firstUnsafeMonth={survivalData.first_unsafe_month}
+              recoveryPointMonth={survivalData.recovery_point_month}
             />
           </Card>
 
@@ -310,6 +314,27 @@ export default function SurvivalMapPage() {
               </table>
             </div>
           </Card>
+
+          {/* Next Step Transition CTA */}
+          <div className="p-5 rounded-xl bg-gradient-to-r from-emerald-50 via-white to-blue-50 border border-emerald-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-emerald-800">
+                Recommended Next Step
+              </div>
+              <h4 className="font-bold text-slate-900 text-sm mt-0.5">
+                Compare Recovery Pathways for This Disruption
+              </h4>
+              <p className="text-xs text-slate-600 mt-1">
+                Evaluate deterministic trade-offs between aggressive flexible spending cuts and extended completion deadlines.
+              </p>
+            </div>
+            <Link
+              href="/recovery"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-xs transition-colors shrink-0"
+            >
+              Open Adaptive Recovery Planner <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
 
           {/* Transparent Assumptions Ledger */}
           {survivalData.assumption_ledger && (

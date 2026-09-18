@@ -511,6 +511,40 @@ export default function StressTestPage() {
                     </span>
                   </div>
 
+                  {/* Progressive 5-Stage Visual Transmission Pipeline */}
+                  <div className="mb-5 p-4 rounded-xl bg-slate-50 border border-slate-200/80">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-3">
+                      Compounding Transmission Pipeline
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 text-center text-xs">
+                      <div className="p-2.5 rounded-lg bg-white border border-rose-200 shadow-2xs">
+                        <div className="font-bold text-[10px] text-rose-600 uppercase">1. Trigger</div>
+                        <div className="font-bold text-slate-900 text-xs mt-0.5">Macro / Life Shock</div>
+                        <div className="text-[10px] text-slate-500 mt-0.5">Disruption begins</div>
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-white border border-rose-200 shadow-2xs">
+                        <div className="font-bold text-[10px] text-rose-600 uppercase">2. Cash-Flow</div>
+                        <div className="font-bold text-slate-900 text-xs mt-0.5">Inflow Cut</div>
+                        <div className="text-[10px] text-slate-500 mt-0.5">Net cashflow drops</div>
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-white border border-amber-200 shadow-2xs">
+                        <div className="font-bold text-[10px] text-amber-600 uppercase">3. Reserves</div>
+                        <div className="font-bold text-slate-900 text-xs mt-0.5">Buffer Absorbs</div>
+                        <div className="text-[10px] text-slate-500 mt-0.5">Emergency fund burns</div>
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-white border border-amber-200 shadow-2xs">
+                        <div className="font-bold text-[10px] text-amber-600 uppercase">4. Savings</div>
+                        <div className="font-bold text-slate-900 text-xs mt-0.5">Savings Paused</div>
+                        <div className="text-[10px] text-slate-500 mt-0.5">Goal monthly cut</div>
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-white border border-rose-200 shadow-2xs">
+                        <div className="font-bold text-[10px] text-rose-600 uppercase">5. Outcome</div>
+                        <div className="font-bold text-slate-900 text-xs mt-0.5">Deadline Delay</div>
+                        <div className="text-[10px] text-slate-500 mt-0.5">Target slippage</div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="space-y-3">
                     {simResult.chain_reaction_steps.map((step) => (
                       <div
@@ -645,6 +679,35 @@ export default function StressTestPage() {
                   </div>
                 </Card>
               )}
+
+              {/* Next Steps Transition Hub */}
+              <div className="p-5 rounded-xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">
+                    Next Analytical Steps
+                  </div>
+                  <h4 className="font-bold text-sm mt-0.5">
+                    Navigate Stressed Trajectory & Recovery Options
+                  </h4>
+                  <p className="text-xs text-slate-300 mt-1">
+                    Examine your safe buffer runway on the Survival Map, then solve deterministic recovery strategies.
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                  <Link
+                    href="/survival"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-900 bg-white hover:bg-slate-100 rounded-lg shadow-xs transition-colors"
+                  >
+                    Goal Survival Map <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                  <Link
+                    href="/recovery"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-xs transition-colors"
+                  >
+                    Recovery Planner <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
 
               {/* Financial Resilience Fingerprint */}
               {simResult.resilience_fingerprint && (

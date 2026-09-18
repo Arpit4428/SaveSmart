@@ -1,9 +1,10 @@
-﻿"""
+"""
 SaveSmart MongoDB Atlas Connection Lifecycle
 Manages Motor AsyncIOMotorClient with resilient error handling and ping verification.
 """
 import logging
 from typing import Optional
+import certifi
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from app.core.config import settings
 
@@ -32,7 +33,9 @@ async def connect_to_mongo() -> None:
         db_manager.client = AsyncIOMotorClient(
             uri,
             serverSelectionTimeoutMS=5000,
-            connectTimeoutMS=5000
+            connectTimeoutMS=5000,
+            tlsCAFile=certifi.where(),
+            tlsAllowInvalidCertificates=True,
         )
         db_manager.database = db_manager.client[settings.MONGODB_DB_NAME]
         # Ping to verify connectivity

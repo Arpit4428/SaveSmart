@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/Badge";
 import { ResilienceFingerprint } from "@/components/ui/ResilienceFingerprint";
 import { AssumptionLedger } from "@/components/ui/AssumptionLedger";
 import { AIExplanationCard } from "@/components/ui/AIExplanationCard";
-import { Plus, Trash2, ShieldCheck, AlertCircle, RefreshCw, X } from "lucide-react";
+import Link from "next/link";
+import { Plus, Trash2, ShieldCheck, AlertCircle, RefreshCw, X, ArrowRight } from "lucide-react";
 
 export default function GoalsPage() {
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -292,6 +293,16 @@ export default function GoalsPage() {
                   {healthReport.assumption_ledger && (
                     <AssumptionLedger ledger={healthReport.assumption_ledger} />
                   )}
+
+                  <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
+                    <span className="text-slate-500 font-medium">Ready to test against disruptions?</span>
+                    <Link
+                      href="/stress-test"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded-lg text-xs transition-colors shadow-sm"
+                    >
+                      Stress-Test This Goal <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
                 </div>
               ) : null}
             </Card>

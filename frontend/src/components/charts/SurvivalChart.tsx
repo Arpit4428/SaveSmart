@@ -20,6 +20,8 @@ interface SurvivalChartProps {
   recoveredCurve?: number[];
   targetAmount?: number;
   targetDeadlineMonths?: number;
+  firstUnsafeMonth?: number | null;
+  recoveryPointMonth?: number | null;
   height?: number | string;
 }
 
@@ -29,6 +31,8 @@ export function SurvivalChart({
   recoveredCurve,
   targetAmount,
   targetDeadlineMonths,
+  firstUnsafeMonth,
+  recoveryPointMonth,
   height = "20rem",
 }: SurvivalChartProps) {
   const maxLen = Math.max(
@@ -39,15 +43,15 @@ export function SurvivalChart({
 
   const data = Array.from({ length: maxLen }, (_, i) => ({
     month: `M${i}`,
-    Baseline: baselineCurve[i] !== undefined ? Math.round(baselineCurve[i]) : null,
-    Stressed: stressedCurve[i] !== undefined ? Math.round(stressedCurve[i]) : null,
-    Recovered: recoveredCurve && recoveredCurve[i] !== undefined ? Math.round(recoveredCurve[i]) : null,
+    "Baseline (Undisturbed)": baselineCurve[i] !== undefined ? Math.round(baselineCurve[i]) : null,
+    "Stressed (Disrupted)": stressedCurve[i] !== undefined ? Math.round(stressedCurve[i]) : null,
+    "Recovered (Strategy)": recoveredCurve && recoveredCurve[i] !== undefined ? Math.round(recoveredCurve[i]) : null,
   }));
 
   return (
     <div className="w-full" style={{ height }}>
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 15, right: 25, left: 10, bottom: 5 }}>
+        <LineChart data={data} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
           <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#64748b" }} />
           <YAxis
@@ -56,59 +60,99 @@ export function SurvivalChart({
           />
           <Tooltip
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            formatter={(val: any) => [
+            formatter={(val: any, name: any) => [
               val !== undefined && val !== null ? formatINR(Number(val)) : "N/A",
-              "",
+              String(name),
             ]}
+            labelFormatter={(label) => `Timeline Point: ${label}`}
             contentStyle={{
               backgroundColor: "#ffffff",
               border: "1px solid #e2e8f0",
               borderRadius: "8px",
               fontSize: "12px",
+              boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.05)",
             }}
           />
-          <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} />
+          <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "12px" }} />
 
-          {/* Target Amount Reference Line */}
+          {/* Target Amount Horizontal Reference Line */}
           {targetAmount && targetAmount > 0 && (
             <ReferenceLine
               y={targetAmount}
               stroke="#64748b"
               strokeDasharray="4 4"
+              strokeWidth={1.5}
               label={{
                 value: `Goal Target (${formatINR(targetAmount)})`,
                 fill: "#475569",
                 fontSize: 10,
                 position: "insideTopRight",
+                fontWeight: 600,
               }}
             />
           )}
 
-          {/* Target Deadline Reference Line */}
+          {/* Target Deadline Vertical Reference Line */}
           {targetDeadlineMonths && targetDeadlineMonths < maxLen && (
             <ReferenceLine
               x={`M${targetDeadlineMonths}`}
               stroke="#94a3b8"
               strokeDasharray="3 3"
+              strokeWidth={1.5}
               label={{
                 value: `Deadline (M${targetDeadlineMonths})`,
                 fill: "#64748b",
                 fontSize: 10,
                 position: "insideTopLeft",
+                fontWeight: 500,
+              }}
+            />
+          )}
+
+          {/* First Unsafe Month / Point of Insolvency */}
+          {firstUnsafeMonth !== undefined && firstUnsafeMonth !== null && firstUnsafeMonth > 0 && firstUnsafeMonth < maxLen && (
+            <ReferenceLine
+              x={`M${firstUnsafeMonth}`}
+              stroke="#e11d48"
+              strokeDasharray="3 3"
+              strokeWidth={1.5}
+              label={{
+                value: `Unsafe Point (M${firstUnsafeMonth})`,
+                fill: "#e11d48",
+                fontSize: 10,
+                position: "insideBottomLeft",
+                fontWeight: 600,
+              }}
+            />
+          )}
+
+          {/* Recovery Point / Parity Month */}
+          {recoveryPointMonth !== undefined && recoveryPointMonth !== null && recoveryPointMonth > 0 && recoveryPointMonth < maxLen && (
+            <ReferenceLine
+              x={`M${recoveryPointMonth}`}
+              stroke="#059669"
+              strokeDasharray="3 3"
+              strokeWidth={1.5}
+              label={{
+                value: `Recovery Point (M${recoveryPointMonth})`,
+                fill: "#059669",
+                fontSize: 10,
+                position: "insideBottomRight",
+                fontWeight: 600,
               }}
             />
           )}
 
           <Line
             type="monotone"
-            dataKey="Baseline"
+            dataKey="Baseline (Undisturbed)"
             stroke="#2563eb"
             strokeWidth={2}
             dot={false}
           />
           <Line
             type="monotone"
-            dataKey="Stressed"
+            dataKey="Stressed (Disrupted)"
             stroke="#e11d48"
             strokeWidth={2}
             strokeDasharray="4 4"
@@ -117,7 +161,7 @@ export function SurvivalChart({
           {recoveredCurve && (
             <Line
               type="monotone"
-              dataKey="Recovered"
+              dataKey="Recovered (Strategy)"
               stroke="#059669"
               strokeWidth={2.5}
               dot={false}

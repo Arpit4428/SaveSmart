@@ -5,7 +5,8 @@ import { api } from "@/lib/api-client";
 import { BaselineProfile } from "@/types/api";
 import { formatINR, formatPercent } from "@/lib/utils";
 import { Card, CardHeader } from "@/components/ui/Card";
-import { Plus, Trash2, CheckCircle2, AlertCircle, RefreshCw, Save } from "lucide-react";
+import Link from "next/link";
+import { Plus, Trash2, CheckCircle2, AlertCircle, RefreshCw, Save, ArrowRight } from "lucide-react";
 
 export default function BaselinePage() {
   const [loading, setLoading] = useState(true);
@@ -105,9 +106,17 @@ export default function BaselinePage() {
       </div>
 
       {savedSuccess && (
-        <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-          <span>Baseline saved successfully! Free cash flow recalculated deterministically by Financial Engine.</span>
+        <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>Baseline saved successfully! Free cash flow recalculated deterministically by Financial Engine.</span>
+          </div>
+          <Link
+            href="/stress-test"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg text-xs transition-colors shrink-0 shadow-sm"
+          >
+            Proceed to Stress-Test Lab <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
       )}
 

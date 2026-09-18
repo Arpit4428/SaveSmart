@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { api } from "@/lib/api-client";
 import { Goal, RecoveryPlan, RecoveryPlansResponseData } from "@/types/api";
 import { formatINR, formatPercent } from "@/lib/utils";
@@ -149,7 +150,32 @@ export default function RecoveryPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {plans.map((plan) => {
               const isSelected = plan.plan_id === selectedPlanId;
-              const isRecommended = plan.plan_id === "balanced";
+
+              // Trade-off profiles for the 3 neutral strategies
+              const tradeOffProfile =
+                plan.plan_id === "aggressive"
+                  ? {
+                      pressure: "High",
+                      pressureColor: "text-rose-700 bg-rose-50 border-rose-200",
+                      lifestyle: "Deep Cuts (-50%)",
+                      deadline: "On-Time Target",
+                      buffer: "Max Buffer Preserved",
+                    }
+                  : plan.plan_id === "extended"
+                  ? {
+                      pressure: "Low",
+                      pressureColor: "text-blue-700 bg-blue-50 border-blue-200",
+                      lifestyle: "Minor Cuts (-15%)",
+                      deadline: `Extended (+${plan.slippage_months} mos)`,
+                      buffer: "Slow Buffer Recovery",
+                    }
+                  : {
+                      pressure: "Moderate",
+                      pressureColor: "text-emerald-700 bg-emerald-50 border-emerald-200",
+                      lifestyle: "Balanced Cuts (-30%)",
+                      deadline: `Mild Delay (+${plan.slippage_months} mos)`,
+                      buffer: "Balanced Buffer",
+                    };
 
               return (
                 <div
@@ -161,18 +187,17 @@ export default function RecoveryPage() {
                       : "border-slate-200 bg-white hover:border-slate-300"
                   }`}
                 >
-                  {isRecommended && (
-                    <span className="absolute -top-3 left-4 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">
-                      Recommended
-                    </span>
-                  )}
-
                   <div className="space-y-3">
                     <div className="flex justify-between items-start">
                       <div>
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${tradeOffProfile.pressureColor}`}>
+                            {tradeOffProfile.pressure} Pressure
+                          </span>
+                        </div>
                         <h3 className="font-bold text-slate-900 text-base">{plan.name}</h3>
                         <p className="text-xs text-slate-500 mt-0.5">
-                          Finishes at Month {plan.target_completion_month} (+{plan.slippage_months} mos)
+                          Finishes Month {plan.target_completion_month} (+{plan.slippage_months} mos)
                         </p>
                       </div>
                       <Badge variant={plan.feasibility_score >= 80 ? "success" : "info"}>
@@ -342,6 +367,27 @@ export default function RecoveryPage() {
               </div>
             </Card>
           )}
+
+          {/* Next Step Transition CTA to Survival Map */}
+          <div className="p-5 rounded-xl bg-gradient-to-r from-blue-50 via-white to-emerald-50 border border-blue-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-blue-800">
+                Integrated Visualization
+              </div>
+              <h4 className="font-bold text-slate-900 text-sm mt-0.5">
+                Validate Recovered Curve on Goal Survival Map
+              </h4>
+              <p className="text-xs text-slate-600 mt-1">
+                Observe how your selected recovery plan repairs your liquid buffer runway and overcomes capital shortfalls.
+              </p>
+            </div>
+            <Link
+              href="/survival"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs transition-colors shrink-0"
+            >
+              View on Goal Survival Map <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
 
           {/* Assumption Ledger */}
           {recoveryData?.assumption_ledger && (
