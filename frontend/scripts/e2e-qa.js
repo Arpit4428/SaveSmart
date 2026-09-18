@@ -127,7 +127,7 @@ async function runQA() {
     console.log('\n👉 Step 3: Navigating to / (Landing Page)...');
     await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
 
-    const landingHeading = page.locator('text=/SAVE SMART/i').first();
+    const landingHeading = page.locator('h1:has-text("SaveSmart")').first();
     await landingHeading.waitFor({ state: 'visible', timeout: 5000 });
 
     const enterBtn = page.locator('a:has-text("Enter SaveSmart")').first();
@@ -312,7 +312,7 @@ async function runQA() {
     
     // Check Landing Page on Mobile
     await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
-    const mobileLandingTitle = page.locator('text=/SAVE SMART/i').first();
+    const mobileLandingTitle = page.locator('h1:has-text("SaveSmart")').first();
     await mobileLandingTitle.waitFor({ state: 'visible', timeout: 5000 });
     await page.screenshot({ path: path.join(screenshotsDir, '07_mobile_landing.png') });
 
