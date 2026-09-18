@@ -2,7 +2,7 @@
 SaveSmart Goal Survival Map Schemas
 Pydantic models for survival map curves and threshold parameters in INR (₹).
 """
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 from app.schemas.simulation import ShockEventSchema
 
@@ -20,3 +20,15 @@ class SurvivalMapResponse(BaseModel):
     insolvency_threshold: float
     safe_buffer_threshold: float
     curves: Dict[str, List[float]]
+    target_amount: float = 0.0
+    target_deadline_months: int = 0
+    first_unsafe_month: Optional[int] = None
+    max_drawdown: float = 0.0
+    deadline_slippage: int = 0
+    capital_shortfall: float = 0.0
+    recovery_point_month: Optional[int] = None
+    final_status: str = "SURVIVED"
+    survival_verdict: str = ""
+    buffer_curves: Optional[Dict[str, List[float]]] = None
+    assumption_ledger: Optional[Dict[str, Any]] = None
+

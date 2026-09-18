@@ -1,13 +1,16 @@
-﻿"""
+"""
 SaveSmart Deterministic Financial Engine
 Pure Python financial calculation, shock simulation, health scoring, and recovery planner.
 Zero external network, database, or LLM dependencies.
 All values denominated in Indian Rupees (INR / ₹).
 """
 from .models import (
+    AssumptionLedger,
     BaselineProfile,
+    ChainReactionStep,
     DebtCommitment,
     DiscretionaryExpenses,
+    FailureDiagnostic,
     FixedExpenses,
     GoalHealthReport,
     GoalPriority,
@@ -15,6 +18,7 @@ from .models import (
     HealthRiskFactor,
     MonthlySnapshot,
     RecoveryPlan,
+    ResilienceFingerprint,
     ResilienceGrade,
     ShockEvent,
     ShockType,
@@ -37,10 +41,13 @@ from .shocks import (
 )
 from .cascade import (
     analyze_simulation_results,
+    generate_chain_reaction_steps,
     simulate_cascade_progression,
 )
 from .health import (
+    compute_resilience_fingerprint,
     compute_resilience_score,
+    diagnose_goal_failure,
     evaluate_baseline_goal_health,
     get_resilience_grade,
 )

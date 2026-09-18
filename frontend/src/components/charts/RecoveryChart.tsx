@@ -14,38 +14,40 @@ import {
 } from "recharts";
 import { formatINR } from "@/lib/utils";
 
-interface SurvivalChartProps {
-  baselineCurve: number[];
-  stressedCurve: number[];
-  recoveredCurve?: number[];
+interface RecoveryChartProps {
+  aggressiveCurve?: number[];
+  balancedCurve?: number[];
+  extendedCurve?: number[];
+  stressedCurve?: number[];
   targetAmount?: number;
   targetDeadlineMonths?: number;
-  height?: number | string;
 }
 
-export function SurvivalChart({
-  baselineCurve,
+export function RecoveryChart({
+  aggressiveCurve,
+  balancedCurve,
+  extendedCurve,
   stressedCurve,
-  recoveredCurve,
   targetAmount,
   targetDeadlineMonths,
-  height = "20rem",
-}: SurvivalChartProps) {
+}: RecoveryChartProps) {
   const maxLen = Math.max(
-    baselineCurve.length,
-    stressedCurve.length,
-    recoveredCurve?.length || 0
+    aggressiveCurve?.length || 0,
+    balancedCurve?.length || 0,
+    extendedCurve?.length || 0,
+    stressedCurve?.length || 0
   );
 
   const data = Array.from({ length: maxLen }, (_, i) => ({
     month: `M${i}`,
-    Baseline: baselineCurve[i] !== undefined ? Math.round(baselineCurve[i]) : null,
-    Stressed: stressedCurve[i] !== undefined ? Math.round(stressedCurve[i]) : null,
-    Recovered: recoveredCurve && recoveredCurve[i] !== undefined ? Math.round(recoveredCurve[i]) : null,
+    Aggressive: aggressiveCurve && aggressiveCurve[i] !== undefined ? Math.round(aggressiveCurve[i]) : null,
+    Balanced: balancedCurve && balancedCurve[i] !== undefined ? Math.round(balancedCurve[i]) : null,
+    Extended: extendedCurve && extendedCurve[i] !== undefined ? Math.round(extendedCurve[i]) : null,
+    Stressed: stressedCurve && stressedCurve[i] !== undefined ? Math.round(stressedCurve[i]) : null,
   }));
 
   return (
-    <div className="w-full" style={{ height }}>
+    <div className="w-full h-80">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 15, right: 25, left: 10, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -76,7 +78,7 @@ export function SurvivalChart({
               stroke="#64748b"
               strokeDasharray="4 4"
               label={{
-                value: `Goal Target (${formatINR(targetAmount)})`,
+                value: `Target (${formatINR(targetAmount)})`,
                 fill: "#475569",
                 fontSize: 10,
                 position: "insideTopRight",
@@ -91,7 +93,7 @@ export function SurvivalChart({
               stroke="#94a3b8"
               strokeDasharray="3 3"
               label={{
-                value: `Deadline (M${targetDeadlineMonths})`,
+                value: `Original Deadline (M${targetDeadlineMonths})`,
                 fill: "#64748b",
                 fontSize: 10,
                 position: "insideTopLeft",
@@ -99,27 +101,47 @@ export function SurvivalChart({
             />
           )}
 
-          <Line
-            type="monotone"
-            dataKey="Baseline"
-            stroke="#2563eb"
-            strokeWidth={2}
-            dot={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="Stressed"
-            stroke="#e11d48"
-            strokeWidth={2}
-            strokeDasharray="4 4"
-            dot={false}
-          />
-          {recoveredCurve && (
+          {/* Stressed Curve */}
+          {stressedCurve && (
             <Line
               type="monotone"
-              dataKey="Recovered"
+              dataKey="Stressed"
+              stroke="#e11d48"
+              strokeWidth={1.5}
+              strokeDasharray="4 4"
+              dot={false}
+            />
+          )}
+
+          {/* Aggressive Curve */}
+          {aggressiveCurve && (
+            <Line
+              type="monotone"
+              dataKey="Aggressive"
+              stroke="#8b5cf6"
+              strokeWidth={2}
+              dot={false}
+            />
+          )}
+
+          {/* Balanced Curve */}
+          {balancedCurve && (
+            <Line
+              type="monotone"
+              dataKey="Balanced"
               stroke="#059669"
               strokeWidth={2.5}
+              dot={false}
+            />
+          )}
+
+          {/* Extended Curve */}
+          {extendedCurve && (
+            <Line
+              type="monotone"
+              dataKey="Extended"
+              stroke="#2563eb"
+              strokeWidth={2}
               dot={false}
             />
           )}

@@ -2,7 +2,7 @@
 
 > **Hackathon Track:** Fintech / Financial Resilience & Goal Stress-Testing  
 > **Currency Standard:** Indian Rupee (INR / ₹)  
-> **Status:** Phase 1 (Engine + Backend + MongoDB) & Phase 2 (Next.js 15 Frontend UI) Completed. Ready for Phase 3 (Gemini AI Explainer Layer).  
+> **Status:** Phase 1 (Engine + Backend + MongoDB), Phase 2 (Next.js 15 Frontend UI), and Phase 3 (SaveSmart Differentiation Features) COMPLETED.  
 > **Last Updated:** 2026-09-18  
 
 ---
@@ -42,15 +42,15 @@ SaveSmart empowers everyday savers to:
 
 | ID | Feature Name | Description | Module Path | Status | Primary Owner |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **F-01** | **Goal Builder** | Define target amount (₹), deadline, priority, category, and initial balance. | `backend/app/api/v1/goals.py`<br>`frontend/src/app/goals/` | 📝 Planned (Contracts Ready) | Backend + Frontend |
-| **F-02** | **Financial Baseline** | Track net income, fixed obligations, discretionary spending, emergency savings, and debt liabilities (all in ₹). | `backend/app/api/v1/baseline.py`<br>`frontend/src/app/baseline/` | 📝 Planned (Contracts Ready) | Backend + Financial Engine |
-| **F-03** | **Stress-Test Lab** | Apply single shocks (income loss, medical spike, inflation, loan hike) to project impact. | `backend/app/engine/shocks.py`<br>`frontend/src/app/stress-test/` | 📝 Planned (Math Spec Ready) | Financial Engine |
-| **F-04** | **Goal Health Score** | Compute Resilience Score (0–100), Target Slippage (months), Buffer Runaway, and Deficit (₹). | `backend/app/engine/health.py`<br>`frontend/src/components/goal/` | 📝 Planned (Math Spec Ready) | Financial Engine |
-| **F-05** | **Scenario Comparator** | Side-by-side comparison of baseline trajectory vs. stressed scenarios. | `backend/app/api/v1/scenarios.py`<br>`frontend/src/components/charts/` | 📝 Planned (Contracts Ready) | Frontend + Engine |
-| **F-06** | **Adaptive Recovery Planner** | Solves 3 deterministic recovery paths (Aggressive, Balanced, Extended Timeline). | `backend/app/engine/recovery.py`<br>`frontend/src/app/recovery/` | 📝 Planned (Math Spec Ready) | Financial Engine |
-| **F-07** | **Goal Survival Map** | Multi-month timeline projection showing cash balances, safety buffer, and insolvency thresholds in ₹. | `backend/app/engine/survival.py`<br>`frontend/src/app/survival/` | 📝 Planned (Math Spec Ready) | Financial Engine + Frontend |
-| **F-08** | **Cascade Mode** | Simulates compounding shocks in sequence (e.g. Month 2 Job Loss + Month 4 Medical Emergency). | `backend/app/engine/cascade.py`<br>`frontend/src/components/stress-test/` | 📝 Planned (Math Spec Ready) | Financial Engine |
-| **F-09** | **Gemini Explainer Layer** | Ingests verified simulation JSON and generates executive summaries and coaching without altering numbers. | `backend/app/services/gemini_explainer.py`<br>`frontend/src/components/ai/` | 📝 Planned (Prompts Spec Ready) | AI & Integration |
+| **F-01** | **Goal Builder** | Define target amount (₹), deadline, priority, category, and initial balance. | `backend/app/api/v1/goals.py`<br>`frontend/src/app/goals/` | ✅ Complete | Backend + Frontend |
+| **F-02** | **Financial Baseline** | Track net income, fixed obligations, discretionary spending, emergency savings, and debt liabilities (all in ₹). | `backend/app/api/v1/baseline.py`<br>`frontend/src/app/baseline/` | ✅ Complete | Backend + Financial Engine |
+| **F-03** | **Stress-Test Lab** | Apply single shocks (income loss, medical spike, inflation, loan hike) to project impact. | `backend/app/engine/shocks.py`<br>`frontend/src/app/stress-test/` | ✅ Complete | Financial Engine |
+| **F-04** | **Goal Health Score** | Compute Resilience Score (0–100), Target Slippage (months), Buffer Runaway, Deficit (₹), and 5-axis Fingerprint. | `backend/app/engine/health.py`<br>`frontend/src/app/goals/` | ✅ Complete | Financial Engine |
+| **F-05** | **Scenario Comparator** | Side-by-side comparison of baseline trajectory vs. stressed scenarios. | `backend/app/api/v1/survival.py`<br>`frontend/src/components/charts/` | ✅ Complete | Frontend + Engine |
+| **F-06** | **Adaptive Recovery Planner** | Solves 3 deterministic recovery paths (Aggressive, Balanced, Extended) with visual trajectory comparator & trade-off matrix. | `backend/app/engine/recovery.py`<br>`frontend/src/app/recovery/` | ✅ Complete | Financial Engine |
+| **F-07** | **Goal Survival Map** | Multi-month timeline projection with Survival Verdict, first unsafe month, max drawdown, shortfall, and buffer runway in ₹. | `backend/app/engine/survival.py`<br>`frontend/src/app/survival/` | ✅ Complete | Financial Engine + Frontend |
+| **F-08** | **Cascade Mode** | Financial Chain Reaction sequencer simulating compounding multi-shock transmission with deterministic failure diagnosis. | `backend/app/engine/cascade.py`<br>`frontend/src/app/stress-test/` | ✅ Complete | Financial Engine |
+| **F-09** | **Gemini Explainer Layer** | Ingests verified simulation JSON and generates executive summaries and coaching without altering numbers. | `backend/app/services/gemini_explainer.py`<br>`frontend/src/components/ai/` | 📝 Planned (Phase 4) | AI & Integration |
 
 ---
 

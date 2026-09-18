@@ -1,4 +1,4 @@
-﻿"""
+"""
 SaveSmart Financial Engine — Cascade Simulation & Liquidity Propagation
 Pure deterministic multi-shock simulator modeling compound sequence effects on cashflow,
 emergency fund depletion, insolvency events, and goal savings slippage.
@@ -8,6 +8,7 @@ import math
 from typing import List, Optional, Tuple
 from .models import (
     BaselineProfile,
+    ChainReactionStep,
     GoalSpec,
     MonthlySnapshot,
     ShockEvent,
@@ -212,3 +213,113 @@ def analyze_simulation_results(
     )
 
     return (baseline_summary, stressed_summary, stressed_snaps)
+
+
+def generate_chain_reaction_steps(
+    baseline: BaselineProfile,
+    goal: GoalSpec,
+    shocks: List[ShockEvent],
+    snapshots: List[MonthlySnapshot],
+    stressed_summary: StressedSimulationSummary
+) -> List[ChainReactionStep]:
+    """
+    Constructs a deterministic sequence of financial chain-reaction steps
+    demonstrating the propagation of shocks across liquidity and goals.
+    """
+    steps: List[ChainReactionStep] = []
+    c_target = compute_required_monthly_contribution(goal)
+    base_fcf = baseline.net_free_cash_flow
+    b0 = baseline.emergency_fund_balance
+
+    # Step 1: Initial Baseline
+    steps.append(
+        ChainReactionStep(
+            step_number=1,
+            title="Initial Financial Equilibrium",
+            timing="Month 0",
+            shock_type="baseline",
+            monthly_cashflow_impact=0.0,
+            remaining_buffer=b0,
+            monthly_contribution_change=0.0,
+            goal_impact_description=(
+                f"Stable baseline: Free cash flow of ₹{base_fcf:,.2f}/month comfortably covers "
+                f"the required monthly savings rate of ₹{c_target:,.2f}/month with ₹{b0:,.2f} liquid reserve."
+            ),
+            cumulative_delay_added=0,
+            is_critical=False
+        )
+    )
+
+    # Subsequent shock steps
+    step_num = 2
+    for idx, shock in enumerate(shocks):
+        start_m = shock.start_month
+        end_m = min(len(snapshots), shock.start_month + shock.duration_months - 1)
+        snap = snapshots[end_m - 1] if end_m <= len(snapshots) and end_m > 0 else snapshots[-1]
+
+        cf_impact = round(snap.free_cash_flow - base_fcf, 2)
+        contrib_impact = round(snap.goal_contribution - c_target, 2)
+        is_crit = snap.emergency_buffer_balance <= 0.0 or snap.is_insolvent
+
+        desc = shock.description or f"{shock.shock_type.value.replace('_', ' ').title()}"
+        timing_str = f"Month {start_m}" if shock.duration_months == 1 else f"Months {start_m}–{end_m}"
+
+        detail_parts = [
+            f"{desc} hit cash flow by ₹{abs(cf_impact):,.2f}/month."
+        ]
+        if snap.emergency_buffer_balance < b0:
+            drained = b0 - snap.emergency_buffer_balance
+            detail_parts.append(f"Liquid buffer absorbed ₹{drained:,.2f} in emergency deficits (balance: ₹{snap.emergency_buffer_balance:,.2f}).")
+        if contrib_impact < 0:
+            detail_parts.append(f"Goal monthly contribution reduced from ₹{c_target:,.2f} to ₹{snap.goal_contribution:,.2f}.")
+        if is_crit:
+            detail_parts.append("CRITICAL: Safety buffer completely depleted, triggering capital insolvency risk!")
+
+        steps.append(
+            ChainReactionStep(
+                step_number=step_num,
+                title=f"Shock {idx + 1}: {desc}",
+                timing=timing_str,
+                shock_type=shock.shock_type.value,
+                monthly_cashflow_impact=cf_impact,
+                remaining_buffer=snap.emergency_buffer_balance,
+                monthly_contribution_change=contrib_impact,
+                goal_impact_description=" ".join(detail_parts),
+                cumulative_delay_added=max(0, stressed_summary.slippage_months // max(1, len(shocks)) * (idx + 1)),
+                is_critical=is_crit
+            )
+        )
+        step_num += 1
+
+    # Final Step: Compounded Outcome
+    outcome_crit = stressed_summary.insolvency_triggered or stressed_summary.buffer_exhausted
+    if len(shocks) > 1:
+        compounded_text = (
+            f"Chain Reaction Outcome: Multi-shock sequencing produced compounding disruption. "
+            f"Total timeline slippage reached {stressed_summary.slippage_months} months with "
+            f"₹{stressed_summary.capital_deficit:,.2f} unfunded gap at deadline. "
+            + ("Critical insolvency triggered!" if stressed_summary.insolvency_triggered else "Liquid buffer preserved minimum threshold.")
+        )
+    else:
+        compounded_text = (
+            f"Simulation Outcome: Single disruption caused {stressed_summary.slippage_months} months delay "
+            f"and minimum liquidity fell to ₹{stressed_summary.minimum_cash_buffer:,.2f}."
+        )
+
+    steps.append(
+        ChainReactionStep(
+            step_number=step_num,
+            title="Compounded Systemic Outcome",
+            timing=f"Horizon (Month {len(snapshots)})",
+            shock_type="outcome",
+            monthly_cashflow_impact=round(stressed_summary.peak_deficit, 2),
+            remaining_buffer=stressed_summary.minimum_cash_buffer,
+            monthly_contribution_change=0.0,
+            goal_impact_description=compounded_text,
+            cumulative_delay_added=stressed_summary.slippage_months,
+            is_critical=outcome_crit
+        )
+    )
+
+    return steps
+

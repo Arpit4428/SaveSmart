@@ -14,40 +14,36 @@ import {
 } from "recharts";
 import { formatINR } from "@/lib/utils";
 
-interface SurvivalChartProps {
+interface BufferRunwayChartProps {
   baselineCurve: number[];
   stressedCurve: number[];
   recoveredCurve?: number[];
-  targetAmount?: number;
-  targetDeadlineMonths?: number;
-  height?: number | string;
+  safeBufferThreshold?: number;
 }
 
-export function SurvivalChart({
+export function BufferRunwayChart({
   baselineCurve,
   stressedCurve,
   recoveredCurve,
-  targetAmount,
-  targetDeadlineMonths,
-  height = "20rem",
-}: SurvivalChartProps) {
+  safeBufferThreshold,
+}: BufferRunwayChartProps) {
   const maxLen = Math.max(
-    baselineCurve.length,
-    stressedCurve.length,
+    baselineCurve?.length || 0,
+    stressedCurve?.length || 0,
     recoveredCurve?.length || 0
   );
 
   const data = Array.from({ length: maxLen }, (_, i) => ({
     month: `M${i}`,
-    Baseline: baselineCurve[i] !== undefined ? Math.round(baselineCurve[i]) : null,
-    Stressed: stressedCurve[i] !== undefined ? Math.round(stressedCurve[i]) : null,
-    Recovered: recoveredCurve && recoveredCurve[i] !== undefined ? Math.round(recoveredCurve[i]) : null,
+    "Baseline Buffer": baselineCurve && baselineCurve[i] !== undefined ? Math.round(baselineCurve[i]) : null,
+    "Stressed Buffer": stressedCurve && stressedCurve[i] !== undefined ? Math.round(stressedCurve[i]) : null,
+    "Recovered Buffer": recoveredCurve && recoveredCurve[i] !== undefined ? Math.round(recoveredCurve[i]) : null,
   }));
 
   return (
-    <div className="w-full" style={{ height }}>
+    <div className="w-full h-72">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 15, right: 25, left: 10, bottom: 5 }}>
+        <LineChart data={data} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
           <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#64748b" }} />
           <YAxis
@@ -69,30 +65,23 @@ export function SurvivalChart({
           />
           <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} />
 
-          {/* Target Amount Reference Line */}
-          {targetAmount && targetAmount > 0 && (
-            <ReferenceLine
-              y={targetAmount}
-              stroke="#64748b"
-              strokeDasharray="4 4"
-              label={{
-                value: `Goal Target (${formatINR(targetAmount)})`,
-                fill: "#475569",
-                fontSize: 10,
-                position: "insideTopRight",
-              }}
-            />
-          )}
+          {/* Insolvency line at y=0 */}
+          <ReferenceLine
+            y={0}
+            stroke="#e11d48"
+            strokeDasharray="2 2"
+            label={{ value: "Insolvency (₹0)", fill: "#e11d48", fontSize: 10, position: "insideBottomLeft" }}
+          />
 
-          {/* Target Deadline Reference Line */}
-          {targetDeadlineMonths && targetDeadlineMonths < maxLen && (
+          {/* Safe buffer threshold */}
+          {safeBufferThreshold && safeBufferThreshold > 0 && (
             <ReferenceLine
-              x={`M${targetDeadlineMonths}`}
-              stroke="#94a3b8"
+              y={safeBufferThreshold}
+              stroke="#d97706"
               strokeDasharray="3 3"
               label={{
-                value: `Deadline (M${targetDeadlineMonths})`,
-                fill: "#64748b",
+                value: `Safe Buffer (${formatINR(safeBufferThreshold)})`,
+                fill: "#d97706",
                 fontSize: 10,
                 position: "insideTopLeft",
               }}
@@ -101,14 +90,14 @@ export function SurvivalChart({
 
           <Line
             type="monotone"
-            dataKey="Baseline"
+            dataKey="Baseline Buffer"
             stroke="#2563eb"
             strokeWidth={2}
             dot={false}
           />
           <Line
             type="monotone"
-            dataKey="Stressed"
+            dataKey="Stressed Buffer"
             stroke="#e11d48"
             strokeWidth={2}
             strokeDasharray="4 4"
@@ -117,9 +106,9 @@ export function SurvivalChart({
           {recoveredCurve && (
             <Line
               type="monotone"
-              dataKey="Recovered"
+              dataKey="Recovered Buffer"
               stroke="#059669"
-              strokeWidth={2.5}
+              strokeWidth={2}
               dot={false}
             />
           )}

@@ -38,6 +38,56 @@ class MonthlyTimelinePoint(BaseModel):
     emergency_buffer_balance: float = 0.0
 
 
+class ChainReactionStepSchema(BaseModel):
+    step_number: int
+    title: str
+    timing: str
+    shock_type: str
+    monthly_cashflow_impact: float
+    remaining_buffer: float
+    monthly_contribution_change: float
+    goal_impact_description: str
+    cumulative_delay_added: int
+    is_critical: bool = False
+
+
+class FailureDiagnosticSchema(BaseModel):
+    headline: str
+    root_causes: List[str]
+    primary_vulnerability: str
+    contribution_drop_monthly: float
+    cashflow_drop_monthly: float
+    buffer_absorbed_total: float
+    deadline_slippage_months: int
+    capital_loss_at_deadline: float
+
+
+class AssumptionLedgerSchema(BaseModel):
+    monthly_net_income: float
+    total_fixed_expenses: float
+    total_discretionary_expenses: float
+    total_debt_payments: float
+    emergency_fund_balance: float
+    goal_name: str
+    goal_target_amount: float
+    goal_initial_balance: float
+    goal_target_months: int
+    base_monthly_contribution: float
+    shocks_count: int
+    shocks_applied: List[dict]
+    simulation_horizon_months: int
+
+
+class ResilienceFingerprintSchema(BaseModel):
+    buffer_strength: float
+    cashflow_flexibility: float
+    debt_pressure_safety: float
+    goal_capacity_cushion: float
+    shock_recovery_velocity: float
+    overall_score: float
+    overall_grade: str
+
+
 class BaselineSummaryResult(BaseModel):
     completion_month: Optional[int]
     final_balance: float
@@ -64,3 +114,8 @@ class SimulationResponse(BaseModel):
     baseline: BaselineSummaryResult
     stressed: StressedSummaryResult
     monthly_timeline: List[MonthlyTimelinePoint]
+    chain_reaction_steps: List[ChainReactionStepSchema] = Field(default_factory=list)
+    failure_diagnostic: Optional[FailureDiagnosticSchema] = None
+    assumption_ledger: Optional[AssumptionLedgerSchema] = None
+    resilience_fingerprint: Optional[ResilienceFingerprintSchema] = None
+

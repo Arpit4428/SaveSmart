@@ -47,8 +47,10 @@ def test_simulate_single_shock_endpoint(client, test_goal_id):
     assert data["currency"] == "INR"
     assert 0.0 <= data["resilience_score"] <= 100.0
     assert "baseline" in data
-    assert "stressed" in data
-    assert len(data["monthly_timeline"]) > 0
+    assert "resilience_fingerprint" in data
+    assert "failure_diagnostic" in data
+    assert "assumption_ledger" in data
+    assert len(data["chain_reaction_steps"]) > 0
 
 
 def test_simulate_cascade_shocks_endpoint(client, test_goal_id):
@@ -76,6 +78,8 @@ def test_simulate_cascade_shocks_endpoint(client, test_goal_id):
     assert data["goal_id"] == test_goal_id
     assert "resilience_score" in data
     assert "cascade_triggered_insolvency" in data
+    assert "chain_reaction_steps" in data
+    assert len(data["chain_reaction_steps"]) == 4  # baseline + 2 shocks + outcome
 
 
 def test_recovery_plans_endpoint(client, test_goal_id):
@@ -99,6 +103,12 @@ def test_recovery_plans_endpoint(client, test_goal_id):
     assert "aggressive" in plan_ids
     assert "balanced" in plan_ids
     assert "extended" in plan_ids
+    assert "curves" in data
+    assert "assumption_ledger" in data
+    for p in data["plans"]:
+        assert len(p["trajectory_curve"]) > 0
+        assert len(p["pros"]) > 0
+        assert len(p["trade_offs"]) > 0
 
 
 def test_survival_map_endpoint(client, test_goal_id):
@@ -115,3 +125,8 @@ def test_survival_map_endpoint(client, test_goal_id):
     assert "baseline" in data["curves"]
     assert "stressed" in data["curves"]
     assert "recovered_balanced" in data["curves"]
+    assert "target_amount" in data
+    assert "final_status" in data
+    assert "survival_verdict" in data
+    assert "assumption_ledger" in data
+

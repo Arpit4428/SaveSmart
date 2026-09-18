@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 async function runQA() {
-  console.log('🚀 Starting SaveSmart End-to-End QA Pass...\n');
+  console.log('🚀 Starting SaveSmart Phase 3 End-to-End QA Pass...\n');
 
   const screenshotsDir = path.join(__dirname, 'screenshots');
   if (!fs.existsSync(screenshotsDir)) {
@@ -41,7 +41,7 @@ async function runQA() {
 
   try {
     // ----------------------------------------------------
-    // STEP 1: CREATE A GOAL & CHECK HEALTH
+    // STEP 1: CREATE A GOAL & CHECK HEALTH WITH FINGERPRINT
     // ----------------------------------------------------
     console.log('👉 Step 1: Navigating to /goals...');
     await page.goto('http://localhost:3000/goals', { waitUntil: 'networkidle' });
@@ -66,17 +66,20 @@ async function runQA() {
     await goalCard.waitFor({ state: 'visible', timeout: 5000 });
     console.log('   ✅ Goal created and verified in UI list!');
 
-    // Test Goal Health Check
-    console.log('   Testing Goal Health inspection modal/card...');
+    // Test Goal Health Check with Resilience Fingerprint
+    console.log('   Testing Goal Health inspection modal with 5-axis Fingerprint...');
     const healthButton = page.locator('button:has-text("Goal Health")').first();
     await healthButton.click();
     await page.waitForTimeout(2000);
 
     const diagnosticsCard = page.locator('text=/Pre-Shock Health Diagnostics/i').first();
     await diagnosticsCard.waitFor({ state: 'visible', timeout: 8000 });
+
+    const fingerprint = page.locator('text=/Goal Resilience Fingerprint/i').first();
+    await fingerprint.waitFor({ state: 'visible', timeout: 5000 });
     
     await page.screenshot({ path: path.join(screenshotsDir, '01_goal_health.png') });
-    console.log('   ✅ Goal Health modal opened successfully! Diagnostics score displayed. Screenshot captured.');
+    console.log('   ✅ Goal Health with 5-axis Fingerprint verified! Screenshot captured.');
 
     // ----------------------------------------------------
     // STEP 2: SAVE A FINANCIAL BASELINE
@@ -117,7 +120,7 @@ async function runQA() {
     console.log('   ✅ Dashboard loaded verified Goal and Baseline data from backend APIs! Screenshot captured.');
 
     // ----------------------------------------------------
-    // STEP 4: RUN STRESS-TEST LAB (SINGLE & CASCADE)
+    // STEP 4: RUN STRESS-TEST LAB (CHAIN REACTION, WHY DID IT FAIL, FINGERPRINT, ASSUMPTION LEDGER)
     // ----------------------------------------------------
     console.log('\n👉 Step 4: Navigating to /stress-test...');
     await page.goto('http://localhost:3000/stress-test', { waitUntil: 'networkidle' });
@@ -130,8 +133,7 @@ async function runQA() {
 
     const simResults = page.locator('text=/RESILIENCE SCORE/i').first();
     await simResults.waitFor({ state: 'visible', timeout: 8000 });
-    await page.screenshot({ path: path.join(screenshotsDir, '04_single_shock.png') });
-    console.log('   ✅ Single Shock Simulation completed! Verified deterministic output. Screenshot captured.');
+    console.log('   ✅ Single Shock Simulation completed!');
 
     console.log('   Switching to Cascade Mode...');
     const cascadeTabBtn = page.locator('button:has-text("Cascade Mode")').first();
@@ -148,11 +150,33 @@ async function runQA() {
     await page.waitForTimeout(2500);
 
     await simResults.waitFor({ state: 'visible', timeout: 8000 });
-    await page.screenshot({ path: path.join(screenshotsDir, '05_cascade_shock.png') });
-    console.log('   ✅ Cascade Simulation completed! Compounding shock curve rendered. Screenshot captured.');
+
+    // Verify Financial Chain Reaction Steps
+    const chainReaction = page.locator('text=/Financial Chain Reaction/i').first();
+    await chainReaction.waitFor({ state: 'visible', timeout: 5000 });
+    console.log('   ✅ Cascade Mode: Financial Chain Reaction Sequencer verified!');
+
+    // Verify "Why Did My Goal Fail?" Root Cause Diagnosis
+    const failureDiagnostic = page.locator('text=/Why Did My Goal Fail/i').first();
+    await failureDiagnostic.waitFor({ state: 'visible', timeout: 5000 });
+    console.log('   ✅ Deterministic Root-Cause Analysis ("Why Did My Goal Fail?") verified!');
+
+    // Verify Financial Resilience Fingerprint
+    const stressFingerprint = page.locator('text=/Financial Resilience Fingerprint/i').first();
+    await stressFingerprint.waitFor({ state: 'visible', timeout: 5000 });
+    console.log('   ✅ 5-Axis Resilience Fingerprint on Stress-Test verified!');
+
+    // Verify Assumptions Ledger
+    const assumptionLedger = page.locator('text=/Financial Assumptions Ledger/i').first();
+    await assumptionLedger.waitFor({ state: 'visible', timeout: 5000 });
+    await assumptionLedger.click();
+    await page.waitForTimeout(500);
+    console.log('   ✅ Financial Assumptions Ledger verified and expandable!');
+
+    await page.screenshot({ path: path.join(screenshotsDir, '04_cascade_differentiation.png'), fullPage: true });
 
     // ----------------------------------------------------
-    // STEP 5: OPEN RECOVERY PLANNER
+    // STEP 5: OPEN RECOVERY PLANNER WITH TRAJECTORY COMPARATOR & TRADE-OFF MATRIX
     // ----------------------------------------------------
     console.log('\n👉 Step 5: Navigating to /recovery...');
     await page.goto('http://localhost:3000/recovery', { waitUntil: 'networkidle' });
@@ -160,20 +184,53 @@ async function runQA() {
 
     const recoveryCard = page.locator('text=/Balanced/i').first();
     await recoveryCard.waitFor({ state: 'visible', timeout: 8000 });
-    await page.screenshot({ path: path.join(screenshotsDir, '06_recovery_plans.png') });
-    console.log('   ✅ Recovery Planner solved 3 deterministic plans (Aggressive, Balanced, Extended)! Screenshot captured.');
+
+    // Verify Recharts Trajectory Comparator
+    const recoveryComparator = page.locator('text=/Recovery Trajectory Comparator/i').first();
+    await recoveryComparator.waitFor({ state: 'visible', timeout: 5000 });
+    console.log('   ✅ Visual Strategy Trajectory Comparator verified!');
+
+    // Verify Trade-Off Matrix ("What this costs you")
+    const tradeOffs = page.locator('text=/Trade-Off Analysis: What This Strategy Costs You/i').first();
+    await tradeOffs.waitFor({ state: 'visible', timeout: 5000 });
+    console.log('   ✅ Trade-Off Matrix ("What It Costs You") with pros/cons verified!');
+
+    // Verify Buffer Preserved & Time to Recover metrics
+    const bufferPreserved = page.locator('text=/Buffer Preserved/i').first();
+    await bufferPreserved.waitFor({ state: 'visible', timeout: 5000 });
+    console.log('   ✅ Buffer Preserved & Time to Recover metrics verified!');
+
+    await page.screenshot({ path: path.join(screenshotsDir, '05_recovery_differentiation.png'), fullPage: true });
 
     // ----------------------------------------------------
-    // STEP 6: OPEN GOAL SURVIVAL MAP
+    // STEP 6: OPEN UPGRADED GOAL SURVIVAL MAP & METRIC BADGES
     // ----------------------------------------------------
     console.log('\n👉 Step 6: Navigating to /survival...');
     await page.goto('http://localhost:3000/survival', { waitUntil: 'networkidle' });
     await page.waitForTimeout(2500);
 
-    const survivalHeading = page.locator('text=/Multi-Scenario Goal Survival Map/i').first();
-    await survivalHeading.waitFor({ state: 'visible', timeout: 8000 });
-    await page.screenshot({ path: path.join(screenshotsDir, '07_survival_map.png') });
-    console.log('   ✅ Goal Survival Map rendered multi-scenario Recharts comparison curves! Screenshot captured.');
+    // Verify Primary Question & Survival Verdict Banner
+    const verdictBanner = page.locator('text=/Will my financial goal survive this disruption/i').first();
+    await verdictBanner.waitFor({ state: 'visible', timeout: 8000 });
+    console.log('   ✅ Primary Question & Survival Verdict Banner verified!');
+
+    // Verify 6 Analytical Metric Badges
+    const firstUnsafeMonth = page.locator('text=/FIRST UNSAFE MONTH/i').first();
+    await firstUnsafeMonth.waitFor({ state: 'visible', timeout: 5000 });
+
+    const maxDrawdown = page.locator('text=/MAX DRAWDOWN/i').first();
+    await maxDrawdown.waitFor({ state: 'visible', timeout: 5000 });
+
+    const recoveryPoint = page.locator('text=/RECOVERY POINT/i').first();
+    await recoveryPoint.waitFor({ state: 'visible', timeout: 5000 });
+    console.log('   ✅ 6 Analytical Metric Cards (Status, Unsafe Month, Max Drawdown, Slippage, Shortfall, Recovery Point) verified!');
+
+    // Verify Liquid Safety Buffer Runway Chart
+    const bufferRunway = page.locator('text=/Liquid Safety Buffer Runway/i').first();
+    await bufferRunway.waitFor({ state: 'visible', timeout: 5000 });
+    console.log('   ✅ Liquid Safety Buffer Runway chart verified!');
+
+    await page.screenshot({ path: path.join(screenshotsDir, '06_survival_differentiation.png'), fullPage: true });
 
     // ----------------------------------------------------
     // STEP 7: MOBILE RESPONSIVENESS CHECK
@@ -185,21 +242,27 @@ async function runQA() {
     await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
     const mobileGoal = page.locator('text=/Dream Home Down Payment/i').first();
     await mobileGoal.waitFor({ state: 'visible', timeout: 5000 });
-    await page.screenshot({ path: path.join(screenshotsDir, '08_mobile_dashboard.png') });
+    await page.screenshot({ path: path.join(screenshotsDir, '07_mobile_dashboard.png') });
 
     // Check Goals on Mobile
     await page.goto('http://localhost:3000/goals', { waitUntil: 'networkidle' });
     const mobileGoalsTitle = page.locator('h1:has-text("Goal Builder")').first();
     await mobileGoalsTitle.waitFor({ state: 'visible', timeout: 5000 });
-    await page.screenshot({ path: path.join(screenshotsDir, '09_mobile_goals.png') });
+    await page.screenshot({ path: path.join(screenshotsDir, '08_mobile_goals.png') });
 
     // Check Stress-Test on Mobile
     await page.goto('http://localhost:3000/stress-test', { waitUntil: 'networkidle' });
     const mobileStressTitle = page.locator('h1:has-text("Stress-Test Lab")').first();
     await mobileStressTitle.waitFor({ state: 'visible', timeout: 5000 });
-    await page.screenshot({ path: path.join(screenshotsDir, '10_mobile_stress.png') });
+    await page.screenshot({ path: path.join(screenshotsDir, '09_mobile_stress.png') });
 
-    console.log('   ✅ Responsive layout verified on mobile viewport (375px width)! Screenshots captured.');
+    // Check Survival on Mobile
+    await page.goto('http://localhost:3000/survival', { waitUntil: 'networkidle' });
+    const mobileSurvivalTitle = page.locator('h1:has-text("Goal Survival Map")').first();
+    await mobileSurvivalTitle.waitFor({ state: 'visible', timeout: 5000 });
+    await page.screenshot({ path: path.join(screenshotsDir, '10_mobile_survival.png') });
+
+    console.log('   ✅ Responsive layout verified on mobile viewport across all pages! Screenshots captured.');
 
     // ----------------------------------------------------
     // SUMMARY
@@ -221,7 +284,7 @@ async function runQA() {
     console.log('========================================\n');
 
     if (consoleErrors.length === 0 && pageErrors.length === 0 && requestFailures.length === 0) {
-      console.log('🎉 ALL INTEGRATION TESTS PASSED WITH ZERO CONSOLE OR NETWORK ERRORS!');
+      console.log('🎉 ALL PHASE 3 DIFFERENTIATION TESTS PASSED WITH ZERO CONSOLE OR NETWORK ERRORS!');
     } else {
       console.log('⚠️ Some warnings/errors detected.');
     }

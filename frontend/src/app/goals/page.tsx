@@ -6,6 +6,8 @@ import { Goal, GoalCreateInput, GoalHealthReport } from "@/types/api";
 import { formatINR } from "@/lib/utils";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { ResilienceFingerprint } from "@/components/ui/ResilienceFingerprint";
+import { AssumptionLedger } from "@/components/ui/AssumptionLedger";
 import { Plus, Trash2, ShieldCheck, AlertCircle, RefreshCw, X } from "lucide-react";
 
 export default function GoalsPage() {
@@ -270,6 +272,18 @@ export default function GoalsPage() {
                         ))}
                       </div>
                     </div>
+                  )}
+
+                  {healthReport.resilience_fingerprint && (
+                    <ResilienceFingerprint
+                      fingerprint={healthReport.resilience_fingerprint}
+                      title="Goal Resilience Fingerprint"
+                      subtitle="Evaluated against your baseline cash flow and debt obligations"
+                    />
+                  )}
+
+                  {healthReport.assumption_ledger && (
+                    <AssumptionLedger ledger={healthReport.assumption_ledger} />
                   )}
                 </div>
               ) : null}

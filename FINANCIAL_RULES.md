@@ -1,4 +1,4 @@
-﻿# SaveSmart — Financial Engine Mathematics & Deterministic Rules
+# SaveSmart — Financial Engine Mathematics & Deterministic Rules
 
 > **Status:** Definitive Mathematical Specification  
 > **Currency Standard:** Indian Rupee (INR / ₹)  
@@ -175,6 +175,38 @@ $$\Phi_{dti} = \begin{cases}
 - **Moderate:** $60.0 \le R < 80.0$ (Goal delayed $< 6$ months, buffer preserved)
 - **Vulnerable:** $40.0 \le R < 60.0$ (Buffer depleted or goal delayed $> 6$ months)
 - **Critical:** $0.0 \le R < 40.0$ (Cash shortfall / insolvency triggered)
+
+### 5.6. Financial Resilience Fingerprint (5-Axis Model)
+The Financial Resilience Fingerprint decomposes systemic solvency into 5 normalized dimensions ($S_k \in [0, 100]$):
+
+1. **Buffer Strength ($S_{buf}$):**
+   $$S_{buf} = 100 \times \Phi_{buffer} = 100 \times \min\left(1.0, \frac{\min_t B_t}{3.0 \times E_{fixed}}\right)$$
+2. **Cash-flow Flexibility ($S_{flex}$):**
+   $$S_{flex} = 100 \times \Phi_{flex} = 100 \times \min\left(1.0, \frac{E_{discretionary} / (E_{fixed} + E_{discretionary})}{0.30}\right)$$
+3. **Debt Pressure Safety ($S_{debt}$):**
+   $$S_{debt} = 100 \times \Phi_{dti}$$
+   (100 indicates low debt burden $\le 15\%$ of income; 0 indicates heavy debt $> 50\%$).
+4. **Goal Capacity Cushion ($S_{cap}$):**
+   Evaluates how comfortably net free cash flow covers required monthly goal savings:
+   $$\text{CoverageRatio} = \frac{FCF}{C_{target}}$$
+   $$S_{cap} = \begin{cases}
+   100.0 & \text{if } \text{CoverageRatio} \ge 2.0 \\
+   100 \times \frac{\text{CoverageRatio} - 1.0}{1.0} & \text{if } 1.0 < \text{CoverageRatio} < 2.0 \\
+   0.0 & \text{if } \text{CoverageRatio} \le 1.0 \text{ (Goal exceeds FCF)}
+   \end{cases}$$
+5. **Shock Recovery Velocity ($S_{rec}$):**
+   $$S_{rec} = 100 \times \Phi_{slip} = 100 \times \max\left(0.0, 1.0 - \frac{\Delta t}{T_{goal}}\right)$$
+
+The overall fingerprint composite score is the arithmetic mean of the five normalized components.
+
+### 5.7. Deterministic Failure Diagnosis & Chain Reaction Metrics
+To answer "Why did my goal fail?" without LLM hallucinations, the engine deterministically extracts:
+1. $\Delta I_{shock}$: Cumulative income reduction during shock window.
+2. $\Delta FCF_{monthly}$: Net reduction in monthly free cash flow during peak disruption.
+3. $\Delta B_{absorbed}$: Total rupee value drained from the emergency buffer.
+4. $\Delta C_{lost}$: Monthly savings contribution sacrificed ($C_{target} - C_t$).
+5. $\Delta t_{slip}$: Total completion slippage (months).
+6. $\text{Deficit}_{deadline}$: Unfunded goal shortfall at the original target horizon (₹).
 
 ---
 

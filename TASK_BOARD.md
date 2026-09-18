@@ -1,4 +1,4 @@
-﻿# SaveSmart — Multi-Agent Task Board & Parallel Execution Plan
+# SaveSmart — Multi-Agent Task Board & Parallel Execution Plan
 
 > **Strategy:** Strict file and module segregation allowing up to 5 agents or developers to work concurrently without merge conflicts.  
 > **Currency Standard:** Indian Rupee (INR / ₹)  
@@ -75,48 +75,51 @@
 
 ---
 
-### Phase 1: Core Engine Math & Backend Schemas
+### Phase 1: Core Engine Math & Backend Schemas (COMPLETED)
 
 #### Workstream A: Financial Engine
-- [ ] **TASK-A01**: Implement `backend/app/engine/models.py` (Domain dataclasses: `BaselineProfile`, `GoalSpec`, `ShockEvent`, `MonthlySnapshot`).
-- [ ] **TASK-A02**: Implement `backend/app/engine/cashflow.py` (Monthly cash flow generator and baseline goal trajectory in ₹).
-- [ ] **TASK-A03**: Implement `backend/app/engine/shocks.py` (Single shock solvers: income drop, lump-sum spike, inflation, interest rates).
-- [ ] **TASK-A04**: Implement `backend/app/engine/cascade.py` (Sequential compound shock simulation and buffer drawdown).
-- [ ] **TASK-A05**: Implement `backend/app/engine/health.py` (Resilience score 0-100 algorithm and risk factor diagnostics).
-- [ ] **TASK-A06**: Implement `backend/app/engine/recovery.py` (Deterministic solver for Aggressive, Balanced, Extended recovery plans).
-- [ ] **TASK-A07**: Implement `backend/app/engine/survival.py` (Goal survival timeline and insolvency threshold matrices).
-- [ ] **TASK-A08**: Write comprehensive Pytest test suite in `backend/tests/` covering all edge cases (100% math coverage).
+- [x] **TASK-A01**: Implement `backend/app/engine/models.py` (Domain dataclasses: `BaselineProfile`, `GoalSpec`, `ShockEvent`, `MonthlySnapshot`).
+- [x] **TASK-A02**: Implement `backend/app/engine/cashflow.py` (Monthly cash flow generator and baseline goal trajectory in ₹).
+- [x] **TASK-A03**: Implement `backend/app/engine/shocks.py` (Single shock solvers: income drop, lump-sum spike, inflation, interest rates).
+- [x] **TASK-A04**: Implement `backend/app/engine/cascade.py` (Sequential compound shock simulation and buffer drawdown).
+- [x] **TASK-A05**: Implement `backend/app/engine/health.py` (Resilience score 0-100 algorithm, fingerprint, and risk factor diagnostics).
+- [x] **TASK-A06**: Implement `backend/app/engine/recovery.py` (Deterministic solver for Aggressive, Balanced, Extended recovery plans).
+- [x] **TASK-A07**: Implement `backend/app/engine/survival.py` (Goal survival timeline, verdict, shortfall, drawdown, and insolvency matrices).
+- [x] **TASK-A08**: Write comprehensive Pytest test suite in `backend/tests/` covering all edge cases (36/36 tests passing).
 
 #### Workstream B: Backend API & MongoDB
-- [ ] **TASK-B01**: Create `backend/requirements.txt` & configure FastAPI with CORS, settings in `backend/app/core/config.py`.
-- [ ] **TASK-B02**: Setup Motor MongoDB connection lifecycle in `backend/app/db/mongodb.py`.
-- [ ] **TASK-B03**: Implement Pydantic schemas in `backend/app/schemas/` matching `API_CONTRACT.md` (denominating monetary fields in INR).
-- [ ] **TASK-B04**: Implement MongoDB repositories in `backend/app/db/repositories/` (`goal_repository.py`, `baseline_repository.py`).
-- [ ] **TASK-B05**: Implement `/api/v1/goals` CRUD endpoints.
-- [ ] **TASK-B06**: Implement `/api/v1/baseline` profile management endpoints.
-- [ ] **TASK-B07**: Implement `/api/v1/stress-test/simulate` and `/api/v1/stress-test/cascade` route handlers.
-- [ ] **TASK-B08**: Implement `/api/v1/recovery/plans` and `/api/v1/survival/map` route handlers.
+- [x] **TASK-B01**: Create `backend/requirements.txt` & configure FastAPI with CORS, settings in `backend/app/core/config.py`.
+- [x] **TASK-B02**: Setup Motor MongoDB connection lifecycle in `backend/app/db/mongodb.py`.
+- [x] **TASK-B03**: Implement Pydantic schemas in `backend/app/schemas/` matching `API_CONTRACT.md` (denominating monetary fields in INR).
+- [x] **TASK-B04**: Implement MongoDB repositories in `backend/app/db/repositories/` (`goal_repository.py`, `baseline_repository.py`).
+- [x] **TASK-B05**: Implement `/api/v1/goals` CRUD endpoints.
+- [x] **TASK-B06**: Implement `/api/v1/baseline` profile management endpoints.
+- [x] **TASK-B07**: Implement `/api/v1/stress-test/simulate` and `/api/v1/stress-test/cascade` route handlers.
+- [x] **TASK-B08**: Implement `/api/v1/recovery/plans` and `/api/v1/survival/map` route handlers.
 
 ---
 
-### Phase 2: AI Explainer Layer & Frontend Scaffolding
-
-#### Workstream C: Gemini Explainer Layer
-- [ ] **TASK-C01**: Implement Gemini client wrapper with API key loading and safety settings in `backend/app/services/gemini_explainer.py`.
-- [ ] **TASK-C02**: Create system prompt templates instructing Gemini to explain verified numbers in INR (₹) without calculating or modifying values.
-- [ ] **TASK-C03**: Implement post-generation guardrail validator (`verify_gemini_narrative`) to catch hallucinated amounts or percentages.
-- [ ] **TASK-C04**: Implement `/api/v1/explain/scenario` and `/api/v1/explain/recovery` endpoints with deterministic fallback string templates.
+### Phase 2: Frontend Implementation & Integration (COMPLETED)
 
 #### Workstream D: Frontend UI & Visualization
-- [ ] **TASK-D01**: Initialize Next.js 15 TypeScript project with Tailwind CSS in `frontend/`.
-- [ ] **TASK-D02**: Setup TypeScript interfaces in `frontend/src/types/` matching `API_CONTRACT.md`.
-- [ ] **TASK-D03**: Implement type-safe HTTP client and INR currency formatter in `frontend/src/lib/api-client.ts` and `frontend/src/lib/utils.ts`.
-- [ ] **TASK-D04**: Build Global Navigation, Theme Provider, and Dashboard Shell (`frontend/src/app/layout.tsx`).
-- [ ] **TASK-D05**: Build Goal Builder & Baseline Management Forms (`frontend/src/app/goals/`, `frontend/src/app/baseline/`).
-- [ ] **TASK-D06**: Implement Recharts visualization components (`SurvivalChart.tsx`, `ScenarioComparatorChart.tsx`, `ResilienceGauge.tsx`).
-- [ ] **TASK-D07**: Build Stress-Test Lab with interactive shock sliders and Cascade timeline sequencer (`frontend/src/app/stress-test/`).
-- [ ] **TASK-D08**: Build Adaptive Recovery Plan selector with comparison cards (`frontend/src/app/recovery/`).
-- [ ] **TASK-D09**: Build AI Explanation Insights card with badge indicators and coaching bullets (`frontend/src/components/ai/`).
+- [x] **TASK-D01**: Initialize Next.js 15 TypeScript project with Tailwind CSS in `frontend/`.
+- [x] **TASK-D02**: Setup TypeScript interfaces in `frontend/src/types/` matching `API_CONTRACT.md`.
+- [x] **TASK-D03**: Implement type-safe HTTP client and INR currency formatter in `frontend/src/lib/api-client.ts` and `frontend/src/lib/utils.ts`.
+- [x] **TASK-D04**: Build Global Navigation, Theme Provider, and Dashboard Shell (`frontend/src/app/layout.tsx`).
+- [x] **TASK-D05**: Build Goal Builder & Baseline Management Forms (`frontend/src/app/goals/`, `frontend/src/app/baseline/`).
+- [x] **TASK-D06**: Implement Recharts visualization components (`SurvivalChart.tsx`, `BufferRunwayChart.tsx`, `RecoveryChart.tsx`).
+- [x] **TASK-D07**: Build Stress-Test Lab with interactive shock sliders and Cascade timeline sequencer (`frontend/src/app/stress-test/`).
+- [x] **TASK-D08**: Build Adaptive Recovery Plan selector with comparison cards (`frontend/src/app/recovery/`).
+
+---
+
+### Phase 3: SaveSmart Differentiation Features (COMPLETED)
+- [x] **TASK-DIFF01**: Goal Survival Map upgrade: "Will my goal survive?" verdict, first unsafe month, max drawdown, slippage, shortfall, recovery point, and liquid buffer runway chart.
+- [x] **TASK-DIFF02**: Cascade Mode upgrade: Financial Chain Reaction Sequencer with step-by-step mathematical transmission cards.
+- [x] **TASK-DIFF03**: Adaptive Recovery Path Simulator: Recharts trajectory comparator for Aggressive vs. Balanced vs. Extended, buffer preserved, and trade-off matrix ("What it costs you").
+- [x] **TASK-DIFF04**: Deterministic Failure Diagnosis: "Why Did My Goal Fail / Become Fragile?" 5-step root cause breakdown without Gemini.
+- [x] **TASK-DIFF05**: Financial Resilience Fingerprint: 5-axis durability profile (Buffer Strength, Flexibility, Debt Pressure, Goal Capacity Cushion, Recovery Velocity).
+- [x] **TASK-DIFF06**: Transparent Assumptions Ledger: Collapsible verified parameter ledger on all simulation views.
 
 ---
 

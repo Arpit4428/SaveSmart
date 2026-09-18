@@ -1,17 +1,18 @@
-﻿"""
+"""
 SaveSmart Goal Schemas
 Pydantic schemas for Savings Goal requests and responses in INR (₹).
 """
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
+from app.schemas.simulation import AssumptionLedgerSchema, ResilienceFingerprintSchema
 
 
 class GoalCreateRequest(BaseModel):
     user_id: str = Field(default="demo_user", description="Owner user ID")
-    name: str = Field(..., min_length=2, max_length=100, description="Name of the savings goal")
-    category: str = Field(default="housing", description="Category: housing, emergency, vehicle, etc.")
+    name: str = Field(..., min_length=2, max_length=100, description="Goal identifier / title")
+    category: str = Field(default="general", description="housing, vehicle, emergency, retirement, education, etc.")
     target_amount: float = Field(..., gt=0, description="Target savings amount in INR (₹)")
-    current_balance: float = Field(default=0.0, ge=0, description="Current accumulated savings in INR (₹)")
+    current_balance: float = Field(default=0.0, ge=0, description="Initial current savings in INR (₹)")
     target_months: int = Field(..., gt=0, le=360, description="Target timeframe in months")
     priority: str = Field(default="high", description="Priority: low, medium, high")
 
@@ -54,3 +55,5 @@ class GoalHealthResponse(BaseModel):
     emergency_buffer_months: float
     debt_to_income_ratio: float
     risk_factors: List[GoalHealthRiskFactorSchema] = Field(default_factory=list)
+    resilience_fingerprint: Optional[ResilienceFingerprintSchema] = None
+    assumption_ledger: Optional[AssumptionLedgerSchema] = None

@@ -2,10 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { api } from "@/lib/api-client";
-import { Goal, RecoveryPlan } from "@/types/api";
+import { Goal, RecoveryPlan, RecoveryPlansResponseData } from "@/types/api";
 import { formatINR, formatPercent } from "@/lib/utils";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { RecoveryChart } from "@/components/charts/RecoveryChart";
+import { AssumptionLedger } from "@/components/ui/AssumptionLedger";
 import {
   RefreshCw,
   CheckCircle2,
@@ -14,12 +16,17 @@ import {
   ArrowRight,
   TrendingUp,
   AlertCircle,
+  ShieldCheck,
+  Scale,
+  XCircle,
+  Clock,
+  Coins,
 } from "lucide-react";
 
 export default function RecoveryPage() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [selectedGoalId, setSelectedGoalId] = useState<string>("");
-  const [plans, setPlans] = useState<RecoveryPlan[]>([]);
+  const [recoveryData, setRecoveryData] = useState<RecoveryPlansResponseData | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<string>("balanced");
   const [error, setError] = useState<string | null>(null);
@@ -44,10 +51,15 @@ export default function RecoveryPage() {
         start_month: 2,
         duration_months: 3,
         magnitude_percent: 0.35,
+        description: "Simulated 35% Income Disruption",
       },
     ])
       .then((res) => {
-        setPlans(res.plans);
+        setRecoveryData(res);
+        if (res.plans.length > 0) {
+          const hasBalanced = res.plans.some((p) => p.plan_id === "balanced");
+          setSelectedPlanId(hasBalanced ? "balanced" : res.plans[0].plan_id);
+        }
       })
       .catch((err: any) => {
         setError(err.message || "Failed to solve recovery plans.");
@@ -57,14 +69,21 @@ export default function RecoveryPage() {
       });
   }, [selectedGoalId]);
 
+  const plans = recoveryData?.plans || [];
   const activePlan = plans.find((p) => p.plan_id === selectedPlanId);
+  const selectedGoal = goals.find((g) => g.id === selectedGoalId);
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Adaptive Recovery Planner</h1>
+        <div className="flex items-center gap-2 text-emerald-600 font-semibold text-xs uppercase tracking-wider">
+          <Scale className="w-4 h-4" /> Adaptive Decision Engine
+        </div>
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight mt-1">
+          Adaptive Recovery Planner & Trade-Off Simulator
+        </h1>
         <p className="text-sm text-slate-500 mt-1">
-          Mathematically optimized recovery pathways to absorb shock impact and get your goal back on track.
+          Compare 3 deterministic pathways solved by Python optimization to restore your goal after disruption.
         </p>
       </div>
 
@@ -93,15 +112,15 @@ export default function RecoveryPage() {
             </select>
           </div>
 
-          <div className="text-xs text-slate-500">
-            3 Deterministic Solutions Solved via Python Optimization
+          <div className="text-xs text-slate-500 font-medium">
+            3 Deterministic Solutions Solved via Pure Python Engine
           </div>
         </div>
       </Card>
 
       {loading ? (
         <div className="py-20 flex justify-center items-center text-sm text-slate-500">
-          <RefreshCw className="w-4 h-4 animate-spin mr-2 text-emerald-600" /> Solving recovery trade-offs...
+          <RefreshCw className="w-4 h-4 animate-spin mr-2 text-emerald-600" /> Solving recovery trade-offs & trajectories...
         </div>
       ) : plans.length === 0 ? (
         <Card className="py-12 text-center text-sm text-slate-500">
@@ -109,6 +128,22 @@ export default function RecoveryPage() {
         </Card>
       ) : (
         <>
+          {/* Visual Strategy Trajectory Comparator */}
+          <Card>
+            <CardHeader
+              title="Recovery Trajectory Comparator: 3 Deterministic Pathways"
+              subtitle="Comparison of Aggressive vs. Balanced vs. Extended recovery curves against the unmitigated Stressed path"
+            />
+            <RecoveryChart
+              aggressiveCurve={recoveryData?.curves?.aggressive || plans.find(p => p.plan_id === "aggressive")?.trajectory_curve}
+              balancedCurve={recoveryData?.curves?.balanced || plans.find(p => p.plan_id === "balanced")?.trajectory_curve}
+              extendedCurve={recoveryData?.curves?.extended || plans.find(p => p.plan_id === "extended")?.trajectory_curve}
+              stressedCurve={recoveryData?.curves?.stressed}
+              targetAmount={recoveryData?.target_amount || selectedGoal?.target_amount}
+              targetDeadlineMonths={recoveryData?.target_deadline_months || selectedGoal?.target_months}
+            />
+          </Card>
+
           {/* Side-by-Side 3 Recovery Plan Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {plans.map((plan) => {
@@ -139,7 +174,7 @@ export default function RecoveryPage() {
                           Finishes at Month {plan.target_completion_month} (+{plan.slippage_months} mos)
                         </p>
                       </div>
-                      <Badge variant={plan.feasibility_score > 90 ? "success" : "info"}>
+                      <Badge variant={plan.feasibility_score >= 80 ? "success" : "info"}>
                         {plan.feasibility_score}% Feasible
                       </Badge>
                     </div>
@@ -168,9 +203,15 @@ export default function RecoveryPage() {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500">Buffer Replenished:</span>
-                        <span className="font-medium text-slate-700">
-                          Month {plan.emergency_buffer_replenished_month}
+                        <span className="text-slate-500">Buffer Preserved:</span>
+                        <span className="font-mono font-bold text-blue-700">
+                          {formatINR(plan.buffer_preserved || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">Time to Full Recovery:</span>
+                        <span className="font-semibold text-slate-800">
+                          {plan.time_to_recover_months ? `${plan.time_to_recover_months} Mos` : "On Deadline"}
                         </span>
                       </div>
                     </div>
@@ -185,7 +226,7 @@ export default function RecoveryPage() {
                           : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                       }`}
                     >
-                      {isSelected ? "Selected Strategy" : "Select Strategy"}
+                      {isSelected ? "Active Strategy" : "Inspect Strategy"}
                     </button>
                   </div>
                 </div>
@@ -193,14 +234,15 @@ export default function RecoveryPage() {
             })}
           </div>
 
-          {/* Detailed Strategy Breakdown */}
+          {/* Detailed Strategy Breakdown & Trade-Off Matrix ("What It Costs You") */}
           {activePlan && (
-            <Card className="p-6 border-slate-200">
+            <Card className="p-6 border-slate-200 space-y-6">
               <CardHeader
-                title={`Strategy Implementation: ${activePlan.name}`}
-                subtitle="Deterministic timeline adjustment and contribution guidance"
+                title={`Strategy Deep-Dive: ${activePlan.name}`}
+                subtitle="Transparent trade-offs, lifestyle impacts, and capital recovery metrics"
               />
 
+              {/* 3 Core Metric Tiles */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                 <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
                   <div className="text-slate-500 font-medium">Timeline Shift</div>
@@ -213,26 +255,89 @@ export default function RecoveryPage() {
                 </div>
 
                 <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
-                  <div className="text-slate-500 font-medium">Required Monthly Discipline</div>
+                  <div className="text-slate-500 font-medium">Monthly Discretionary Cut</div>
                   <div className="text-lg font-bold text-emerald-600">
                     Save {formatINR(activePlan.discretionary_savings_monthly)}/mo
                   </div>
                   <p className="text-slate-500 text-[11px]">
-                    Trim discretionary luxuries by {formatPercent(activePlan.discretionary_cut_percent * 100)}
+                    Trim discretionary spending by {formatPercent(activePlan.discretionary_cut_percent * 100)}
                   </p>
                 </div>
 
                 <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
-                  <div className="text-slate-500 font-medium">Liquid Buffer Protection</div>
+                  <div className="text-slate-500 font-medium">Liquid Buffer Preserved</div>
                   <div className="text-lg font-bold text-blue-600">
-                    Month {activePlan.emergency_buffer_replenished_month}
+                    {formatINR(activePlan.buffer_preserved || 0)}
                   </div>
                   <p className="text-slate-500 text-[11px]">
-                    Emergency cushion fully restored to baseline safety levels
+                    Replenished by Month {activePlan.emergency_buffer_replenished_month}
                   </p>
                 </div>
               </div>
+
+              {/* Trade-Off Matrix: What It Costs You */}
+              <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Coins className="w-4 h-4 text-amber-600" />
+                  <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">
+                    Trade-Off Analysis: What This Strategy Costs You
+                  </h4>
+                </div>
+
+                {activePlan.trade_offs && (
+                  <p className="text-xs text-slate-700 bg-white p-3 rounded-lg border border-slate-200 leading-relaxed">
+                    {activePlan.trade_offs}
+                  </p>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1 text-xs">
+                  {/* Advantages (Pros) */}
+                  <div className="bg-white p-3 rounded-lg border border-emerald-200 space-y-2">
+                    <div className="font-bold text-emerald-800 text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      Key Advantages (Pros)
+                    </div>
+                    {activePlan.pros && activePlan.pros.length > 0 ? (
+                      <ul className="space-y-1.5 text-slate-600">
+                        {activePlan.pros.map((pro, idx) => (
+                          <li key={idx} className="flex items-start gap-1.5">
+                            <span className="text-emerald-500 font-bold">•</span>
+                            <span>{pro}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-slate-400 text-[11px]">No specific pros listed.</p>
+                    )}
+                  </div>
+
+                  {/* Sacrifices (Cons) */}
+                  <div className="bg-white p-3 rounded-lg border border-rose-200 space-y-2">
+                    <div className="font-bold text-rose-800 text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+                      <XCircle className="w-3.5 h-3.5 text-rose-600" />
+                      Lifestyle & Timeline Costs (Cons)
+                    </div>
+                    {activePlan.cons && activePlan.cons.length > 0 ? (
+                      <ul className="space-y-1.5 text-slate-600">
+                        {activePlan.cons.map((con, idx) => (
+                          <li key={idx} className="flex items-start gap-1.5">
+                            <span className="text-rose-500 font-bold">•</span>
+                            <span>{con}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-slate-400 text-[11px]">No specific cons listed.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
             </Card>
+          )}
+
+          {/* Assumption Ledger */}
+          {recoveryData?.assumption_ledger && (
+            <AssumptionLedger ledger={recoveryData.assumption_ledger} />
           )}
         </>
       )}

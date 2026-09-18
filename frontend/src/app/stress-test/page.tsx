@@ -8,6 +8,8 @@ import { formatINR } from "@/lib/utils";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { SurvivalChart } from "@/components/charts/SurvivalChart";
+import { ResilienceFingerprint } from "@/components/ui/ResilienceFingerprint";
+import { AssumptionLedger } from "@/components/ui/AssumptionLedger";
 import {
   ShieldAlert,
   Play,
@@ -19,6 +21,10 @@ import {
   Calendar,
   AlertCircle,
   RefreshCw,
+  GitCommit,
+  HelpCircle,
+  Zap,
+  Activity,
 } from "lucide-react";
 
 export default function StressTestPage() {
@@ -164,13 +170,14 @@ export default function StressTestPage() {
         </div>
       </Card>
 
+      {/* Main Grid: Controls + Results */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Col: Shock Configuration */}
+        {/* Left Column: Shock Configuration */}
         <div className="space-y-6">
-          <Card>
+          <Card className="p-5">
             <CardHeader
-              title={mode === "single" ? "Configure Single Shock" : "Configure Shock Cascade"}
-              subtitle="All parameters evaluated by pure deterministic Python formulas"
+              title={mode === "single" ? "Single Shock Setup" : "Cascade Event Sequencer"}
+              subtitle="Configure macroeconomic & personal financial shocks"
             />
 
             {mode === "single" ? (
@@ -179,13 +186,15 @@ export default function StressTestPage() {
                   <label className="block font-medium text-slate-700 mb-1">Shock Category</label>
                   <select
                     value={singleShock.shock_type}
-                    onChange={(e) => setSingleShock({ ...singleShock, shock_type: e.target.value as ShockType })}
+                    onChange={(e) =>
+                      setSingleShock({ ...singleShock, shock_type: e.target.value as ShockType })
+                    }
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-white"
                   >
-                    <option value="income_drop">Income Drop / Pay Cut (%)</option>
-                    <option value="lump_sum_expense">Lump Sum Emergency Expense (₹)</option>
-                    <option value="inflation_spike">Inflation Spike (%)</option>
-                    <option value="interest_rate_hike">Interest Rate Hike (Loan EMI)</option>
+                    <option value="income_drop">Income Reduction (Job loss, furlough)</option>
+                    <option value="lump_sum_expense">Lump Sum Outflow (Medical, home repair)</option>
+                    <option value="inflation_spike">Inflation Spike (General cost rise)</option>
+                    <option value="interest_rate_hike">Interest Rate Hike (EMI jump)</option>
                   </select>
                 </div>
 
@@ -195,9 +204,10 @@ export default function StressTestPage() {
                     <input
                       type="number"
                       min="1"
-                      max="36"
                       value={singleShock.start_month}
-                      onChange={(e) => setSingleShock({ ...singleShock, start_month: parseInt(e.target.value) || 1 })}
+                      onChange={(e) =>
+                        setSingleShock({ ...singleShock, start_month: parseInt(e.target.value) || 1 })
+                      }
                       className="w-full px-3 py-2 border border-slate-200 rounded-lg"
                     />
                   </div>
@@ -208,9 +218,10 @@ export default function StressTestPage() {
                       <input
                         type="number"
                         min="1"
-                        max="24"
                         value={singleShock.duration_months}
-                        onChange={(e) => setSingleShock({ ...singleShock, duration_months: parseInt(e.target.value) || 1 })}
+                        onChange={(e) =>
+                          setSingleShock({ ...singleShock, duration_months: parseInt(e.target.value) || 1 })
+                        }
                         className="w-full px-3 py-2 border border-slate-200 rounded-lg"
                       />
                     </div>
@@ -219,29 +230,32 @@ export default function StressTestPage() {
 
                 {singleShock.shock_type === "lump_sum_expense" ? (
                   <div>
-                    <label className="block font-medium text-slate-700 mb-1">Emergency Expense (₹)</label>
+                    <label className="block font-medium text-slate-700 mb-1">Expense Outflow (₹)</label>
                     <input
                       type="number"
-                      min="1000"
                       step="5000"
                       value={singleShock.amount}
-                      onChange={(e) => setSingleShock({ ...singleShock, amount: parseFloat(e.target.value) || 0 })}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                      onChange={(e) =>
+                        setSingleShock({ ...singleShock, amount: parseFloat(e.target.value) || 0 })
+                      }
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg font-mono"
                     />
                   </div>
                 ) : (
                   <div>
                     <label className="block font-medium text-slate-700 mb-1">
-                      Magnitude (e.g. 0.35 for 35% cut)
+                      Magnitude Impact: {((singleShock.magnitude_percent || 0) * 100).toFixed(0)}%
                     </label>
                     <input
-                      type="number"
-                      min="0.01"
+                      type="range"
+                      min="0.05"
                       max="1.0"
                       step="0.05"
                       value={singleShock.magnitude_percent}
-                      onChange={(e) => setSingleShock({ ...singleShock, magnitude_percent: parseFloat(e.target.value) || 0 })}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg"
+                      onChange={(e) =>
+                        setSingleShock({ ...singleShock, magnitude_percent: parseFloat(e.target.value) })
+                      }
+                      className="w-full accent-emerald-600"
                     />
                   </div>
                 )}
@@ -333,7 +347,7 @@ export default function StressTestPage() {
                               updated[idx].amount = parseFloat(e.target.value) || 0;
                               setCascadeShocks(updated);
                             }}
-                            className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white"
+                            className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-mono"
                           />
                         </div>
                       ) : (
@@ -422,7 +436,7 @@ export default function StressTestPage() {
 
                 <Card className="p-4">
                   <div className="text-slate-500 text-xs font-medium">MINIMUM LIQUIDITY</div>
-                  <div className="text-2xl font-bold text-slate-900 mt-1">
+                  <div className="text-2xl font-bold text-slate-900 mt-1 font-mono">
                     {formatINR(simResult.stressed.minimum_cash_buffer)}
                   </div>
                   <div className="text-[11px] text-slate-400 mt-1">
@@ -463,8 +477,174 @@ export default function StressTestPage() {
                   baselineCurve={simResult.monthly_timeline.map((t) => t.baseline_balance)}
                   stressedCurve={simResult.monthly_timeline.map((t) => t.stressed_balance)}
                   targetAmount={selectedGoal?.target_amount}
+                  targetDeadlineMonths={selectedGoal?.target_months}
                 />
               </Card>
+
+              {/* CASCADE MODE: Financial Chain Reaction Visualization */}
+              {simResult.chain_reaction_steps && simResult.chain_reaction_steps.length > 0 && (
+                <Card className="p-5">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Zap className="w-4 h-4 text-amber-500" />
+                        <h3 className="font-bold text-slate-900 text-sm">
+                          Financial Chain Reaction (Cascade Breakdown)
+                        </h3>
+                      </div>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Step-by-step mathematical transmission explaining how compounded shocks erode goal solvency
+                      </p>
+                    </div>
+                    <span className="text-xs font-mono font-semibold bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded">
+                      {simResult.chain_reaction_steps.length} Sequenced Steps
+                    </span>
+                  </div>
+
+                  <div className="space-y-3">
+                    {simResult.chain_reaction_steps.map((step) => (
+                      <div
+                        key={step.step_number}
+                        className={`p-3.5 rounded-lg border text-xs transition-all ${
+                          step.is_critical
+                            ? "border-rose-300 bg-rose-50/50"
+                            : "border-slate-200 bg-slate-50/40"
+                        }`}
+                      >
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className={`w-5 h-5 rounded-full flex items-center justify-center font-bold text-[11px] ${
+                              step.is_critical ? "bg-rose-600 text-white" : "bg-slate-800 text-white"
+                            }`}>
+                              {step.step_number}
+                            </span>
+                            <span className="font-bold text-slate-900 text-xs">{step.title}</span>
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono uppercase bg-slate-200 text-slate-700">
+                              {step.timing}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-3 text-[11px]">
+                            <span className="text-slate-500">
+                              Buffer: <span className="font-mono font-semibold text-slate-800">{formatINR(step.remaining_buffer)}</span>
+                            </span>
+                            {step.cumulative_delay_added > 0 && (
+                              <span className="text-amber-600 font-semibold">
+                                +{step.cumulative_delay_added} mo delay
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <p className="text-slate-600 leading-relaxed mb-2">
+                          {step.goal_impact_description}
+                        </p>
+
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 border-t border-slate-200/60 text-[11px]">
+                          <div>
+                            <span className="text-slate-400">Monthly Cash-flow: </span>
+                            <span className={`font-mono font-semibold ${step.monthly_cashflow_impact < 0 ? "text-rose-600" : "text-slate-700"}`}>
+                              {step.monthly_cashflow_impact < 0 ? "-" : ""}{formatINR(Math.abs(step.monthly_cashflow_impact))}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400">Contribution Cut: </span>
+                            <span className="font-mono font-semibold text-amber-700">
+                              {formatINR(step.monthly_contribution_change)}/mo
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400">Disruption: </span>
+                            <span className="font-medium text-slate-700 uppercase">
+                              {step.shock_type.replace(/_/g, " ")}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              )}
+
+              {/* WHY DID MY GOAL FAIL? Root-Cause Diagnostic Card */}
+              {simResult.failure_diagnostic && (
+                <Card className="p-5 border-rose-200 bg-white">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100 mb-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <AlertTriangle className="w-4 h-4 text-rose-600" />
+                        <h3 className="font-bold text-slate-900 text-sm">
+                          Deterministic Root-Cause Analysis: &ldquo;Why Did My Goal Fail / Become Fragile?&rdquo;
+                        </h3>
+                      </div>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Quantitative attribution without AI speculation — directly derived from verified engine mechanics
+                      </p>
+                    </div>
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                      Driver: {simResult.failure_diagnostic.primary_vulnerability}
+                    </span>
+                  </div>
+
+                  {/* Headline & 4-metric Summary */}
+                  <div className="bg-rose-50/60 rounded-lg p-3.5 border border-rose-100 mb-4">
+                    <div className="font-bold text-rose-900 text-xs mb-2">
+                      {simResult.failure_diagnostic.headline}
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                      <div>
+                        <div className="text-[10px] text-slate-500">Cash-Flow Contraction</div>
+                        <div className="font-bold font-mono text-rose-700">
+                          {formatINR(simResult.failure_diagnostic.cashflow_drop_monthly)}/mo
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] text-slate-500">Emergency Buffer Absorbed</div>
+                        <div className="font-bold font-mono text-slate-900">
+                          {formatINR(simResult.failure_diagnostic.buffer_absorbed_total)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] text-slate-500">Monthly Contribution Cut</div>
+                        <div className="font-bold font-mono text-amber-700">
+                          {formatINR(simResult.failure_diagnostic.contribution_drop_monthly)}/mo
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-[10px] text-slate-500">Deadline Delay</div>
+                        <div className="font-bold font-mono text-slate-900">
+                          +{simResult.failure_diagnostic.deadline_slippage_months} Mos
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 5-Step Numbered Root Causes */}
+                  <div className="space-y-2 text-xs">
+                    <div className="font-semibold text-slate-800 text-[11px] uppercase tracking-wide">
+                      Failure Progression Sequence:
+                    </div>
+                    {simResult.failure_diagnostic.root_causes.map((cause, idx) => (
+                      <div key={idx} className="flex items-start gap-2.5 p-2 rounded bg-slate-50 text-slate-700">
+                        <span className="w-4 h-4 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                          {idx + 1}
+                        </span>
+                        <span className="leading-relaxed">{cause}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              )}
+
+              {/* Financial Resilience Fingerprint */}
+              {simResult.resilience_fingerprint && (
+                <ResilienceFingerprint fingerprint={simResult.resilience_fingerprint} />
+              )}
+
+              {/* Assumption Ledger */}
+              {simResult.assumption_ledger && (
+                <AssumptionLedger ledger={simResult.assumption_ledger} />
+              )}
             </>
           ) : (
             <Card className="py-20 text-center">

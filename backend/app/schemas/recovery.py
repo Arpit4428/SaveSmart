@@ -2,7 +2,7 @@
 SaveSmart Recovery Schemas
 Pydantic models for deterministic recovery plan requests and options in INR (₹).
 """
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 from app.schemas.simulation import ShockEventSchema
 
@@ -24,6 +24,12 @@ class RecoveryPlanOption(BaseModel):
     emergency_buffer_replenished_month: int
     feasibility_score: float
     description: str
+    buffer_preserved: float = 0.0
+    time_to_recover_months: int = 0
+    pros: List[str] = Field(default_factory=list)
+    cons: List[str] = Field(default_factory=list)
+    trade_offs: str = ""
+    trajectory_curve: List[float] = Field(default_factory=list)
 
 
 class RecoveryPlansResponse(BaseModel):
@@ -31,3 +37,8 @@ class RecoveryPlansResponse(BaseModel):
     simulation_id: str
     currency: str = "INR"
     plans: List[RecoveryPlanOption]
+    curves: Optional[Dict[str, List[float]]] = None
+    target_amount: float = 0.0
+    target_deadline_months: int = 0
+    assumption_ledger: Optional[Dict[str, Any]] = None
+

@@ -1,11 +1,11 @@
-﻿"""
+"""
 SaveSmart Financial Engine — Domain Models & Dataclasses
 Pure Python domain models representing all entities and math payloads in INR (₹).
 Zero external framework dependencies.
 """
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 
 class ShockType(str, Enum):
@@ -161,6 +161,60 @@ class HealthRiskFactor:
 
 
 @dataclass
+class ResilienceFingerprint:
+    buffer_strength: float  # 0-100 (Phi_buffer)
+    cashflow_flexibility: float  # 0-100 (Phi_flex)
+    debt_pressure_safety: float  # 0-100 (Phi_dti)
+    goal_capacity_cushion: float  # 0-100 (FCF / C_target)
+    shock_recovery_velocity: float  # 0-100 (Phi_slip)
+    overall_score: float  # Arithmetic mean
+    overall_grade: str  # "Robust", "Moderate", "Vulnerable", "Critical"
+
+
+@dataclass
+class ChainReactionStep:
+    step_number: int
+    title: str
+    timing: str
+    shock_type: str
+    monthly_cashflow_impact: float  # ₹ change
+    remaining_buffer: float  # ₹ remaining
+    monthly_contribution_change: float  # ₹ change in goal contribution
+    goal_impact_description: str
+    cumulative_delay_added: int  # months delay
+    is_critical: bool = False
+
+
+@dataclass
+class FailureDiagnostic:
+    headline: str
+    root_causes: List[str]
+    primary_vulnerability: str
+    contribution_drop_monthly: float
+    cashflow_drop_monthly: float
+    buffer_absorbed_total: float
+    deadline_slippage_months: int
+    capital_loss_at_deadline: float
+
+
+@dataclass
+class AssumptionLedger:
+    monthly_net_income: float
+    total_fixed_expenses: float
+    total_discretionary_expenses: float
+    total_debt_payments: float
+    emergency_fund_balance: float
+    goal_name: str
+    goal_target_amount: float
+    goal_initial_balance: float
+    goal_target_months: int
+    base_monthly_contribution: float
+    shocks_count: int
+    shocks_applied: List[Dict[str, Any]]
+    simulation_horizon_months: int
+
+
+@dataclass
 class GoalHealthReport:
     goal_id: str
     currency: str
@@ -171,6 +225,8 @@ class GoalHealthReport:
     emergency_buffer_months: float
     debt_to_income_ratio: float
     risk_factors: List[HealthRiskFactor] = field(default_factory=list)
+    resilience_fingerprint: Optional[ResilienceFingerprint] = None
+    assumption_ledger: Optional[AssumptionLedger] = None
 
 
 @dataclass
@@ -203,6 +259,10 @@ class SimulationResult:
     stressed: StressedSimulationSummary
     monthly_timeline: List[MonthlySnapshot]
     shocks_applied: List[ShockEvent] = field(default_factory=list)
+    chain_reaction_steps: List[ChainReactionStep] = field(default_factory=list)
+    failure_diagnostic: Optional[FailureDiagnostic] = None
+    assumption_ledger: Optional[AssumptionLedger] = None
+    resilience_fingerprint: Optional[ResilienceFingerprint] = None
 
 
 @dataclass
@@ -217,6 +277,12 @@ class RecoveryPlan:
     emergency_buffer_replenished_month: int
     feasibility_score: float
     description: str
+    buffer_preserved: float = 0.0  # Minimum buffer balance maintained in ₹
+    time_to_recover_months: int = 0  # Months until target completion
+    pros: List[str] = field(default_factory=list)
+    cons: List[str] = field(default_factory=list)
+    trade_offs: str = ""
+    trajectory_curve: List[float] = field(default_factory=list)
 
 
 @dataclass
@@ -227,3 +293,13 @@ class SurvivalMapData:
     insolvency_threshold: float  # 0.00
     safe_buffer_threshold: float  # Baseline emergency buffer
     curves: Dict[str, List[float]]  # "baseline", "stressed", "recovered_balanced"
+    target_amount: float = 0.0
+    target_deadline_months: int = 0
+    first_unsafe_month: Optional[int] = None
+    max_drawdown: float = 0.0
+    deadline_slippage: int = 0
+    capital_shortfall: float = 0.0
+    recovery_point_month: Optional[int] = None
+    final_status: str = "SURVIVED"  # "SURVIVED", "DELAYED", "AT_RISK"
+    survival_verdict: str = ""
+    buffer_curves: Optional[Dict[str, List[float]]] = None

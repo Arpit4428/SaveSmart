@@ -1,4 +1,4 @@
-﻿"""
+"""
 SaveSmart Goal Service
 Bridges Goal API endpoints and repository storage to the deterministic Financial Engine.
 Zero financial math performed here: delegates all calculations to backend/app/engine/.
@@ -19,6 +19,7 @@ from app.schemas.goal import (
     GoalResponse,
     GoalUpdateRequest,
 )
+from app.schemas.simulation import AssumptionLedgerSchema, ResilienceFingerprintSchema
 from app.services.baseline_service import map_dict_to_engine_baseline
 
 
@@ -161,6 +162,36 @@ class GoalService:
         # Delegate 100% of health evaluation to Financial Engine
         health_report = evaluate_baseline_goal_health(engine_baseline, engine_goal)
 
+        fp_schema = None
+        if health_report.resilience_fingerprint:
+            fp = health_report.resilience_fingerprint
+            fp_schema = ResilienceFingerprintSchema(
+                buffer_strength=fp.buffer_strength,
+                cashflow_flexibility=fp.cashflow_flexibility,
+                debt_pressure_safety=fp.debt_pressure_safety,
+                goal_capacity_cushion=fp.goal_capacity_cushion,
+                shock_recovery_velocity=fp.shock_recovery_velocity,
+                overall_score=fp.overall_score,
+                overall_grade=fp.overall_grade
+            )
+
+        c_target = compute_required_monthly_contribution(engine_goal)
+        ledger = AssumptionLedgerSchema(
+            monthly_net_income=round(engine_baseline.monthly_net_income, 2),
+            total_fixed_expenses=round(engine_baseline.fixed_expenses.total, 2),
+            total_discretionary_expenses=round(engine_baseline.discretionary_expenses.total, 2),
+            total_debt_payments=round(engine_baseline.total_debt_payment, 2),
+            emergency_fund_balance=round(engine_baseline.emergency_fund_balance, 2),
+            goal_name=engine_goal.name,
+            goal_target_amount=round(engine_goal.target_amount, 2),
+            goal_initial_balance=round(engine_goal.current_balance, 2),
+            goal_target_months=engine_goal.target_months,
+            base_monthly_contribution=round(c_target, 2),
+            shocks_count=0,
+            shocks_applied=[],
+            simulation_horizon_months=engine_goal.target_months
+        )
+
         return GoalHealthResponse(
             goal_id=goal_id,
             currency="INR",
@@ -177,8 +208,11 @@ class GoalService:
                     description=rf.description
                 )
                 for rf in health_report.risk_factors
-            ]
+            ],
+            resilience_fingerprint=fp_schema,
+            assumption_ledger=ledger
         )
+
 
 
 goal_service = GoalService()
