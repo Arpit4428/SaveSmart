@@ -1,4 +1,4 @@
-﻿"""
+"""
 SaveSmart API Schemas Module
 """
 from .common import ApiErrorDetail, ApiResponse, SystemHealthResponse
@@ -18,6 +18,12 @@ from .baseline import (
     FixedExpensesSchema,
 )
 
+from .explanation import (
+    ScenarioExplanationRequest,
+    AIExplanationStructured,
+    ScenarioExplanationResponse,
+)
+
 __all__ = [
     "ApiErrorDetail",
     "ApiResponse",
@@ -33,4 +39,7 @@ __all__ = [
     "DebtCommitmentSchema",
     "DiscretionaryExpensesSchema",
     "FixedExpensesSchema",
+    "ScenarioExplanationRequest",
+    "AIExplanationStructured",
+    "ScenarioExplanationResponse",
 ]

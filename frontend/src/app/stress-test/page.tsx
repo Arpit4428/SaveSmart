@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/Badge";
 import { SurvivalChart } from "@/components/charts/SurvivalChart";
 import { ResilienceFingerprint } from "@/components/ui/ResilienceFingerprint";
 import { AssumptionLedger } from "@/components/ui/AssumptionLedger";
+import { AIExplanationCard } from "@/components/ui/AIExplanationCard";
 import {
   ShieldAlert,
   Play,
@@ -480,6 +481,15 @@ export default function StressTestPage() {
                   targetDeadlineMonths={selectedGoal?.target_months}
                 />
               </Card>
+
+              {/* AI Explanation Layer */}
+              <AIExplanationCard
+                goalId={selectedGoalId}
+                explanationType={mode === "cascade" ? "cascade" : "stress_test"}
+                shocks={mode === "cascade" ? cascadeShocks : [singleShock]}
+                horizonMonths={36}
+                title={mode === "cascade" ? "AI Cascade Analysis: Why Multi-Shocks Compound" : "AI Stress-Test Analysis: Impact & Drivers"}
+              />
 
               {/* CASCADE MODE: Financial Chain Reaction Visualization */}
               {simResult.chain_reaction_steps && simResult.chain_reaction_steps.length > 0 && (

@@ -9,6 +9,7 @@ from app.api.v1.baseline import router as baseline_router
 from app.api.v1.stress_test import router as stress_test_router
 from app.api.v1.recovery import router as recovery_router
 from app.api.v1.survival import router as survival_router
+from app.api.v1.explain import router as explain_router
 
 api_v1_router = APIRouter()
 
@@ -18,3 +19,4 @@ api_v1_router.include_router(baseline_router)
 api_v1_router.include_router(stress_test_router)
 api_v1_router.include_router(recovery_router)
 api_v1_router.include_router(survival_router)
+api_v1_router.include_router(explain_router)

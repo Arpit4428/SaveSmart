@@ -2,7 +2,7 @@
 
 > **Hackathon Track:** Fintech / Financial Resilience & Goal Stress-Testing  
 > **Currency Standard:** Indian Rupee (INR / ₹)  
-> **Status:** Phase 1 (Engine + Backend + MongoDB), Phase 2 (Next.js 15 Frontend UI), and Phase 3 (SaveSmart Differentiation Features) COMPLETED.  
+> **Status:** Phase 1 (Engine + Backend + MongoDB), Phase 2 (Next.js 15 Frontend UI), Phase 3 (SaveSmart Differentiation Features), and Phase 4 (Gemini Explanation Layer) COMPLETED.  
 > **Last Updated:** 2026-09-18  
 
 ---
@@ -32,7 +32,7 @@ SaveSmart empowers everyday savers to:
 | **Backend API** | **Python 3.13 + FastAPI** | High-performance asynchronous API, native Pydantic v2 data validation, and seamless interop with deterministic Python financial math. |
 | **Financial Engine** | **Pure Deterministic Python** | Isolated math modules with zero probabilistic or floating-point hallucination. 100% test-covered and reproducible. |
 | **Database** | **MongoDB Atlas (Motor / PyMongo)** | Flexible document schema for versioned user scenarios, shock simulations, custom shock parameters, and recovery strategies. |
-| **AI Explanation Layer**| **Google Gemini API (`gemini-1.5-pro` / `gemini-2.0-flash`)** | Interprets verified simulation outputs into empathetic, plain-language financial narratives, strictly prohibited from calculating numbers. |
+| **AI Explanation Layer**| **Google Gemini API (`google-genai` SDK / `gemini-1.5-flash`)** | Interprets verified simulation outputs into empathetic, plain-language financial narratives, strictly prohibited from calculating numbers or giving investment advice. |
 | **Version Control & CI**| **GitHub + Git** | Branch protection, clear pull request contracts, and isolated multi-agent workstream branches. |
 | **Deployment Target** | **Vercel** (Frontend) + **Render/Railway** (Backend) | Production-ready cloud targets with zero DevOps overhead during hackathon demos. |
 
@@ -50,7 +50,7 @@ SaveSmart empowers everyday savers to:
 | **F-06** | **Adaptive Recovery Planner** | Solves 3 deterministic recovery paths (Aggressive, Balanced, Extended) with visual trajectory comparator & trade-off matrix. | `backend/app/engine/recovery.py`<br>`frontend/src/app/recovery/` | ✅ Complete | Financial Engine |
 | **F-07** | **Goal Survival Map** | Multi-month timeline projection with Survival Verdict, first unsafe month, max drawdown, shortfall, and buffer runway in ₹. | `backend/app/engine/survival.py`<br>`frontend/src/app/survival/` | ✅ Complete | Financial Engine + Frontend |
 | **F-08** | **Cascade Mode** | Financial Chain Reaction sequencer simulating compounding multi-shock transmission with deterministic failure diagnosis. | `backend/app/engine/cascade.py`<br>`frontend/src/app/stress-test/` | ✅ Complete | Financial Engine |
-| **F-09** | **Gemini Explainer Layer** | Ingests verified simulation JSON and generates executive summaries and coaching without altering numbers. | `backend/app/services/gemini_explainer.py`<br>`frontend/src/components/ai/` | 📝 Planned (Phase 4) | AI & Integration |
+| **F-09** | **Gemini Explainer Layer** | Ingests verified simulation JSON and generates executive summaries and coaching without altering numbers. | `backend/app/services/gemini_service.py`<br>`frontend/src/components/ui/AIExplanationCard.tsx` | ✅ Complete | AI & Integration |
 
 ---
 

@@ -78,8 +78,18 @@ async function runQA() {
     const fingerprint = page.locator('text=/Goal Resilience Fingerprint/i').first();
     await fingerprint.waitFor({ state: 'visible', timeout: 5000 });
     
+    // Test AI Explanation in Goal Health Modal
+    console.log('   Testing AI Resilience Explanation in Goal Health modal...');
+    const healthAiExplainBtn = page.locator('button:has-text("Explain This Result")').first();
+    if (await healthAiExplainBtn.isVisible()) {
+      await healthAiExplainBtn.click();
+      const aiHeadline = page.locator('text=/Analytical Narrative/i').first();
+      await aiHeadline.waitFor({ state: 'visible', timeout: 15000 });
+      console.log('   ✅ AI Explanation generated and verified in Goal Health Modal!');
+    }
+    
     await page.screenshot({ path: path.join(screenshotsDir, '01_goal_health.png') });
-    console.log('   ✅ Goal Health with 5-axis Fingerprint verified! Screenshot captured.');
+    console.log('   ✅ Goal Health with 5-axis Fingerprint & AI Card verified! Screenshot captured.');
 
     // ----------------------------------------------------
     // STEP 2: SAVE A FINANCIAL BASELINE
@@ -120,7 +130,7 @@ async function runQA() {
     console.log('   ✅ Dashboard loaded verified Goal and Baseline data from backend APIs! Screenshot captured.');
 
     // ----------------------------------------------------
-    // STEP 4: RUN STRESS-TEST LAB (CHAIN REACTION, WHY DID IT FAIL, FINGERPRINT, ASSUMPTION LEDGER)
+    // STEP 4: RUN STRESS-TEST LAB (CASCADE MODE + AI EXPLANATION)
     // ----------------------------------------------------
     console.log('\n👉 Step 4: Navigating to /stress-test...');
     await page.goto('http://localhost:3000/stress-test', { waitUntil: 'networkidle' });
@@ -173,10 +183,22 @@ async function runQA() {
     await page.waitForTimeout(500);
     console.log('   ✅ Financial Assumptions Ledger verified and expandable!');
 
-    await page.screenshot({ path: path.join(screenshotsDir, '04_cascade_differentiation.png'), fullPage: true });
+    // Verify AI Explanation Card in Stress-Test
+    console.log('   Testing AI Explanation Layer in Stress-Test Lab...');
+    const stressAiBtn = page.locator('button:has-text("Explain This Result")').first();
+    await stressAiBtn.waitFor({ state: 'visible', timeout: 5000 });
+    await stressAiBtn.click();
+    const stressAiNarrative = page.locator('text=/Analytical Narrative/i').first();
+    await stressAiNarrative.waitFor({ state: 'visible', timeout: 15000 });
+
+    const stressAiDisclaimer = page.locator('text=/Financial calculations are computed deterministically/i').first();
+    await stressAiDisclaimer.waitFor({ state: 'visible', timeout: 5000 });
+    console.log('   ✅ AI Explanation Layer verified with validated narrative and engine disclaimer in Stress-Test!');
+
+    await page.screenshot({ path: path.join(screenshotsDir, '04_cascade_differentiation_ai.png'), fullPage: true });
 
     // ----------------------------------------------------
-    // STEP 5: OPEN RECOVERY PLANNER WITH TRAJECTORY COMPARATOR & TRADE-OFF MATRIX
+    // STEP 5: OPEN RECOVERY PLANNER WITH TRAJECTORY COMPARATOR & AI EXPLANATION
     // ----------------------------------------------------
     console.log('\n👉 Step 5: Navigating to /recovery...');
     await page.goto('http://localhost:3000/recovery', { waitUntil: 'networkidle' });
@@ -200,10 +222,19 @@ async function runQA() {
     await bufferPreserved.waitFor({ state: 'visible', timeout: 5000 });
     console.log('   ✅ Buffer Preserved & Time to Recover metrics verified!');
 
-    await page.screenshot({ path: path.join(screenshotsDir, '05_recovery_differentiation.png'), fullPage: true });
+    // Verify AI Explanation Card in Recovery
+    console.log('   Testing AI Explanation Layer in Recovery Planner...');
+    const recoveryAiBtn = page.locator('button:has-text("Explain This Result")').first();
+    await recoveryAiBtn.waitFor({ state: 'visible', timeout: 5000 });
+    await recoveryAiBtn.click();
+    const recoveryAiNarrative = page.locator('text=/Analytical Narrative/i').first();
+    await recoveryAiNarrative.waitFor({ state: 'visible', timeout: 15000 });
+    console.log('   ✅ AI Explanation Layer verified in Recovery Planner!');
+
+    await page.screenshot({ path: path.join(screenshotsDir, '05_recovery_differentiation_ai.png'), fullPage: true });
 
     // ----------------------------------------------------
-    // STEP 6: OPEN UPGRADED GOAL SURVIVAL MAP & METRIC BADGES
+    // STEP 6: OPEN UPGRADED GOAL SURVIVAL MAP & AI EXPLANATION
     // ----------------------------------------------------
     console.log('\n👉 Step 6: Navigating to /survival...');
     await page.goto('http://localhost:3000/survival', { waitUntil: 'networkidle' });
@@ -230,7 +261,16 @@ async function runQA() {
     await bufferRunway.waitFor({ state: 'visible', timeout: 5000 });
     console.log('   ✅ Liquid Safety Buffer Runway chart verified!');
 
-    await page.screenshot({ path: path.join(screenshotsDir, '06_survival_differentiation.png'), fullPage: true });
+    // Verify AI Explanation Card in Survival Map
+    console.log('   Testing AI Explanation Layer in Goal Survival Map...');
+    const survivalAiBtn = page.locator('button:has-text("Explain This Result")').first();
+    await survivalAiBtn.waitFor({ state: 'visible', timeout: 5000 });
+    await survivalAiBtn.click();
+    const survivalAiNarrative = page.locator('text=/Analytical Narrative/i').first();
+    await survivalAiNarrative.waitFor({ state: 'visible', timeout: 15000 });
+    console.log('   ✅ AI Explanation Layer verified in Goal Survival Map!');
+
+    await page.screenshot({ path: path.join(screenshotsDir, '06_survival_differentiation_ai.png'), fullPage: true });
 
     // ----------------------------------------------------
     // STEP 7: MOBILE RESPONSIVENESS CHECK

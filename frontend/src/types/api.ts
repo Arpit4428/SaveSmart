@@ -271,3 +271,33 @@ export interface SystemHealth {
   gemini_api_configured: boolean;
 }
 
+export interface ScenarioExplanationRequest {
+  goal_id: string;
+  explanation_type: "health" | "stress_test" | "cascade" | "recovery" | "survival";
+  shocks?: ShockEvent[];
+  horizon_months?: number;
+  question?: string;
+}
+
+export interface AIExplanationStructured {
+  headline: string;
+  summary: string;
+  key_drivers: string[];
+  impact_assessment: string;
+  trade_offs_explained?: string | null;
+  actionable_next_steps: string[];
+}
+
+export interface ScenarioExplanationResponse {
+  goal_id: string;
+  explanation_type: string;
+  currency: "INR";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  verified_financial_result: Record<string, any>;
+  ai_explanation: AIExplanationStructured;
+  is_fallback: boolean;
+  model_used?: string | null;
+  disclaimer: string;
+}
+
+

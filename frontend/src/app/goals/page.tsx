@@ -8,6 +8,7 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { ResilienceFingerprint } from "@/components/ui/ResilienceFingerprint";
 import { AssumptionLedger } from "@/components/ui/AssumptionLedger";
+import { AIExplanationCard } from "@/components/ui/AIExplanationCard";
 import { Plus, Trash2, ShieldCheck, AlertCircle, RefreshCw, X } from "lucide-react";
 
 export default function GoalsPage() {
@@ -281,6 +282,12 @@ export default function GoalsPage() {
                       subtitle="Evaluated against your baseline cash flow and debt obligations"
                     />
                   )}
+
+                  <AIExplanationCard
+                    goalId={inspectingGoal.id}
+                    explanationType="health"
+                    title="AI Goal Health Diagnostics: Baseline Fragility"
+                  />
 
                   {healthReport.assumption_ledger && (
                     <AssumptionLedger ledger={healthReport.assumption_ledger} />

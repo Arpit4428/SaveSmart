@@ -8,6 +8,7 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { RecoveryChart } from "@/components/charts/RecoveryChart";
 import { AssumptionLedger } from "@/components/ui/AssumptionLedger";
+import { AIExplanationCard } from "@/components/ui/AIExplanationCard";
 import {
   RefreshCw,
   CheckCircle2,
@@ -233,6 +234,13 @@ export default function RecoveryPage() {
               );
             })}
           </div>
+
+          {/* AI Explanation Layer */}
+          <AIExplanationCard
+            goalId={selectedGoalId}
+            explanationType="recovery"
+            title="AI Recovery Strategy Advisor: Trade-Off Analysis"
+          />
 
           {/* Detailed Strategy Breakdown & Trade-Off Matrix ("What It Costs You") */}
           {activePlan && (

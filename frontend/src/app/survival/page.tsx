@@ -8,6 +8,7 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { SurvivalChart } from "@/components/charts/SurvivalChart";
 import { BufferRunwayChart } from "@/components/charts/BufferRunwayChart";
 import { AssumptionLedger } from "@/components/ui/AssumptionLedger";
+import { AIExplanationCard } from "@/components/ui/AIExplanationCard";
 import {
   RefreshCw,
   AlertCircle,
@@ -229,6 +230,13 @@ export default function SurvivalMapPage() {
               <div className="text-[10px] text-slate-400 mt-0.5">Balanced plan parity</div>
             </Card>
           </div>
+
+          {/* AI Explanation Layer */}
+          <AIExplanationCard
+            goalId={selectedGoalId}
+            explanationType="survival"
+            title="AI Goal Survival Map Interpretation"
+          />
 
           {/* Trajectory Comparison Chart */}
           <Card>

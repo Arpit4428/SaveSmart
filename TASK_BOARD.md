@@ -123,10 +123,11 @@
 
 ---
 
-### Phase 3 & 4: Integration, Demo Seeding, and Polish
-- [ ] **TASK-INT01**: Wire Frontend state to Backend REST API.
-- [ ] **TASK-INT02**: Create demo seed script (`backend/seed_demo_data.py`) with rich pre-loaded realistic Indian financial scenarios:
-  - Scenario 1: "First-Time Homebuyer" (₹25,00,000 target, ₹1,20,000/mo income, Tech Layoff Shock)
-  - Scenario 2: "Wedding Fund" (₹15,00,000 target, ₹85,000/mo income, Medical Emergency + Inflation Cascade)
-  - Scenario 3: "Entrepreneur Safety Net" (₹10,00,000 target, ₹1,50,000/mo income, Extended Revenue Drought)
-- [ ] **TASK-INT03**: End-to-end user verification and presentation walkthrough.
+### Phase 4: Gemini Explanation Layer (COMPLETED)
+- [x] **TASK-GEM01**: Backend Gemini Service using `google-genai` SDK with strict JSON schema outputs and zero-leakage security.
+- [x] **TASK-GEM02**: Hallucination Firewall: Validation layer intercepting fabricated financial claims and strictly prohibiting investment/loan advice.
+- [x] **TASK-GEM03**: Deterministic Fallback Explainer: High-fidelity natural language explanations generated deterministically when Gemini is unavailable.
+- [x] **TASK-GEM04**: `POST /api/v1/explain/scenario` endpoint returning verified calculations, structured AI narrative, and engine disclaimer.
+- [x] **TASK-GEM05**: Frontend `<AIExplanationCard />` component embedded across Goal Health, Stress-Test, Recovery, and Survival views.
+- [x] **TASK-GEM06**: 100% mocked Pytest test suite for Gemini & Hallucination Firewall (9 new unit tests, 45/45 total passed).
+- [x] **TASK-GEM07**: Playwright E2E QA automation testing all AI explanation workflows with 0 console or network errors.
