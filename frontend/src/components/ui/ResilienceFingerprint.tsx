@@ -74,26 +74,28 @@ export function ResilienceFingerprint({
   };
 
   return (
-    <div className={`rounded-xl border border-slate-200 bg-white p-5 shadow-xs space-y-5 ${className}`}>
+    <div className={`rounded-2xl border border-stone-200/80 bg-white p-6 sm:p-7 shadow-soft-sm space-y-6 ${className}`}>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-stone-100">
         <div>
-          <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-emerald-600" />
-            <h3 className="font-bold text-slate-900 text-sm tracking-tight">{title}</h3>
+          <div className="flex items-center gap-2.5">
+            <span className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700">
+              <Activity className="w-4 h-4" />
+            </span>
+            <h3 className="font-semibold text-stone-950 text-base tracking-tight">{title}</h3>
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
+          <p className="text-xs text-stone-500 mt-1 leading-relaxed">{subtitle}</p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="text-right">
-            <div className="text-[10px] uppercase font-semibold text-slate-400">Resilience Index</div>
-            <div className="text-xl font-bold text-slate-900">
-              {fingerprint.overall_score}<span className="text-xs text-slate-400 font-normal">/100</span>
+        <div className="flex items-center gap-3 self-start sm:self-auto">
+          <div className="text-left sm:text-right">
+            <div className="text-[10px] uppercase font-semibold text-stone-400 tracking-wider">Resilience Index</div>
+            <div className="text-2xl font-bold text-stone-950 tracking-tight tabular-nums font-mono">
+              {fingerprint.overall_score}<span className="text-xs text-stone-400 font-normal font-sans">/100</span>
             </div>
           </div>
           <span
-            className={`inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold border uppercase tracking-wider ${getScoreBadge(
+            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border uppercase tracking-wider ${getScoreBadge(
               fingerprint.overall_grade
             )}`}
           >
@@ -103,21 +105,19 @@ export function ResilienceFingerprint({
       </div>
 
       {/* 5-Axis Score Meters */}
-      <div className="space-y-3.5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
         {axes.map((axis) => {
           const colorClass = getScoreColor(axis.score);
           const barColor = colorClass.split(" ")[0];
           const textColor = colorClass.split(" ")[1];
 
           return (
-            <div key={axis.key} className="space-y-1.5">
+            <div key={axis.key} className="p-4 rounded-xl bg-stone-50/60 border border-stone-200/60 space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <div className="font-semibold text-slate-800 flex items-center gap-1.5">
-                  <span>{axis.label}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className={`font-mono font-bold ${textColor}`}>{axis.score}/100</span>
-                  <span className="text-[10px] text-slate-400">
+                <span className="font-semibold text-stone-900 tracking-tight">{axis.label}</span>
+                <div className="flex items-center gap-1.5">
+                  <span className={`font-mono font-bold tabular-nums ${textColor}`}>{axis.score}/100</span>
+                  <span className="text-[10px] text-stone-400 font-medium">
                     {axis.score >= 80
                       ? "Robust"
                       : axis.score >= 60
@@ -130,14 +130,14 @@ export function ResilienceFingerprint({
               </div>
 
               {/* Meter bar */}
-              <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+              <div className="w-full bg-stone-200/60 rounded-full h-1.5 overflow-hidden">
                 <div
-                  className={`h-2 rounded-full transition-all duration-500 ${barColor}`}
+                  className={`h-1.5 rounded-full transition-all duration-500 ${barColor}`}
                   style={{ width: `${Math.min(100, Math.max(0, axis.score))}%` }}
                 />
               </div>
 
-              <p className="text-[11px] text-slate-400 leading-tight">{axis.description}</p>
+              <p className="text-[11px] text-stone-500 leading-snug">{axis.description}</p>
             </div>
           );
         })}

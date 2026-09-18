@@ -49,13 +49,13 @@ export function SurvivalChart({
   }));
 
   return (
-    <div className="w-full" style={{ height }}>
+    <div className="w-full" style={{ height: height || "24rem" }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-          <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#64748b" }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" />
+          <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#71717a" }} />
           <YAxis
-            tick={{ fontSize: 11, fill: "#64748b" }}
+            tick={{ fontSize: 11, fill: "#71717a" }}
             tickFormatter={(val) => `₹${(val / 1000).toFixed(0)}k`}
           />
           <Tooltip
@@ -67,13 +67,13 @@ export function SurvivalChart({
             labelFormatter={(label) => `Timeline Point: ${label}`}
             contentStyle={{
               backgroundColor: "#ffffff",
-              border: "1px solid #e2e8f0",
-              borderRadius: "8px",
-              fontSize: "12px",
-              boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.05)",
+              border: "1px solid #e4e4e7",
+              borderRadius: "12px",
+              fontSize: "11px",
+              boxShadow: "0 8px 24px -4px rgba(0, 0, 0, 0.08)",
             }}
           />
-          <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "12px" }} />
+          <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "14px" }} />
 
           {/* Target Amount Horizontal Reference Line */}
           {targetAmount && targetAmount > 0 && (

@@ -9,23 +9,29 @@ interface BadgeProps {
 }
 
 export function Badge({ grade, children, variant, className = "" }: BadgeProps) {
-  let colorStyles = "bg-slate-100 text-slate-700 border-slate-200";
+  let colorStyles = "bg-stone-100/90 text-stone-700 border-stone-200/80";
+  let dotColor = "bg-stone-400";
 
-  if (grade === "ROBUST" || variant === "success") {
-    colorStyles = "bg-emerald-50 text-emerald-700 border-emerald-200";
-  } else if (grade === "MODERATE" || variant === "info") {
-    colorStyles = "bg-blue-50 text-blue-700 border-blue-200";
+  if (grade === "ROBUST" || grade === "HEALTHY" || variant === "success") {
+    colorStyles = "bg-emerald-50 text-emerald-800 border-emerald-200/70";
+    dotColor = "bg-emerald-500";
+  } else if (grade === "MODERATE" || grade === "MODERATE_RISK" || variant === "info") {
+    colorStyles = "bg-sky-50 text-sky-800 border-sky-200/70";
+    dotColor = "bg-sky-500";
   } else if (grade === "VULNERABLE" || variant === "warning") {
-    colorStyles = "bg-amber-50 text-amber-700 border-amber-200";
-  } else if (grade === "CRITICAL" || variant === "danger") {
-    colorStyles = "bg-rose-50 text-rose-700 border-rose-200";
+    colorStyles = "bg-amber-50 text-amber-800 border-amber-200/70";
+    dotColor = "bg-amber-500";
+  } else if (grade === "CRITICAL" || grade === "AT_RISK" || variant === "danger") {
+    colorStyles = "bg-rose-50 text-rose-800 border-rose-200/70";
+    dotColor = "bg-rose-500";
   }
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${colorStyles} ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium tracking-tight border ${colorStyles} ${className}`}
     >
-      {children || grade}
+      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotColor}`} />
+      <span>{children || grade}</span>
     </span>
   );
 }

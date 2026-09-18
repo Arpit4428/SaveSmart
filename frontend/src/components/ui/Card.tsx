@@ -1,5 +1,3 @@
-import React from "react";
-
 export function Card({
   children,
   className = "",
@@ -8,7 +6,11 @@ export function Card({
   className?: string;
 }) {
   return (
-    <div className={`bg-white rounded-xl border border-slate-200 shadow-sm p-6 ${className}`}>
+    <div
+      className={`bg-white rounded-2xl border border-stone-200/80 shadow-soft-sm transition-all duration-200 ${
+        className.includes("p-") ? "" : "p-6 sm:p-7"
+      } ${className}`}
+    >
       {children}
     </div>
   );
@@ -24,12 +26,12 @@ export function CardHeader({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-start justify-between pb-4 border-b border-slate-100 mb-5">
+    <div className="flex items-start justify-between pb-4 border-b border-stone-100 mb-5">
       <div>
-        <h3 className="font-semibold text-slate-900 text-base">{title}</h3>
-        {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
+        <h3 className="font-semibold text-stone-950 text-base tracking-tight">{title}</h3>
+        {subtitle && <p className="text-xs text-stone-500 mt-1 leading-relaxed">{subtitle}</p>}
       </div>
-      {action && <div>{action}</div>}
+      {action && <div className="shrink-0 ml-4">{action}</div>}
     </div>
   );
 }

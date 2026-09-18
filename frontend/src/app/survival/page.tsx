@@ -91,22 +91,26 @@ export default function SurvivalMapPage() {
   const statusInfo = getStatusBadge(survivalData?.final_status);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 max-w-7xl mx-auto">
       {/* Page Header */}
-      <div>
-        <div className="flex items-center gap-2 text-emerald-600 font-semibold text-xs uppercase tracking-wider">
-          <Compass className="w-4 h-4" /> Analytical Core Feature
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-stone-200/60 pb-6">
+        <div>
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-stone-100 border border-stone-200/60 text-[11px] font-medium text-stone-600 mb-2">
+            <span>Step 4 of 5</span>
+            <span className="text-stone-300">•</span>
+            <span>Disruption Durability</span>
+          </div>
+          <h1 className="text-3xl font-semibold text-stone-950 tracking-tight">
+            Goal Survival Map & Durability Analysis
+          </h1>
+          <p className="text-sm text-stone-500 mt-1 max-w-2xl">
+            Answers the core question: <span className="font-semibold text-stone-900">&ldquo;Will my financial goal survive this disruption?&rdquo;</span>
+          </p>
         </div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight mt-1">
-          Goal Survival Map & Durability Analysis
-        </h1>
-        <p className="text-sm text-slate-500 mt-1">
-          Answers the core question: <span className="font-semibold text-slate-700">&ldquo;Will my financial goal survive this disruption?&rdquo;</span>
-        </p>
       </div>
 
       {error && (
-        <div className="p-4 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-2">
+        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200/80 text-rose-700 text-sm flex items-center gap-2.5 shadow-soft-sm">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
@@ -116,11 +120,11 @@ export default function SurvivalMapPage() {
       <Card className="p-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <label className="text-xs font-semibold text-slate-700">SELECT GOAL:</label>
+            <label className="text-xs font-semibold text-stone-700 tracking-wider uppercase whitespace-nowrap">SELECT GOAL:</label>
             <select
               value={selectedGoalId}
               onChange={(e) => setSelectedGoalId(e.target.value)}
-              className="text-xs font-medium px-3 py-2 border border-slate-200 rounded-lg bg-white focus:ring-1 focus:ring-emerald-500 w-64"
+              className="text-xs font-medium px-3.5 py-2 border border-stone-200 rounded-xl bg-white focus:outline-none focus:ring-1 focus:ring-stone-900 focus:border-stone-900 w-72 transition-all"
             >
               {goals.map((g) => (
                 <option key={g.id} value={g.id}>
@@ -131,8 +135,8 @@ export default function SurvivalMapPage() {
           </div>
 
           <div className="flex items-center gap-4 text-xs font-medium">
-            <span className="flex items-center gap-1.5 text-blue-600">
-              <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />
+            <span className="flex items-center gap-1.5 text-stone-700">
+              <span className="w-2.5 h-2.5 rounded-full bg-stone-800" />
               Baseline Plan
             </span>
             <span className="flex items-center gap-1.5 text-rose-600">
@@ -148,32 +152,34 @@ export default function SurvivalMapPage() {
       </Card>
 
       {loading ? (
-        <div className="py-24 flex justify-center items-center text-sm text-slate-500">
-          <RefreshCw className="w-4 h-4 animate-spin mr-2 text-emerald-600" /> Computing survival trajectories & runway...
+        <div className="py-24 flex flex-col justify-center items-center text-sm text-stone-500">
+          <RefreshCw className="w-5 h-5 animate-spin mb-2 text-stone-400" />
+          <span>Computing survival trajectories & safe buffer runway...</span>
         </div>
       ) : survivalData ? (
         <>
           {/* Survival Verdict Banner */}
-          <div className={`p-5 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${statusInfo.bg}`}>
-            <div className="flex items-start gap-3">
+          <div className={`p-6 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 shadow-soft-sm ${statusInfo.bg}`}>
+            <div className="flex items-start gap-3.5">
               <div className="mt-0.5">{statusInfo.icon}</div>
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold uppercase tracking-wider">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <span className="text-[11px] font-bold uppercase tracking-wider">
                     {statusInfo.label}
                   </span>
-                  <span className="text-xs text-slate-500 font-mono">
+                  <span className="text-stone-300">•</span>
+                  <span className="text-xs text-stone-600 tabular-nums font-medium">
                     Target: {formatINR(survivalData.target_amount || selectedGoal?.target_amount || 0)}
                   </span>
                 </div>
-                <h3 className="text-base font-bold text-slate-900 mt-1">
+                <h3 className="text-lg font-semibold text-stone-950 mt-1 tracking-tight">
                   {survivalData.survival_verdict || "Simulation analysis calculated successfully."}
                 </h3>
               </div>
             </div>
-            <div className="text-right shrink-0">
-              <div className="text-[10px] uppercase font-semibold text-slate-500">Target Deadline</div>
-              <div className="text-base font-bold text-slate-900">
+            <div className="text-right shrink-0 sm:border-l sm:border-stone-200/70 sm:pl-6">
+              <div className="text-[10px] uppercase font-semibold text-stone-500 tracking-wider">Target Deadline</div>
+              <div className="text-xl font-bold text-stone-950 tabular-nums mt-0.5">
                 Month {survivalData.target_deadline_months || selectedGoal?.target_months || 0}
               </div>
             </div>
@@ -181,55 +187,55 @@ export default function SurvivalMapPage() {
 
           {/* 6 Analytical Metric Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Card className="p-3.5">
-              <div className="text-[11px] font-medium text-slate-500">SURVIVAL STATUS</div>
-              <div className={`text-sm font-bold mt-1 ${
-                survivalData.final_status === "SURVIVED" ? "text-emerald-600" :
-                survivalData.final_status === "DELAYED" ? "text-amber-600" : "text-rose-600"
+            <Card className="p-4">
+              <div className="text-[11px] font-medium text-stone-500 tracking-wider uppercase">SURVIVAL STATUS</div>
+              <div className={`text-base font-bold mt-1 tracking-tight ${
+                survivalData.final_status === "SURVIVED" ? "text-emerald-700" :
+                survivalData.final_status === "DELAYED" ? "text-amber-700" : "text-rose-700"
               }`}>
                 {survivalData.final_status || "ANALYZED"}
               </div>
-              <div className="text-[10px] text-slate-400 mt-0.5">Post-stress durability</div>
+              <div className="text-[11px] text-stone-400 mt-1">Post-stress durability</div>
             </Card>
 
-            <Card className="p-3.5">
-              <div className="text-[11px] font-medium text-slate-500">FIRST UNSAFE MONTH</div>
-              <div className="text-sm font-bold text-slate-900 mt-1">
+            <Card className="p-4">
+              <div className="text-[11px] font-medium text-stone-500 tracking-wider uppercase">FIRST UNSAFE MONTH</div>
+              <div className="text-base font-bold text-stone-950 mt-1 tabular-nums">
                 {survivalData.first_unsafe_month ? `Month ${survivalData.first_unsafe_month}` : "None (Safe)"}
               </div>
-              <div className="text-[10px] text-slate-400 mt-0.5">Below buffer floor</div>
+              <div className="text-[11px] text-stone-400 mt-1">Below buffer floor</div>
             </Card>
 
-            <Card className="p-3.5">
-              <div className="text-[11px] font-medium text-slate-500">MAX DRAWDOWN</div>
-              <div className="text-sm font-bold text-rose-600 mt-1 font-mono">
+            <Card className="p-4">
+              <div className="text-[11px] font-medium text-stone-500 tracking-wider uppercase">MAX DRAWDOWN</div>
+              <div className="text-base font-bold text-rose-700 mt-1 tabular-nums">
                 {formatINR(survivalData.max_drawdown || 0)}
               </div>
-              <div className="text-[10px] text-slate-400 mt-0.5">Peak deficit vs base</div>
+              <div className="text-[11px] text-stone-400 mt-1">Peak deficit vs base</div>
             </Card>
 
-            <Card className="p-3.5">
-              <div className="text-[11px] font-medium text-slate-500">DEADLINE SLIPPAGE</div>
-              <div className="text-sm font-bold text-amber-600 mt-1">
+            <Card className="p-4">
+              <div className="text-[11px] font-medium text-stone-500 tracking-wider uppercase">DEADLINE SLIPPAGE</div>
+              <div className="text-base font-bold text-amber-700 mt-1 tabular-nums">
                 +{survivalData.deadline_slippage || 0} Mos
               </div>
-              <div className="text-[10px] text-slate-400 mt-0.5">Unmitigated delay</div>
+              <div className="text-[11px] text-stone-400 mt-1">Unmitigated delay</div>
             </Card>
 
-            <Card className="p-3.5">
-              <div className="text-[11px] font-medium text-slate-500">CAPITAL SHORTFALL</div>
-              <div className="text-sm font-bold text-rose-600 mt-1 font-mono">
+            <Card className="p-4">
+              <div className="text-[11px] font-medium text-stone-500 tracking-wider uppercase">CAPITAL SHORTFALL</div>
+              <div className="text-base font-bold text-rose-700 mt-1 tabular-nums">
                 {formatINR(survivalData.capital_shortfall || 0)}
               </div>
-              <div className="text-[10px] text-slate-400 mt-0.5">At target deadline</div>
+              <div className="text-[11px] text-stone-400 mt-1">At target deadline</div>
             </Card>
 
-            <Card className="p-3.5">
-              <div className="text-[11px] font-medium text-slate-500">RECOVERY POINT</div>
-              <div className="text-sm font-bold text-emerald-600 mt-1">
+            <Card className="p-4">
+              <div className="text-[11px] font-medium text-stone-500 tracking-wider uppercase">RECOVERY POINT</div>
+              <div className="text-base font-bold text-emerald-700 mt-1 tabular-nums">
                 {survivalData.recovery_point_month ? `Month ${survivalData.recovery_point_month}` : "Post-Horizon"}
               </div>
-              <div className="text-[10px] text-slate-400 mt-0.5">Balanced plan parity</div>
+              <div className="text-[11px] text-stone-400 mt-1">Balanced plan parity</div>
             </Card>
           </div>
 
@@ -282,15 +288,15 @@ export default function SurvivalMapPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 text-slate-500 font-semibold">
-                    <th className="py-2.5 px-3">Timeline</th>
-                    <th className="py-2.5 px-3 text-blue-700">Baseline Target</th>
-                    <th className="py-2.5 px-3 text-rose-700">Stressed Shock</th>
-                    <th className="py-2.5 px-3 text-emerald-700">Balanced Recovery</th>
-                    <th className="py-2.5 px-3 text-right">Recovery Delta</th>
+                  <tr className="border-b border-stone-200 text-stone-500 font-semibold">
+                    <th className="py-3 px-4">Timeline</th>
+                    <th className="py-3 px-4 text-stone-700">Baseline Target</th>
+                    <th className="py-3 px-4 text-rose-700">Stressed Shock</th>
+                    <th className="py-3 px-4 text-emerald-700">Balanced Recovery</th>
+                    <th className="py-3 px-4 text-right">Recovery Delta</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-stone-100">
                   {[3, 6, 12, 18, 24, 30, 36].map((m) => {
                     if (m >= survivalData.curves.baseline.length) return null;
                     const b = survivalData.curves.baseline[m] || 0;
@@ -299,12 +305,12 @@ export default function SurvivalMapPage() {
                     const delta = r - s;
 
                     return (
-                      <tr key={m} className="hover:bg-slate-50/50">
-                        <td className="py-2.5 px-3 font-medium text-slate-900">Month {m}</td>
-                        <td className="py-2.5 px-3 font-mono">{formatINR(b)}</td>
-                        <td className="py-2.5 px-3 font-mono text-rose-600">{formatINR(s)}</td>
-                        <td className="py-2.5 px-3 font-mono text-emerald-600 font-semibold">{formatINR(r)}</td>
-                        <td className="py-2.5 px-3 text-right font-mono font-medium text-emerald-700">
+                      <tr key={m} className="hover:bg-stone-50/70 transition-colors">
+                        <td className="py-3 px-4 font-medium text-stone-900">Month {m}</td>
+                        <td className="py-3 px-4 tabular-nums text-stone-600">{formatINR(b)}</td>
+                        <td className="py-3 px-4 tabular-nums text-rose-700">{formatINR(s)}</td>
+                        <td className="py-3 px-4 tabular-nums text-emerald-700 font-medium">{formatINR(r)}</td>
+                        <td className="py-3 px-4 text-right tabular-nums font-semibold text-emerald-700">
                           {delta > 0 ? `+${formatINR(delta)}` : formatINR(delta)}
                         </td>
                       </tr>
@@ -316,21 +322,21 @@ export default function SurvivalMapPage() {
           </Card>
 
           {/* Next Step Transition CTA */}
-          <div className="p-5 rounded-xl bg-gradient-to-r from-emerald-50 via-white to-blue-50 border border-emerald-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="p-6 rounded-2xl bg-stone-900 text-white shadow-soft-md flex flex-col sm:flex-row sm:items-center justify-between gap-5">
             <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-emerald-800">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-emerald-400">
                 Recommended Next Step
               </div>
-              <h4 className="font-bold text-slate-900 text-sm mt-0.5">
+              <h4 className="font-semibold text-base text-white mt-1">
                 Compare Recovery Pathways for This Disruption
               </h4>
-              <p className="text-xs text-slate-600 mt-1">
+              <p className="text-xs text-stone-400 mt-1 max-w-xl leading-relaxed">
                 Evaluate deterministic trade-offs between aggressive flexible spending cuts and extended completion deadlines.
               </p>
             </div>
             <Link
               href="/recovery"
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-xs transition-colors shrink-0"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-stone-900 bg-white hover:bg-stone-100 rounded-xl transition-colors shadow-soft-sm shrink-0"
             >
               Open Adaptive Recovery Planner <ArrowRight className="w-3.5 h-3.5" />
             </Link>

@@ -47,13 +47,13 @@ export function RecoveryChart({
   }));
 
   return (
-    <div className="w-full h-80">
+    <div className="w-full h-96">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 15, right: 25, left: 10, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-          <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#64748b" }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" />
+          <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#71717a" }} />
           <YAxis
-            tick={{ fontSize: 11, fill: "#64748b" }}
+            tick={{ fontSize: 11, fill: "#71717a" }}
             tickFormatter={(val) => `₹${(val / 1000).toFixed(0)}k`}
           />
           <Tooltip
@@ -64,12 +64,13 @@ export function RecoveryChart({
             ]}
             contentStyle={{
               backgroundColor: "#ffffff",
-              border: "1px solid #e2e8f0",
-              borderRadius: "8px",
-              fontSize: "12px",
+              border: "1px solid #e4e4e7",
+              borderRadius: "12px",
+              fontSize: "11px",
+              boxShadow: "0 8px 24px -4px rgba(0, 0, 0, 0.08)",
             }}
           />
-          <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }} />
+          <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "14px" }} />
 
           {/* Target Amount Reference Line */}
           {targetAmount && targetAmount > 0 && (

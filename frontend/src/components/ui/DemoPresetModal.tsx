@@ -163,37 +163,37 @@ export function DemoPresetModal({ isOpen, onClose, onSuccess }: DemoPresetModalP
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
-      <div className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/40 backdrop-blur-xs">
+      <div className="bg-white rounded-3xl shadow-soft-lg border border-stone-200 w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="p-5 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
+        <div className="p-6 bg-stone-900 text-white flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-white/10 text-emerald-400">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-sm tracking-tight">Load Hackathon Demo Scenario</h3>
-              <p className="text-xs text-slate-400">
+              <h3 className="font-semibold text-base tracking-tight">Load Hackathon Demo Scenario</h3>
+              <p className="text-xs text-stone-400 mt-0.5">
                 1-click population with verified Indian Rupee (₹) financial baselines & goals
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700/50 transition-colors"
+            className="p-1.5 rounded-full text-stone-400 hover:text-white hover:bg-white/10 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {error && (
-          <div className="p-3 mx-5 mt-4 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+          <div className="p-3 mx-6 mt-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs">
             {error}
           </div>
         )}
 
         {/* Preset Cards */}
-        <div className="p-5 space-y-3 max-h-[70vh] overflow-y-auto">
+        <div className="p-6 space-y-3.5 max-h-[70vh] overflow-y-auto">
           {PRESETS.map((preset) => {
             const Icon = preset.icon;
             const isLoading = loadingId === preset.id;
@@ -202,25 +202,25 @@ export function DemoPresetModal({ isOpen, onClose, onSuccess }: DemoPresetModalP
             return (
               <div
                 key={preset.id}
-                className="p-4 rounded-xl border border-slate-200 hover:border-emerald-500 bg-white hover:bg-emerald-50/20 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="p-5 rounded-2xl border border-stone-200/80 hover:border-stone-400 bg-stone-50/40 hover:bg-white transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-soft-sm"
               >
                 <div className="space-y-1.5 flex-1">
                   <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded-md bg-slate-100 text-slate-700">
+                    <div className="p-1.5 rounded-lg bg-stone-100 text-stone-800">
                       <Icon className="w-4 h-4" />
                     </div>
-                    <h4 className="font-bold text-sm text-slate-900">{preset.title}</h4>
-                    <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <h4 className="font-semibold text-sm text-stone-950 tracking-tight">{preset.title}</h4>
+                    <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/70">
                       {preset.badge}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600">
-                    <span className="font-medium text-slate-800">{preset.persona}</span> · Target: {formatINR(preset.targetAmount)} in {preset.targetMonths} mos (Current: {formatINR(preset.currentBalance)})
+                  <p className="text-xs text-stone-600">
+                    <span className="font-medium text-stone-900">{preset.persona}</span> · Target: {formatINR(preset.targetAmount)} in {preset.targetMonths} mos (Current: {formatINR(preset.currentBalance)})
                   </p>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500 pt-0.5">
-                    <span>Income: <strong className="text-slate-700">{formatINR(preset.income)}/mo</strong></span>
-                    <span>Buffer: <strong className="text-slate-700">{formatINR(preset.emergencyFund)}</strong></span>
-                    <span>Stress Hook: <span className="text-rose-600 font-medium">{preset.recommendedShock}</span></span>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-stone-500 pt-1">
+                    <span>Income: <strong className="text-stone-800 font-mono">{formatINR(preset.income)}/mo</strong></span>
+                    <span>Buffer: <strong className="text-stone-800 font-mono">{formatINR(preset.emergencyFund)}</strong></span>
+                    <span>Stress Hook: <span className="text-rose-700 font-medium">{preset.recommendedShock}</span></span>
                   </div>
                 </div>
 
@@ -229,10 +229,10 @@ export function DemoPresetModal({ isOpen, onClose, onSuccess }: DemoPresetModalP
                     type="button"
                     onClick={() => handleLoadPreset(preset)}
                     disabled={Boolean(loadingId) || isLoaded}
-                    className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold shadow-xs transition-colors ${
+                    className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold shadow-soft-sm transition-all active:scale-95 ${
                       isLoaded
                         ? "bg-emerald-600 text-white"
-                        : "bg-slate-900 hover:bg-emerald-600 text-white disabled:opacity-50"
+                        : "bg-stone-900 hover:bg-emerald-700 text-white disabled:opacity-50"
                     }`}
                   >
                     {isLoading ? (
@@ -251,12 +251,12 @@ export function DemoPresetModal({ isOpen, onClose, onSuccess }: DemoPresetModalP
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+        <div className="p-4 sm:p-5 bg-stone-50 border-t border-stone-200/70 flex items-center justify-between text-[11px] text-stone-500">
           <span>Data is passed through the live deterministic Python engine & MongoDB Atlas.</span>
           <button
             type="button"
             onClick={onClose}
-            className="text-slate-600 hover:text-slate-900 font-medium"
+            className="text-stone-600 hover:text-stone-950 font-medium px-3 py-1 rounded-full hover:bg-stone-200/60 transition-colors"
           >
             Cancel
           </button>

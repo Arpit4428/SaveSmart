@@ -14,114 +14,128 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
-        <header className="border-b border-slate-200 bg-white sticky top-0 z-50">
+      <body className="min-h-screen flex flex-col bg-[#fafaf9] text-[#09090b] selection:bg-emerald-100 selection:text-emerald-900">
+        <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-stone-200/70 transition-all">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div className="flex items-center gap-8">
-              <Link href="/" className="flex items-center gap-2 font-semibold text-lg text-slate-900">
-                <span className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">
+              <Link href="/" className="flex items-center gap-2.5 group">
+                <span className="w-8 h-8 rounded-xl bg-stone-900 text-white flex items-center justify-center font-bold text-xs tracking-wider shadow-soft-sm group-hover:bg-emerald-700 transition-colors">
                   SS
                 </span>
-                <span>SaveSmart</span>
-                <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono font-normal">
-                  INR / ₹
-                </span>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="font-semibold text-base tracking-tight text-stone-950">
+                    SaveSmart
+                  </span>
+                  <span className="text-[10px] font-mono font-medium text-stone-500 bg-stone-100/80 px-1.5 py-0.5 rounded-md border border-stone-200/60">
+                    INR / ₹
+                  </span>
+                </div>
               </Link>
-              <nav className="hidden md:flex items-center gap-1 text-sm font-medium">
+
+              <nav className="hidden lg:flex items-center gap-1 bg-stone-100/70 p-1 rounded-full border border-stone-200/60 text-xs font-medium text-stone-600">
                 <Link
                   href="/"
-                  className="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                  className="px-3.5 py-1.5 rounded-full hover:text-stone-950 hover:bg-white hover:shadow-soft-sm transition-all"
                 >
                   Dashboard
                 </Link>
                 <Link
                   href="/goals"
-                  className="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                  className="px-3.5 py-1.5 rounded-full hover:text-stone-950 hover:bg-white hover:shadow-soft-sm transition-all"
                 >
                   Goal Builder
                 </Link>
                 <Link
                   href="/baseline"
-                  className="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                  className="px-3.5 py-1.5 rounded-full hover:text-stone-950 hover:bg-white hover:shadow-soft-sm transition-all"
                 >
                   Financial Baseline
                 </Link>
                 <Link
                   href="/stress-test"
-                  className="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                  className="px-3.5 py-1.5 rounded-full hover:text-stone-950 hover:bg-white hover:shadow-soft-sm transition-all"
                 >
                   Stress-Test Lab
                 </Link>
                 <Link
                   href="/recovery"
-                  className="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                  className="px-3.5 py-1.5 rounded-full hover:text-stone-950 hover:bg-white hover:shadow-soft-sm transition-all"
                 >
                   Recovery Planner
                 </Link>
                 <Link
                   href="/survival"
-                  className="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                  className="px-3.5 py-1.5 rounded-full hover:text-stone-950 hover:bg-white hover:shadow-soft-sm transition-all"
                 >
                   Survival Map
                 </Link>
               </nav>
             </div>
 
-            <div className="flex items-center gap-3 text-xs">
-              <span className="flex items-center gap-1.5 text-slate-500">
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-stone-200/80 shadow-soft-sm text-xs font-medium text-stone-700">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                Backend Live
-              </span>
+                <span className="text-[11px] text-stone-600">Engine Live</span>
+              </div>
             </div>
           </div>
 
           {/* Mobile Sub-Navigation */}
-          <nav className="md:hidden flex items-center gap-1 px-4 py-2 overflow-x-auto border-t border-slate-100 text-xs font-medium bg-slate-50/70">
+          <nav className="lg:hidden flex items-center gap-1.5 px-4 py-2 overflow-x-auto border-t border-stone-200/50 text-xs font-medium bg-stone-50/90 no-scrollbar">
             <Link
               href="/"
-              className="px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 whitespace-nowrap"
+              className="px-3 py-1 rounded-full bg-white border border-stone-200/70 text-stone-700 whitespace-nowrap shadow-soft-sm"
             >
               Dashboard
             </Link>
             <Link
               href="/goals"
-              className="px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 whitespace-nowrap"
+              className="px-3 py-1 rounded-full text-stone-600 hover:text-stone-900 whitespace-nowrap"
             >
               Goal Builder
             </Link>
             <Link
               href="/baseline"
-              className="px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 whitespace-nowrap"
+              className="px-3 py-1 rounded-full text-stone-600 hover:text-stone-900 whitespace-nowrap"
             >
               Baseline
             </Link>
             <Link
               href="/stress-test"
-              className="px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 whitespace-nowrap"
+              className="px-3 py-1 rounded-full text-stone-600 hover:text-stone-900 whitespace-nowrap"
             >
               Stress-Test
             </Link>
             <Link
               href="/recovery"
-              className="px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 whitespace-nowrap"
+              className="px-3 py-1 rounded-full text-stone-600 hover:text-stone-900 whitespace-nowrap"
             >
               Recovery
             </Link>
             <Link
               href="/survival"
-              className="px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 whitespace-nowrap"
+              className="px-3 py-1 rounded-full text-stone-600 hover:text-stone-900 whitespace-nowrap"
             >
               Survival Map
             </Link>
           </nav>
         </header>
 
-        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
           {children}
         </main>
 
-        <footer className="border-t border-slate-200 bg-white py-6 mt-12 text-center text-xs text-slate-500">
-          SaveSmart Financial Resilience Platform · Deterministic Python Engine & Next.js 15
+        <footer className="border-t border-stone-200/70 bg-white/60 py-8 mt-16 text-center text-xs text-stone-500">
+          <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-stone-900">SaveSmart</span>
+              <span className="text-stone-400">·</span>
+              <span>Financial Resilience & Goal Stress-Testing Platform</span>
+            </div>
+            <div className="text-stone-400 text-[11px]">
+              Deterministic Python Engine · 100% Math Verification · Indian Rupee (₹)
+            </div>
+          </div>
         </footer>
       </body>
     </html>
