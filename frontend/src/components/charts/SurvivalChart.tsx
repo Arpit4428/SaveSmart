@@ -6,6 +6,7 @@ import {
   CartesianGrid,
   ComposedChart,
   Line,
+  ReferenceArea,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -23,6 +24,12 @@ interface SurvivalChartProps {
   firstUnsafeMonth?: number | null;
   recoveryPointMonth?: number | null;
   height?: number | string;
+  shockStartMonth?: number | null;
+  shockEndMonth?: number | null;
+  insolvencyMonth?: number | null;
+  completionMonth?: number | null;
+  delayedCompletionMonth?: number | null;
+  shockActiveMonths?: number[];
 }
 
 export function SurvivalChart({
@@ -34,9 +41,18 @@ export function SurvivalChart({
   firstUnsafeMonth,
   recoveryPointMonth,
   height = "26rem",
+  shockStartMonth,
+  shockEndMonth,
+  insolvencyMonth,
+  completionMonth,
+  delayedCompletionMonth,
+  shockActiveMonths,
 }: SurvivalChartProps) {
   const [hiddenSeries, setHiddenSeries] = useState<Record<string, boolean>>({});
   const [focusedSeries, setFocusedSeries] = useState<string | null>(null);
+
+  const effectiveInsolvencyMonth = insolvencyMonth ?? firstUnsafeMonth ?? null;
+  const effectiveDelayedMonth = delayedCompletionMonth ?? completionMonth ?? null;
 
   const maxLen = Math.max(
     baselineCurve.length,
@@ -75,12 +91,14 @@ export function SurvivalChart({
     if (!active || !payload || !payload.length) return null;
 
     const currentMonthNum = parseInt(String(label).replace("M", "")) || 0;
-    const isUnsafe = firstUnsafeMonth && currentMonthNum >= firstUnsafeMonth && (!recoveryPointMonth || currentMonthNum < recoveryPointMonth);
+    const isShockActive = (shockActiveMonths && shockActiveMonths.includes(currentMonthNum)) || (shockStartMonth != null && shockEndMonth != null && currentMonthNum >= shockStartMonth && currentMonthNum <= shockEndMonth);
+    const isInsolvent = effectiveInsolvencyMonth != null && currentMonthNum >= effectiveInsolvencyMonth;
+    const isUnsafe = !isInsolvent && firstUnsafeMonth && currentMonthNum >= firstUnsafeMonth && (!recoveryPointMonth || currentMonthNum < recoveryPointMonth);
     const isRecovered = recoveryPointMonth && currentMonthNum >= recoveryPointMonth;
 
-    const baselineItem = payload.find((p: any) => p.dataKey === "baseline");
-    const stressedItem = payload.find((p: any) => p.dataKey === "stressed");
-    const recoveredItem = payload.find((p: any) => p.dataKey === "recovered");
+    const baselineItem = payload.find((p: any) => p.dataKey === "baseline" && p.stroke !== "none") || payload.find((p: any) => p.dataKey === "baseline");
+    const stressedItem = payload.find((p: any) => p.dataKey === "stressed" && p.stroke !== "none") || payload.find((p: any) => p.dataKey === "stressed");
+    const recoveredItem = payload.find((p: any) => p.dataKey === "recovered" && p.stroke !== "none") || payload.find((p: any) => p.dataKey === "recovered");
 
     const baselineVal = baselineItem?.value;
     const stressedVal = stressedItem?.value;
@@ -90,24 +108,38 @@ export function SurvivalChart({
     const recoveryGain = recoveredVal !== undefined && stressedVal !== undefined ? recoveredVal - stressedVal : null;
 
     return (
-      <div className="bg-[#0f172a]/95 text-white p-4 rounded-2xl shadow-soft-lg border border-slate-700/60 backdrop-blur-md text-xs space-y-2.5 min-w-[210px] animate-fadeIn">
+      <div className="bg-[#0f172a]/95 text-white p-4 rounded-2xl shadow-soft-lg border border-slate-700/60 backdrop-blur-md text-xs space-y-2.5 min-w-[220px] animate-fadeIn">
         {/* Header */}
         <div className="flex items-center justify-between gap-3 pb-2 border-b border-slate-700/60">
           <div className="flex items-center gap-1.5 font-display font-bold text-slate-200">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            <span>Timeline Point: {label}</span>
+            <span className={`w-1.5 h-1.5 rounded-full ${isShockActive ? "bg-rose-400 animate-pulse" : isInsolvent ? "bg-red-500" : "bg-emerald-400"}`} />
+            <span>Month {currentMonthNum}</span>
           </div>
-          <span
-            className={`text-[9px] font-display font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-              isRecovered
-                ? "bg-emerald-900/80 text-emerald-300 border border-emerald-500/40"
-                : isUnsafe
-                ? "bg-rose-900/80 text-rose-300 border border-rose-500/40"
-                : "bg-slate-800 text-slate-300 border border-slate-700"
-            }`}
-          >
-            {isRecovered ? "Recovered" : isUnsafe ? "Disrupted" : "Baseline"}
-          </span>
+          <div className="flex items-center gap-1.5">
+            {isShockActive && (
+              <span className="text-[9px] font-display font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-rose-950/90 text-rose-300 border border-rose-600/40">
+                Shock
+              </span>
+            )}
+            {isInsolvent && (
+              <span className="text-[9px] font-display font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-red-950/90 text-red-300 border border-red-600/40">
+                Insolvent
+              </span>
+            )}
+            {!isShockActive && !isInsolvent && (
+              <span
+                className={`text-[9px] font-display font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                  isRecovered
+                    ? "bg-emerald-900/80 text-emerald-300 border border-emerald-500/40"
+                    : isUnsafe
+                    ? "bg-rose-900/80 text-rose-300 border border-rose-500/40"
+                    : "bg-slate-800 text-slate-300 border border-slate-700"
+                }`}
+              >
+                {isRecovered ? "Recovered" : isUnsafe ? "Disrupted" : "Baseline"}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Series Values */}
@@ -154,12 +186,12 @@ export function SurvivalChart({
           <div className="pt-2 border-t border-slate-700/60 flex items-center justify-between text-[11px] font-display">
             {deficit !== null && deficit < 0 && (
               <span className="text-rose-400 tabular-nums">
-                Deficit: -{formatINR(Math.abs(deficit))}
+                Shortfall: -{formatINR(Math.abs(deficit))}
               </span>
             )}
             {recoveryGain !== null && recoveryGain > 0 && (
               <span className="text-emerald-400 tabular-nums ml-auto">
-                Gained: +{formatINR(recoveryGain)}
+                Recovered: +{formatINR(recoveryGain)}
               </span>
             )}
           </div>
@@ -242,12 +274,27 @@ export function SurvivalChart({
               <span className="w-1.5 h-1.5 rounded-full bg-slate-400 inline-block" /> M{targetDeadlineMonths} Deadline
             </span>
           )}
+          {shockStartMonth != null && shockEndMonth != null && (
+            <span className="flex items-center gap-1 text-rose-600 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block" /> M{shockStartMonth}–M{shockEndMonth} Shock
+            </span>
+          )}
+          {effectiveInsolvencyMonth != null && (
+            <span className="flex items-center gap-1 text-red-600 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-600 inline-block" /> M{effectiveInsolvencyMonth} Insolvent
+            </span>
+          )}
+          {effectiveDelayedMonth != null && effectiveDelayedMonth !== targetDeadlineMonths && (
+            <span className="flex items-center gap-1 text-amber-600 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block" /> M{effectiveDelayedMonth} Delayed
+            </span>
+          )}
         </div>
       </div>
 
-      {/* Chart Canvas */}
-      <div className="w-full relative" style={{ height }}>
-        <ResponsiveContainer width="100%" height="100%">
+      {/* Chart Canvas with explicit container height */}
+      <div className="w-full relative min-h-[340px] sm:min-h-[400px]" style={{ height }}>
+        <ResponsiveContainer width="100%" height="100%" minHeight={320}>
           <ComposedChart data={data} margin={{ top: 20, right: 25, left: 10, bottom: 8 }}>
             <defs>
               {/* Subtle Area Gradients for editorial depth */}
@@ -281,10 +328,31 @@ export function SurvivalChart({
               tickLine={false}
               tick={{ fontSize: 11, fill: "#78716c", fontFamily: "sans-serif" }}
               tickFormatter={formatYAxis}
+              domain={[0, (dataMax: number) => Math.ceil(Math.max(dataMax, targetAmount || 0) * 1.05)]}
               dx={-4}
             />
 
             <Tooltip content={<CustomTooltip />} />
+
+            {/* Active Shock Window Area */}
+            {shockStartMonth != null && shockEndMonth != null && shockStartMonth < maxLen && (
+              <ReferenceArea
+                x1={`M${shockStartMonth}`}
+                x2={`M${Math.min(maxLen - 1, shockEndMonth)}`}
+                fill="#f43f5e"
+                fillOpacity={0.08}
+                stroke="#e11d48"
+                strokeOpacity={0.3}
+                strokeDasharray="3 3"
+                label={{
+                  value: "Shock Active Window",
+                  fill: "#be123c",
+                  fontSize: 10,
+                  position: "insideTop",
+                  fontWeight: 600,
+                }}
+              />
+            )}
 
             {/* Target Amount Horizontal Reference Line */}
             {targetAmount && targetAmount > 0 && (
@@ -320,16 +388,33 @@ export function SurvivalChart({
               />
             )}
 
-            {/* First Unsafe Month Marker */}
-            {firstUnsafeMonth !== undefined && firstUnsafeMonth !== null && firstUnsafeMonth > 0 && firstUnsafeMonth < maxLen && (
+            {/* Delayed Completion Marker */}
+            {effectiveDelayedMonth != null && effectiveDelayedMonth > 0 && effectiveDelayedMonth !== targetDeadlineMonths && effectiveDelayedMonth < maxLen && (
               <ReferenceLine
-                x={`M${firstUnsafeMonth}`}
-                stroke="#e11d48"
+                x={`M${effectiveDelayedMonth}`}
+                stroke="#d97706"
                 strokeDasharray="3 3"
                 strokeWidth={1.5}
                 label={{
-                  value: `Unsafe Point (M${firstUnsafeMonth})`,
-                  fill: "#e11d48",
+                  value: `Delayed Completion (M${effectiveDelayedMonth})`,
+                  fill: "#b45309",
+                  fontSize: 10,
+                  position: "insideTopRight",
+                  fontWeight: 600,
+                }}
+              />
+            )}
+
+            {/* Insolvency / First Unsafe Month Marker */}
+            {effectiveInsolvencyMonth != null && effectiveInsolvencyMonth > 0 && effectiveInsolvencyMonth < maxLen && (
+              <ReferenceLine
+                x={`M${effectiveInsolvencyMonth}`}
+                stroke="#dc2626"
+                strokeDasharray="3 3"
+                strokeWidth={1.5}
+                label={{
+                  value: `Insolvency Point (M${effectiveInsolvencyMonth})`,
+                  fill: "#b91c1c",
                   fontSize: 10,
                   position: "insideBottomLeft",
                   fontWeight: 600,
@@ -356,75 +441,75 @@ export function SurvivalChart({
 
             {/* Baseline Curve & Subtle Area */}
             {!hiddenSeries.baseline && (
-              <>
-                <Area
-                  type="monotone"
-                  dataKey="baseline"
-                  fill="url(#baselineAreaGrad)"
-                  stroke="none"
-                  isAnimationActive={true}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="baseline"
-                  name="Baseline"
-                  stroke="#94a3b8"
-                  strokeWidth={focusedSeries === "baseline" ? 3 : 2}
-                  strokeDasharray="5 5"
-                  dot={false}
-                  activeDot={{ r: 6, fill: "#64748b", stroke: "#ffffff", strokeWidth: 2.5 }}
-                  isAnimationActive={true}
-                  animationDuration={750}
-                />
-              </>
+              <Area
+                type="monotone"
+                dataKey="baseline"
+                fill="url(#baselineAreaGrad)"
+                stroke="none"
+                isAnimationActive={false}
+                style={{ pointerEvents: "none" }}
+              />
+            )}
+            {!hiddenSeries.baseline && (
+              <Line
+                type="monotone"
+                dataKey="baseline"
+                name="Baseline"
+                stroke="#94a3b8"
+                strokeWidth={focusedSeries === "baseline" ? 3 : 2}
+                strokeDasharray="5 5"
+                dot={false}
+                activeDot={{ r: 6, fill: "#64748b", stroke: "#ffffff", strokeWidth: 2.5 }}
+                isAnimationActive={false}
+              />
             )}
 
             {/* Stressed Shock Curve & Subtle Area */}
             {!hiddenSeries.stressed && (
-              <>
-                <Area
-                  type="monotone"
-                  dataKey="stressed"
-                  fill="url(#stressedAreaGrad)"
-                  stroke="none"
-                  isAnimationActive={true}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="stressed"
-                  name="Stressed"
-                  stroke="#0f172a"
-                  strokeWidth={focusedSeries === "stressed" ? 3.5 : 2.5}
-                  dot={false}
-                  activeDot={{ r: 6, fill: "#e11d48", stroke: "#ffffff", strokeWidth: 2.5 }}
-                  isAnimationActive={true}
-                  animationDuration={850}
-                />
-              </>
+              <Area
+                type="monotone"
+                dataKey="stressed"
+                fill="url(#stressedAreaGrad)"
+                stroke="none"
+                isAnimationActive={false}
+                style={{ pointerEvents: "none" }}
+              />
+            )}
+            {!hiddenSeries.stressed && (
+              <Line
+                type="monotone"
+                dataKey="stressed"
+                name="Stressed"
+                stroke="#e11d48"
+                strokeWidth={focusedSeries === "stressed" ? 3.5 : 2.5}
+                dot={false}
+                activeDot={{ r: 6, fill: "#e11d48", stroke: "#ffffff", strokeWidth: 2.5 }}
+                isAnimationActive={false}
+              />
             )}
 
             {/* Recovered Strategy Curve & Soft Glow Area */}
             {recoveredCurve && !hiddenSeries.recovered && (
-              <>
-                <Area
-                  type="monotone"
-                  dataKey="recovered"
-                  fill="url(#recoveredAreaGrad)"
-                  stroke="none"
-                  isAnimationActive={true}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="recovered"
-                  name="Recovered"
-                  stroke="#059669"
-                  strokeWidth={focusedSeries === "recovered" ? 3.5 : 2.5}
-                  dot={false}
-                  activeDot={{ r: 6, fill: "#059669", stroke: "#ffffff", strokeWidth: 2.5 }}
-                  isAnimationActive={true}
-                  animationDuration={950}
-                />
-              </>
+              <Area
+                type="monotone"
+                dataKey="recovered"
+                fill="url(#recoveredAreaGrad)"
+                stroke="none"
+                isAnimationActive={false}
+                style={{ pointerEvents: "none" }}
+              />
+            )}
+            {recoveredCurve && !hiddenSeries.recovered && (
+              <Line
+                type="monotone"
+                dataKey="recovered"
+                name="Recovered"
+                stroke="#059669"
+                strokeWidth={focusedSeries === "recovered" ? 3.5 : 2.5}
+                dot={false}
+                activeDot={{ r: 6, fill: "#059669", stroke: "#ffffff", strokeWidth: 2.5 }}
+                isAnimationActive={false}
+              />
             )}
           </ComposedChart>
         </ResponsiveContainer>

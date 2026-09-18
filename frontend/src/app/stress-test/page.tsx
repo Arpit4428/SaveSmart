@@ -398,7 +398,7 @@ export default function StressTestPage() {
               <div className="rounded-3xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-soft-sm grid grid-cols-2 sm:grid-cols-4 gap-6 divide-y sm:divide-y-0 sm:divide-x divide-stone-100">
                 <div className="space-y-1">
                   <div className="text-stone-400 text-[10px] font-display font-bold uppercase tracking-wider">RESILIENCE SCORE</div>
-                  <div className="text-3xl font-display font-bold text-stone-950 tabular-nums tracking-tight">
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-display font-bold text-stone-950 tabular-nums tracking-tight">
                     {simResult.resilience_score}<span className="text-sm font-normal text-stone-400">/100</span>
                   </div>
                   <div className="pt-1">
@@ -408,7 +408,7 @@ export default function StressTestPage() {
 
                 <div className="space-y-1 sm:pl-6 pt-4 sm:pt-0">
                   <div className="text-stone-400 text-[10px] font-display font-bold uppercase tracking-wider">DEADLINE SLIPPAGE</div>
-                  <div className="text-3xl font-display font-bold text-amber-700 tabular-nums tracking-tight">
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-display font-bold text-amber-700 tabular-nums tracking-tight">
                     +{simResult.stressed.slippage_months} <span className="text-xs font-normal text-stone-400">Mos</span>
                   </div>
                   <p className="text-[11px] text-stone-400">
@@ -418,7 +418,7 @@ export default function StressTestPage() {
 
                 <div className="space-y-1 sm:pl-6 pt-4 sm:pt-0">
                   <div className="text-stone-400 text-[10px] font-display font-bold uppercase tracking-wider">CAPITAL SHORTFALL</div>
-                  <div className="text-3xl font-display font-bold text-rose-700 tabular-nums tracking-tight">
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-display font-bold text-rose-700 tabular-nums tracking-tight truncate">
                     {formatINR(simResult.stressed.capital_deficit)}
                   </div>
                   <p className="text-[11px] text-stone-400">At initial deadline</p>
@@ -426,7 +426,7 @@ export default function StressTestPage() {
 
                 <div className="space-y-1 sm:pl-6 pt-4 sm:pt-0">
                   <div className="text-stone-400 text-[10px] font-display font-bold uppercase tracking-wider">MIN LIQUIDITY</div>
-                  <div className="text-3xl font-display font-bold text-stone-950 tabular-nums tracking-tight">
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-display font-bold text-stone-950 tabular-nums tracking-tight truncate">
                     {formatINR(simResult.stressed.minimum_cash_buffer)}
                   </div>
                   <div className="text-[11px] font-display font-semibold flex items-center gap-1.5 pt-0.5">
@@ -468,12 +468,27 @@ export default function StressTestPage() {
                   </Link>
                 </div>
 
-                <SurvivalChart
-                  baselineCurve={simResult.monthly_timeline.map((t) => t.baseline_balance)}
-                  stressedCurve={simResult.monthly_timeline.map((t) => t.stressed_balance)}
-                  targetAmount={selectedGoal?.target_amount}
-                  targetDeadlineMonths={selectedGoal?.target_months}
-                />
+                {(() => {
+                  const shockMonths = simResult.monthly_timeline
+                    .filter((t) => t.is_shock_active)
+                    .map((t) => t.month);
+                  const shockStartMonth = shockMonths.length > 0 ? Math.min(...shockMonths) : null;
+                  const shockEndMonth = shockMonths.length > 0 ? Math.max(...shockMonths) : null;
+
+                  return (
+                    <SurvivalChart
+                      baselineCurve={simResult.monthly_timeline.map((t) => t.baseline_balance)}
+                      stressedCurve={simResult.monthly_timeline.map((t) => t.stressed_balance)}
+                      targetAmount={selectedGoal?.target_amount}
+                      targetDeadlineMonths={selectedGoal?.target_months}
+                      shockStartMonth={shockStartMonth}
+                      shockEndMonth={shockEndMonth}
+                      insolvencyMonth={simResult.insolvency_first_month}
+                      delayedCompletionMonth={simResult.stressed?.completion_month}
+                      shockActiveMonths={shockMonths}
+                    />
+                  );
+                })()}
               </div>
 
               {/* 3. ROOT CAUSE ANALYSIS: Why Did My Goal Fail? */}

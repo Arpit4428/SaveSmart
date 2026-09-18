@@ -8,6 +8,7 @@ import { formatINR, formatPercent } from "@/lib/utils";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { DemoPresetModal } from "@/components/ui/DemoPresetModal";
+import { DashboardOverview } from "@/components/charts/DashboardOverview";
 import {
   ArrowRight,
   CheckCircle2,
@@ -271,6 +272,14 @@ export default function DashboardPage() {
           <p className="text-[11px] text-stone-400">Monitored for resilience</p>
         </div>
       </div>
+
+      {/* 2.5 OVERVIEW VISUAL: Cash Flow Allocation & Goal Accumulation Horizon */}
+      <DashboardOverview
+        baseline={baseline}
+        primaryGoal={primaryGoal}
+        goals={goals}
+        primaryGoalHealth={primaryGoalHealth}
+      />
 
       {/* 3. GOALS LIST & QUICK LINKS */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

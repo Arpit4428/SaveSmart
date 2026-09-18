@@ -210,6 +210,11 @@ export default function SurvivalMapPage() {
               targetDeadlineMonths={survivalData.target_deadline_months || selectedGoal?.target_months}
               firstUnsafeMonth={survivalData.first_unsafe_month}
               recoveryPointMonth={survivalData.recovery_point_month}
+              delayedCompletionMonth={
+                survivalData.deadline_slippage && survivalData.target_deadline_months
+                  ? survivalData.target_deadline_months + survivalData.deadline_slippage
+                  : null
+              }
             />
           </div>
 
