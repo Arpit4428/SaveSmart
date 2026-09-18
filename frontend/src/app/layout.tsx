@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -34,7 +35,7 @@ export default function RootLayout({
 
               <nav className="hidden lg:flex items-center gap-1 bg-stone-200/40 p-1 rounded-full border border-stone-200/60 text-xs font-medium text-stone-600">
                 <Link
-                  href="/"
+                  href="/dashboard"
                   className="px-3.5 py-1.5 rounded-full hover:text-stone-950 hover:bg-white hover:shadow-soft-sm transition-all"
                 >
                   Dashboard
@@ -77,13 +78,20 @@ export default function RootLayout({
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
                 <span className="text-[11px] font-display font-medium text-stone-600">Engine Live</span>
               </div>
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-display font-semibold text-white bg-stone-900 hover:bg-black rounded-full shadow-soft-sm transition-all"
+              >
+                <span>Enter App</span>
+                <ArrowRight className="w-3 h-3" />
+              </Link>
             </div>
           </div>
 
           {/* Mobile Sub-Navigation */}
           <nav className="lg:hidden flex items-center gap-1.5 px-4 py-2 overflow-x-auto border-t border-stone-200/50 text-xs font-medium bg-stone-50/90 no-scrollbar">
             <Link
-              href="/"
+              href="/dashboard"
               className="px-3 py-1 rounded-full bg-white border border-stone-200/70 text-stone-700 whitespace-nowrap shadow-soft-sm"
             >
               Dashboard

@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 async function runQA() {
-  console.log('🚀 Starting SaveSmart Phase 3 End-to-End QA Pass...\n');
+  console.log('🚀 Starting SaveSmart End-to-End QA Pass (with Landing Page & Dashboard)...\n');
 
   const screenshotsDir = path.join(__dirname, 'screenshots');
   if (!fs.existsSync(screenshotsDir)) {
@@ -122,10 +122,23 @@ async function runQA() {
     console.log('   ✅ Goal Health with 5-axis Fingerprint & AI Card verified! Screenshot captured.');
 
     // ----------------------------------------------------
-    // STEP 3: OPEN DASHBOARD
+    // STEP 3: VERIFY LANDING PAGE & NAVIGATE TO DASHBOARD
     // ----------------------------------------------------
-    console.log('\n👉 Step 3: Navigating to / (Dashboard)...');
+    console.log('\n👉 Step 3: Navigating to / (Landing Page)...');
     await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
+
+    const landingHeading = page.locator('text=/SAVE SMART/i').first();
+    await landingHeading.waitFor({ state: 'visible', timeout: 5000 });
+
+    const enterBtn = page.locator('a:has-text("Enter SaveSmart")').first();
+    await enterBtn.waitFor({ state: 'visible', timeout: 5000 });
+    await page.screenshot({ path: path.join(screenshotsDir, '03_landing_page.png') });
+    console.log('   ✅ Landing Page verified with Hero, Features & CTA!');
+
+    console.log('   Entering Dashboard via CTA...');
+    await enterBtn.click();
+    await page.waitForURL('**/dashboard', { timeout: 8000 });
+    await page.waitForTimeout(1500);
 
     const dashGoal = page.locator('text=/Dream Home Down Payment/i').first();
     await dashGoal.waitFor({ state: 'visible', timeout: 5000 });
@@ -134,7 +147,7 @@ async function runQA() {
     await baselineIncome.waitFor({ state: 'visible', timeout: 5000 });
 
     // Test 1-Click Demo Presets Modal
-    console.log('   Testing 1-Click Demo Presets Modal...');
+    console.log('   Testing 1-Click Demo Presets Modal on Dashboard...');
     const demoPresetBtn = page.locator('button:has-text("Demo Presets")').first();
     await demoPresetBtn.click();
     await page.waitForTimeout(600);
@@ -297,29 +310,35 @@ async function runQA() {
     console.log('\n👉 Step 7: Testing Mobile Responsiveness (375x667)...');
     await page.setViewportSize({ width: 375, height: 667 });
     
-    // Check Dashboard on Mobile
+    // Check Landing Page on Mobile
     await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
+    const mobileLandingTitle = page.locator('text=/SAVE SMART/i').first();
+    await mobileLandingTitle.waitFor({ state: 'visible', timeout: 5000 });
+    await page.screenshot({ path: path.join(screenshotsDir, '07_mobile_landing.png') });
+
+    // Check Dashboard on Mobile
+    await page.goto('http://localhost:3000/dashboard', { waitUntil: 'networkidle' });
     const mobileGoal = page.locator('text=/Dream Home Down Payment/i').first();
     await mobileGoal.waitFor({ state: 'visible', timeout: 5000 });
-    await page.screenshot({ path: path.join(screenshotsDir, '07_mobile_dashboard.png') });
+    await page.screenshot({ path: path.join(screenshotsDir, '08_mobile_dashboard.png') });
 
     // Check Goals on Mobile
     await page.goto('http://localhost:3000/goals', { waitUntil: 'networkidle' });
     const mobileGoalsTitle = page.locator('h1:has-text("Goal Builder")').first();
     await mobileGoalsTitle.waitFor({ state: 'visible', timeout: 5000 });
-    await page.screenshot({ path: path.join(screenshotsDir, '08_mobile_goals.png') });
+    await page.screenshot({ path: path.join(screenshotsDir, '09_mobile_goals.png') });
 
     // Check Stress-Test on Mobile
     await page.goto('http://localhost:3000/stress-test', { waitUntil: 'networkidle' });
     const mobileStressTitle = page.locator('h1:has-text("Stress-Test Lab")').first();
     await mobileStressTitle.waitFor({ state: 'visible', timeout: 5000 });
-    await page.screenshot({ path: path.join(screenshotsDir, '09_mobile_stress.png') });
+    await page.screenshot({ path: path.join(screenshotsDir, '10_mobile_stress.png') });
 
     // Check Survival on Mobile
     await page.goto('http://localhost:3000/survival', { waitUntil: 'networkidle' });
     const mobileSurvivalTitle = page.locator('h1:has-text("Goal Survival Map")').first();
     await mobileSurvivalTitle.waitFor({ state: 'visible', timeout: 5000 });
-    await page.screenshot({ path: path.join(screenshotsDir, '10_mobile_survival.png') });
+    await page.screenshot({ path: path.join(screenshotsDir, '11_mobile_survival.png') });
 
     console.log('   ✅ Responsive layout verified on mobile viewport across all pages! Screenshots captured.');
 
@@ -343,7 +362,7 @@ async function runQA() {
     console.log('========================================\n');
 
     if (consoleErrors.length === 0 && pageErrors.length === 0 && requestFailures.length === 0) {
-      console.log('🎉 ALL PHASE 3 DIFFERENTIATION TESTS PASSED WITH ZERO CONSOLE OR NETWORK ERRORS!');
+      console.log('🎉 ALL TESTS PASSED WITH ZERO CONSOLE OR NETWORK ERRORS!');
     } else {
       console.log('⚠️ Some warnings/errors detected.');
     }
