@@ -1,4 +1,4 @@
-﻿"""
+"""
 SaveSmart Backend Application
 FastAPI ASGI Entrypoint with MongoDB Atlas lifecycle management,
 OpenAPI schema documentation, and API Contract error handling.
@@ -39,10 +39,13 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+import os
+
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
+    allow_origin_regex=r"^https:\/\/.*\.vercel\.app$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -87,4 +90,5 @@ app.include_router(api_v1_router, prefix="/api/v1")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=settings.PORT, reload=settings.DEBUG)
+    port = int(os.environ.get("PORT", settings.PORT))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=settings.DEBUG)

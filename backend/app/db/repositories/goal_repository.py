@@ -1,4 +1,4 @@
-﻿"""
+"""
 SaveSmart Goal Repository
 Data access layer for savings goals with MongoDB Atlas persistence and in-memory fallback.
 """
@@ -6,6 +6,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Dict, List, Optional
 from bson import ObjectId
+from app.core.config import settings
 from app.db.mongodb import get_database
 
 
@@ -31,6 +32,9 @@ class GoalRepository:
                 goals.append(doc)
             return goals
 
+        if settings.ENVIRONMENT == "production":
+            raise RuntimeError("CRITICAL: MongoDB connection unavailable in production.")
+
         # In-memory fallback
         return [
             g for g in self._in_memory_store.values()
@@ -52,6 +56,9 @@ class GoalRepository:
                 return doc
             return None
 
+        if settings.ENVIRONMENT == "production":
+            raise RuntimeError("CRITICAL: MongoDB connection unavailable in production.")
+
         # In-memory fallback
         return self._in_memory_store.get(goal_id)
 
@@ -65,6 +72,9 @@ class GoalRepository:
             insert_result = await col.insert_one(dict(goal_data))
             goal_data["id"] = str(insert_result.inserted_id)
             return goal_data
+
+        if settings.ENVIRONMENT == "production":
+            raise RuntimeError("CRITICAL: MongoDB connection unavailable in production.")
 
         # In-memory fallback
         goal_id = f"goal_{uuid.uuid4().hex[:8]}"
@@ -91,6 +101,9 @@ class GoalRepository:
                 return result
             return None
 
+        if settings.ENVIRONMENT == "production":
+            raise RuntimeError("CRITICAL: MongoDB connection unavailable in production.")
+
         # In-memory fallback
         if goal_id in self._in_memory_store:
             self._in_memory_store[goal_id].update(update_data)
@@ -107,6 +120,9 @@ class GoalRepository:
 
             result = await col.delete_one(filter_q)
             return result.deleted_count > 0
+
+        if settings.ENVIRONMENT == "production":
+            raise RuntimeError("CRITICAL: MongoDB connection unavailable in production.")
 
         # In-memory fallback
         if goal_id in self._in_memory_store:

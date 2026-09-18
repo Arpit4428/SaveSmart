@@ -24,8 +24,11 @@ async def connect_to_mongo() -> None:
     """Initializes MongoDB Atlas connection."""
     uri = settings.MONGODB_URI
     if not uri:
-        logger.warning("MONGODB_URI not configured. Operating in mock/in-memory repository fallback mode.")
         db_manager.is_connected = False
+        if settings.ENVIRONMENT == "production":
+            logger.critical("CRITICAL: MONGODB_URI is not configured in production.")
+            raise RuntimeError("CRITICAL: MONGODB_URI is required in production environment.")
+        logger.warning("MONGODB_URI not configured. Operating in mock/in-memory repository fallback mode.")
         return
 
     try:
@@ -43,8 +46,11 @@ async def connect_to_mongo() -> None:
         db_manager.is_connected = True
         logger.info(f"Connected to MongoDB Atlas: {settings.MONGODB_DB_NAME}")
     except Exception as e:
-        logger.error(f"Failed to connect to MongoDB Atlas: {e}. Falling back to in-memory store.")
         db_manager.is_connected = False
+        if settings.ENVIRONMENT == "production":
+            logger.critical(f"CRITICAL: Failed to connect to MongoDB Atlas in production: {e}")
+            raise RuntimeError(f"CRITICAL: Failed to connect to MongoDB Atlas in production: {e}")
+        logger.error(f"Failed to connect to MongoDB Atlas: {e}. Falling back to in-memory store.")
 
 
 async def close_mongo_connection() -> None:

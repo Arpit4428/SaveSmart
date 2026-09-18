@@ -1,9 +1,10 @@
-﻿"""
+"""
 SaveSmart Baseline Financial Repository
 Data access layer for user baseline profiles with MongoDB Atlas persistence and in-memory fallback.
 """
 from datetime import datetime, timezone
 from typing import Dict, Optional
+from app.core.config import settings
 from app.db.mongodb import get_database
 
 
@@ -27,6 +28,9 @@ class BaselineRepository:
                 return doc
             return None
 
+        if settings.ENVIRONMENT == "production":
+            raise RuntimeError("CRITICAL: MongoDB connection unavailable in production.")
+
         # In-memory fallback
         return self._in_memory_store.get(user_id)
 
@@ -43,6 +47,9 @@ class BaselineRepository:
                 upsert=True
             )
             return baseline_data
+
+        if settings.ENVIRONMENT == "production":
+            raise RuntimeError("CRITICAL: MongoDB connection unavailable in production.")
 
         # In-memory fallback
         self._in_memory_store[user_id] = dict(baseline_data)
